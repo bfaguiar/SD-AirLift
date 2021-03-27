@@ -4,9 +4,10 @@ import states.EHostess;
 import states.EPassenger;
 import states.EPilot;
 import java.util.concurrent.locks.ReentrantLock;
-
+import java.util.concurrent.locks.Condition;
 public class DepartureAirport {
     private ReentrantLock rt = new ReentrantLock();
+    private Condition cHostess = rt.newCondition();
     private int plane_capacity_min;
     private int plane_capacity_max;
     private int plane_current_capacity;
@@ -20,6 +21,7 @@ public class DepartureAirport {
     public EPilot.atTransferGate atTransferGate() {
         rt.lock();
         // something
+        cHostess.signal();
         rt.unlock();
         return EPilot.atTransferGate.informPlaneReadyForBoarding;
     }
@@ -27,7 +29,17 @@ public class DepartureAirport {
     public EHostess.waitForFlight waitForFlight() {
         rt.lock();
         // something
-        rt.unlock();
+        System.out.println("Entrando em Await");
+        try {
+            cHostess.await();
+            System.out.println("Saindo do Await!");
+        } 
+        catch(InterruptedException e) {
+            System.out.print("ERORR:AOcorreu algo aqui no Interrupt Exception");
+        }
+        finally {
+            rt.unlock();
+        }
         return EHostess.waitForFlight.prepareForPassBoarding;
     }
 

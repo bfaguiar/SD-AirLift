@@ -15,10 +15,20 @@ public class Pilot extends Thread{
         this.plane = plane;
         this.dp = dp;
         this.ap = ap;
+        state = EPilot.State.AT_TRANSFER_GATE;
     }
 
     @Override
     public void run(){
+        switch(state) {
+            case AT_TRANSFER_GATE:
+                try {
+                    Thread.sleep(5000);
+                } catch(InterruptedException e) {}
+                dp.atTransferGate();
+                break;
+        }
+
         this.state = EPilot.State.AT_TRANSFER_GATE;
         System.out.println(this.toString("state: ", this.state.name()));
         EPilot.atTransferGate s1 = this.dp.atTransferGate();
