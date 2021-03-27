@@ -8,8 +8,8 @@ import thread.Pilot;
 public class Initializer {
     public static void main(String[] args) throws Exception {
         // Constants
-        final int N_PASSENGERS = 2;
-        final int N_CAPACITY_MIN = 2;
+        final int N_PASSENGERS = 1;
+        final int N_CAPACITY_MIN = 1;
         final int N_CAPACITY_MAX = 10;
 
         // Instantiate Monitors

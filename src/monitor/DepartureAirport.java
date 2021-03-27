@@ -7,37 +7,26 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 public class DepartureAirport {
     private ReentrantLock rt = new ReentrantLock();
-    private Condition cHostess = rt.newCondition();
-    private int plane_capacity_min;
-    private int plane_capacity_max;
-    private int plane_current_capacity;
+    private Condition hostess_ready_boarding = rt.newCondition();
 
-    public DepartureAirport(int capacity_min, int capacity_max){
-        plane_capacity_min = capacity_min;
-        plane_capacity_max = capacity_max;
-        plane_current_capacity = 0;
+    public DepartureAirport(int capacity_max, int capacity_min){
+
     }
 
     public EPilot.atTransferGate atTransferGate() {
         rt.lock();
-        // something
-        cHostess.signal();
+        this.hostess_ready_boarding.signal();
         rt.unlock();
         return EPilot.atTransferGate.informPlaneReadyForBoarding;
     }
 
     public EHostess.waitForFlight waitForFlight() {
         rt.lock();
-        // something
-        System.out.println("Entrando em Await");
         try {
-            cHostess.await();
-            System.out.println("Saindo do Await!");
-        } 
-        catch(InterruptedException e) {
-            System.out.print("ERORR:AOcorreu algo aqui no Interrupt Exception");
-        }
-        finally {
+            this.hostess_ready_boarding.await();
+        } catch(InterruptedException e) {
+            System.out.print(e);
+        } finally {
             rt.unlock();
         }
         return EHostess.waitForFlight.prepareForPassBoarding;
