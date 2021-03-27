@@ -9,12 +9,12 @@ public class DepartureAirport {
     private ReentrantLock rt = new ReentrantLock();
     private int plane_capacity_min;
     private int plane_capacity_max;
-    private int plane_current_capicity;
+    private int plane_current_capacity;
 
     public DepartureAirport(int capacity_min, int capacity_max){
         plane_capacity_min = capacity_min;
         plane_capacity_max = capacity_max;
-        plane_current_capicity = 0;
+        plane_current_capacity = 0;
     }
 
     public EPilot.atTransferGate atTransferGate() {

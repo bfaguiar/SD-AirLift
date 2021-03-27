@@ -7,9 +7,9 @@ import thread.Pilot;
 
 public class Initializer {
     public static void main(String[] args) throws Exception {
-        // constants
-        final int N_PASSENGERS = 21;
-        final int N_CAPACITY_MIN = 5;
+        // Constants
+        final int N_PASSENGERS = 2;
+        final int N_CAPACITY_MIN = 2;
         final int N_CAPACITY_MAX = 10;
 
         // Instantiate Monitors
@@ -22,7 +22,7 @@ public class Initializer {
         Pilot pilot = new Pilot(plane, dp, aa);
         Passenger[] passenger_list = new Passenger[N_PASSENGERS];
         for(int i = 0; i < N_PASSENGERS; i++)
-            passenger_list[i] = new Passenger(plane, dp);
+            passenger_list[i] = new Passenger(plane, dp, i);
 
         // Start Threads
         hostess.start();
