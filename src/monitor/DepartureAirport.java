@@ -5,9 +5,11 @@ import states.EPassenger;
 import states.EPilot;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
+
 public class DepartureAirport {
     private ReentrantLock rt = new ReentrantLock();
-    private Condition hostess_ready_boarding = rt.newCondition();
+    private Condition pilot_at_gate = rt.newCondition();
+    private boolean hostess_ready_boarding = false;
 
     public DepartureAirport(int capacity_max, int capacity_min){
 
@@ -15,7 +17,8 @@ public class DepartureAirport {
 
     public EPilot.atTransferGate atTransferGate() {
         rt.lock();
-        this.hostess_ready_boarding.signal();
+        this.pilot_at_gate.signal();
+        this.hostess_ready_boarding = true;
         rt.unlock();
         return EPilot.atTransferGate.informPlaneReadyForBoarding;
     }
@@ -23,7 +26,8 @@ public class DepartureAirport {
     public EHostess.waitForFlight waitForFlight() {
         rt.lock();
         try {
-            this.hostess_ready_boarding.await();
+            while(!this.hostess_ready_boarding)
+                this.pilot_at_gate.await();
         } catch(InterruptedException e) {
             System.out.print(e);
         } finally {

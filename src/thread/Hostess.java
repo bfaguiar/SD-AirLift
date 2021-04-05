@@ -5,7 +5,6 @@ import monitor.Plane;
 import states.EHostess;
 
 public class Hostess extends Thread{
-    
     private EHostess.State state;
     private DepartureAirport dp;
     private Plane plane;
