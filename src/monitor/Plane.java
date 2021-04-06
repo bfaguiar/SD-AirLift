@@ -12,22 +12,13 @@ public class Plane {
 
     }
 
-    public EHostess.waitForPassenger waitForPassenger() {
+     public EHostess.readyToFly readyToFly() {
         rt.lock();
         // something
         rt.unlock();
-        // if there are no passengers in queue
-        return EHostess.waitForPassenger.informPlaneReadyToTakeOff;
-        // else
-        // return EHostess.waitForPassenger.checkDocuments;
+        return EHostess.readyToFly.waitForNextFlight;
     }
 
-    public EPilot.readyForBoarding readyForBoarding() {
-        rt.lock();
-        // something
-        rt.unlock();
-        return EPilot.readyForBoarding.waitForAllInBoard;
-    }
 
     public EPilot.waitingForBoarding waitingForBoarding() {
         rt.lock();

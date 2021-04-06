@@ -23,6 +23,23 @@ public class DepartureAirport {
         return EPilot.atTransferGate.informPlaneReadyForBoarding;
     }
 
+     public EHostess.waitForPassenger waitForPassenger() {
+        rt.lock();
+        // something
+        rt.unlock();
+        // if there are no passengers in queue
+        return EHostess.waitForPassenger.informPlaneReadyToTakeOff;
+        // else
+         // return EHostess.waitForPassenger.checkDocuments;
+     }
+  
+      public EPilot.readyForBoarding readyForBoarding() {
+          rt.lock();
+          // something
+          rt.unlock();
+          return EPilot.readyForBoarding.waitForAllInBoard;
+      }
+
     public EHostess.waitForFlight waitForFlight() {
         rt.lock();
         try {
@@ -42,14 +59,6 @@ public class DepartureAirport {
         rt.unlock();
         return EHostess.checkPassenger.waitForNextPassenger;
     }
-
-    public EHostess.readyToFly readyToFly() {
-        rt.lock();
-        // something
-        rt.unlock();
-        return EHostess.readyToFly.waitForNextFlight;
-    }
-
     public EPassenger.goingToAirport goingToAirport() {
         rt.lock();
         // something
