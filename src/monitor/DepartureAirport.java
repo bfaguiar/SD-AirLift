@@ -4,65 +4,82 @@ import states.EHostess;
 import states.EPassenger;
 import states.EPilot;
 import java.util.concurrent.locks.ReentrantLock;
+import repo.Repository;
 import java.util.concurrent.locks.Condition;
 
 public class DepartureAirport {
-    private ReentrantLock rt = new ReentrantLock();
-    private Condition pilot_at_gate = rt.newCondition();
+    private Repository repo;
+    private ReentrantLock mutex = new ReentrantLock();
+    private Condition plane = mutex.newCondition();
     private boolean hostess_ready_boarding = false;
 
-    public DepartureAirport(int capacity_max, int capacity_min){
+    private Condition passenger = mutex.newCondition();
 
+
+    public DepartureAirport(Repository repo, int capacity_max, int capacity_min){
+        this.repo = repo;
     }
 
     public EPilot.atTransferGate atTransferGate() {
-        rt.lock();
-        this.pilot_at_gate.signal();
-        this.hostess_ready_boarding = true;
-        rt.unlock();
+        mutex.lock();
+        repo.log();
+        mutex.unlock();
         return EPilot.atTransferGate.informPlaneReadyForBoarding;
     }
 
-     public EHostess.waitForPassenger waitForPassenger() {
-        rt.lock();
-        // something
-        rt.unlock();
+    public EPilot.readyForBoarding readyForBoarding() {
+        mutex.lock();
+        this.plane.signal();
+        this.hostess_ready_boarding = true;
+        repo.log();
+        mutex.unlock();
+        return EPilot.readyForBoarding.waitForAllInBoard;
+    }
+
+    public EHostess.waitForFlight waitForFlight() {
+        mutex.lock();
+        try {
+            while(!this.hostess_ready_boarding)
+                this.plane.await();
+        } catch(InterruptedException e) {
+            System.out.print(e);
+        } finally {
+            repo.log();
+            mutex.unlock();
+        }
+        return EHostess.waitForFlight.prepareForPassBoarding;
+    }
+
+    public EHostess.waitForPassenger waitForPassenger() {
+        mutex.lock();
+        try {
+            while(!this.hostess_ready_boarding)
+                this.passenger.await();
+        } catch(InterruptedException e) {
+            System.out.print(e);
+        } finally {
+            repo.log();
+            mutex.unlock();
+        }
         // if there are no passengers in queue
         return EHostess.waitForPassenger.informPlaneReadyToTakeOff;
         // else
          // return EHostess.waitForPassenger.checkDocuments;
      }
-  
-      public EPilot.readyForBoarding readyForBoarding() {
-          rt.lock();
-          // something
-          rt.unlock();
-          return EPilot.readyForBoarding.waitForAllInBoard;
-      }
-
-    public EHostess.waitForFlight waitForFlight() {
-        rt.lock();
-        try {
-            while(!this.hostess_ready_boarding)
-                this.pilot_at_gate.await();
-        } catch(InterruptedException e) {
-            System.out.print(e);
-        } finally {
-            rt.unlock();
-        }
-        return EHostess.waitForFlight.prepareForPassBoarding;
-    }
 
     public EHostess.checkPassenger checkPassenger() {
-        rt.lock();
-        // something
-        rt.unlock();
+        mutex.lock();
+        
+        repo.log();
+        mutex.unlock();
         return EHostess.checkPassenger.waitForNextPassenger;
     }
+
     public EPassenger.goingToAirport goingToAirport() {
-        rt.lock();
-        // something
-        rt.unlock();
+        mutex.lock();
+        passenger.signal();
+        repo.log();
+        mutex.unlock();
         // if plane is ready for boarding
         return EPassenger.goingToAirport.waitInQueue;
         // else
@@ -70,9 +87,10 @@ public class DepartureAirport {
     }
 
     public EPassenger.inQueue inQueue() {
-        rt.lock();
-        // something
-        rt.unlock();
+        mutex.lock();
+        
+        repo.log();
+        mutex.unlock();
         // if the hostess verified the documents
         return EPassenger.inQueue.boardThePlane;
         // else

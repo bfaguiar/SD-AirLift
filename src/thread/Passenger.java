@@ -23,35 +23,41 @@ public class Passenger extends Thread{
         while(!end){
             switch(this.state) {
                 case GOING_TO_AIRPORT:
-                    System.out.println(this.toString("state: ", this.state.name()));
                     EPassenger.goingToAirport s1 = this.dp.goingToAirport();
-                    System.out.println(this.toString("action: ", s1.name()));
                     this.state = EPassenger.State.IN_QUEUE;
                     break;
 
                 case IN_QUEUE:
-                    System.out.println(this.toString("state: ", this.state.name()));
                     EPassenger.inQueue s2 = this.dp.inQueue();
-                    System.out.println(this.toString("action: ", s2.name()));
                     this.state = EPassenger.State.IN_FLIGHT;
                     break;
 
                 case IN_FLIGHT:
-                    System.out.println(this.toString("state: ", this.state.name()));
                     EPassenger.inFlight s3 = this.plane.inFlight();
-                    System.out.println(this.toString("action: ", s3.name()));
                     this.state = EPassenger.State.AT_DESTINATION;
                     break;
 
                 case AT_DESTINATION:
-                    System.out.println(this.toString("state: ", this.state.name()));
                     end = true;
                     break;
             }
         }
     }
 
-    private String toString(String s1, String s2){
-        return String.format("%-20s", "[Passenger " +this.number +"]") +String.format("%-10s", s1) +String.format("%-30s", s2);
+    public String getStateString(){
+        switch(this.state) {
+            case GOING_TO_AIRPORT:
+                return "GTA";
+
+            case IN_QUEUE:
+                return "IQ";
+
+            case IN_FLIGHT:
+                return "IF";
+
+            case AT_DESTINATION:
+                return "AD";
+        }
+        return "####";
     }
 }
