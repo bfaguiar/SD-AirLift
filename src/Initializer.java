@@ -15,7 +15,7 @@ public class Initializer {
 
         // Instantiate Monitors
         Repository repository = new Repository();
-        ArrivalAirport aa = new ArrivalAirport(repository);
+        ArrivalAirport aa = new ArrivalAirport(repository, N_PASSENGERS);
         DepartureAirport dp = new DepartureAirport(repository, N_CAPACITY_MIN, N_CAPACITY_MAX);
         Plane plane = new Plane(repository);
 
@@ -24,7 +24,7 @@ public class Initializer {
         Pilot pilot = new Pilot(plane, dp, aa);
         Passenger[] passenger_list = new Passenger[N_PASSENGERS];
         for(int i = 0; i < N_PASSENGERS; i++)
-            passenger_list[i] = new Passenger(plane, dp);
+            passenger_list[i] = new Passenger(plane, dp, aa);
 
         repository.pilot = pilot;
         repository.hostess = hostess;

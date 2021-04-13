@@ -1,5 +1,6 @@
 package thread;
 
+import monitor.ArrivalAirport;
 import monitor.DepartureAirport;
 import monitor.Plane;
 import states.EPassenger;
@@ -8,11 +9,13 @@ public class Passenger extends Thread{
     private EPassenger.State state;
     private Plane plane;
     private DepartureAirport dp;
+    private ArrivalAirport aa;
 
-    public Passenger(Plane plane, DepartureAirport dp){
+    public Passenger(Plane plane, DepartureAirport dp, ArrivalAirport aa){
         this.state = EPassenger.State.GOING_TO_AIRPORT;
         this.plane = plane;
         this.dp = dp;
+        this.aa = aa;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class Passenger extends Thread{
                     break;
 
                 case IN_FLIGHT:
-                    EPassenger.inFlight s3 = this.plane.inFlight();
+                    EPassenger.inFlight s3 = this.aa.inFlight();
                     if (s3 == EPassenger.inFlight.waitForEndOfFlight)
                         this.state = EPassenger.State.IN_FLIGHT;
                     else if (s3 == EPassenger.inFlight.leaveThePlane)

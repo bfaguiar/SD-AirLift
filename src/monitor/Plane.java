@@ -2,50 +2,60 @@ package monitor;
 
 import states.EPassenger;
 import states.EPilot;
+import thread.Passenger;
 import states.EHostess;
+
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import repo.Repository;
 
 public class Plane {
     private Repository repo;
     private ReentrantLock rt = new ReentrantLock();
-    
+    private Condition condPilot = rt.newCondition();
+    private boolean boardingComplete;
+
     public Plane(Repository repo){
         this.repo = repo;
+        boardingComplete = false;
     }
 
     public EHostess.readyToFly readyToFly() {
         rt.lock();
-        
-        repo.log();
+        boardingComplete = true;
+        condPilot.signal();
+       repo.log();
         rt.unlock();
         return EHostess.readyToFly.waitForNextFlight;
     }
 
     public EPilot.waitingForBoarding waitingForBoarding() {
         rt.lock();
-        
+        try{
+            while(!boardingComplete)
+                condPilot.await();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        } finally {
+            rt.unlock();
+        }
         repo.log();
-        rt.unlock();
         return EPilot.waitingForBoarding.flyToDestinationPoint;
     }
 
     public EPilot.flyingForward flyingForward() {
         rt.lock();
-        
+        try {
+            Thread.sleep((long) ((Math.random() * 1000)+1));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        } finally {
+            rt.unlock();
+        }
         repo.log();
-        rt.unlock();
         return EPilot.flyingForward.announceArrival;
     }
 
-    public EPassenger.inFlight inFlight() {
-        rt.lock();
-        
-        repo.log();
-        rt.unlock();
-        // if flight is not over
-        return EPassenger.inFlight.waitForEndOfFlight;
-        // else
-        // return EPassenger.inFlight.leaveThePlane;
-    }
 }
