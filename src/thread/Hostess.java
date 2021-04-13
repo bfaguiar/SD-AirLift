@@ -22,21 +22,27 @@ public class Hostess extends Thread{
             switch(this.state) {
                 case WAIT_FOR_NEXT_FLIGHT:
                     EHostess.waitForFlight s1 = this.dp.waitForFlight();
+                    assert s1 == EHostess.waitForFlight.prepareForPassBoarding;
                     this.state = EHostess.State.WAIT_FOR_PASSENGER;
                     break;
 
                 case WAIT_FOR_PASSENGER:
                     EHostess.waitForPassenger s2 = this.dp.waitForPassenger();
-                    this.state = EHostess.State.CHECK_PASSENGER;
+                    if (s2 == EHostess.waitForPassenger.informPlaneReadyToTakeOff)
+                        this.state = EHostess.State.READY_TO_FLY;
+                    else if (s2 == EHostess.waitForPassenger.checkDocuments)
+                        this.state = EHostess.State.CHECK_PASSENGER;
                     break;
 
                 case CHECK_PASSENGER:
                     EHostess.checkPassenger s3 = this.dp.checkPassenger();
-                    this.state = EHostess.State.READY_TO_FLY;
+                    assert s3 == EHostess.checkPassenger.waitForNextPassenger;
+                    this.state = EHostess.State.WAIT_FOR_PASSENGER;
                     break;
 
                 case READY_TO_FLY:
                     EHostess.readyToFly s4 = this.plane.readyToFly();
+                    assert s4 == EHostess.readyToFly.waitForNextFlight;
                     end = true;
                     break;
             }

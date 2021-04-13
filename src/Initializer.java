@@ -24,7 +24,7 @@ public class Initializer {
         Pilot pilot = new Pilot(plane, dp, aa);
         Passenger[] passenger_list = new Passenger[N_PASSENGERS];
         for(int i = 0; i < N_PASSENGERS; i++)
-            passenger_list[i] = new Passenger(plane, dp, i);
+            passenger_list[i] = new Passenger(plane, dp);
 
         repository.pilot = pilot;
         repository.hostess = hostess;
