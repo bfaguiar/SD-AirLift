@@ -39,7 +39,6 @@ public class DepartureAirport {
         mutex.lock();
         repo.log();
         num_passengers_in_plane = 0;
-        num_passengers_in_queue = 0;
         plane_ready_boarding = false;
         mutex.unlock();
         return EPilot.atTransferGate.informPlaneReadyForBoarding;
@@ -49,7 +48,7 @@ public class DepartureAirport {
         mutex.lock();
         repo.log();
         this.condition_pilot.signal();
-        this.plane_ready_boarding = true;
+        plane_ready_boarding = true;
         mutex.unlock();
         return EPilot.readyForBoarding.waitForAllInBoard;
     }
