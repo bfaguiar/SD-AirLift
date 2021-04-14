@@ -70,13 +70,12 @@ public class DepartureAirport {
 
     public EHostess.waitForPassenger waitForPassenger() {
         mutex.lock();
+        repo.log();
         if(num_passengers_in_plane >= plane_min_capacity){
-            repo.log();
             mutex.unlock();
             return EHostess.waitForPassenger.informPlaneReadyToTakeOff;
         }
         else{
-            repo.log();
             try {
                 while(num_passengers_in_queue == 0)
                     this.condition_passenger_queue.await();
@@ -110,8 +109,8 @@ public class DepartureAirport {
     // --------------------------- PASSENGER ---------------------------
     public EPassenger.goingToAirport goingToAirport() {
         mutex.lock();
-        if (num_passengers_in_queue + num_passengers_in_plane < plane_max_capacity){
-            repo.log();
+        repo.log();
+        if (num_passengers_in_queue + num_passengers_in_plane < plane_max_capacity && plane_ready_boarding){
             condition_passenger_queue.signal();
             num_passengers_in_queue++;
             repo.number_in_queue++;
@@ -119,7 +118,6 @@ public class DepartureAirport {
             return EPassenger.goingToAirport.waitInQueue;
         }
         else{
-            repo.log();
             mutex.unlock();
             return EPassenger.goingToAirport.travelToAirport;
         }
@@ -127,8 +125,8 @@ public class DepartureAirport {
 
     public EPassenger.inQueue inQueue() {
         mutex.lock();
+        repo.log();
         if (num_documents_checked > num_passengers_in_plane){
-            repo.log();
             try {
                 while(!this.hostess_next_passenger)
                     this.condition_hostess_next.await();
@@ -144,7 +142,6 @@ public class DepartureAirport {
             return EPassenger.inQueue.boardThePlane;
         }
         else{
-            repo.log();
             try {
                 while(!this.hostess_ask_documents)
                     this.condition_hostess_documents.await();
