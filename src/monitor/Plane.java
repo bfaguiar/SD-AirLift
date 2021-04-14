@@ -1,8 +1,6 @@
 package monitor;
 
-import states.EPassenger;
 import states.EPilot;
-import thread.Passenger;
 import states.EHostess;
 
 import java.util.concurrent.locks.Condition;
@@ -20,41 +18,41 @@ public class Plane {
         boardingComplete = false;
     }
 
+    // --------------------------- HOSTESS ---------------------------
     public EHostess.readyToFly readyToFly() {
         rt.lock();
+        repo.log();
         boardingComplete = true;
         condPilot.signal();
-       repo.log();
         rt.unlock();
         return EHostess.readyToFly.waitForNextFlight;
     }
 
+    // --------------------------- PILOT ---------------------------
     public EPilot.waitingForBoarding waitingForBoarding() {
         rt.lock();
+        repo.log();
         try{
             while(!boardingComplete)
                 condPilot.await();
         } catch(InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
-        } finally {
-            rt.unlock();
         }
-        repo.log();
+        rt.unlock();
         return EPilot.waitingForBoarding.flyToDestinationPoint;
     }
 
     public EPilot.flyingForward flyingForward() {
         rt.lock();
-        try {
+        repo.log();
+        /*try {
             Thread.sleep((long) ((Math.random() * 1000)+1));
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
-        } finally {
-            rt.unlock();
-        }
-        repo.log();
+        }*/
+        rt.unlock();
         return EPilot.flyingForward.announceArrival;
     }
 

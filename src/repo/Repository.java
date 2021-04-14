@@ -32,19 +32,15 @@ public class Repository{
     }
 
     public synchronized void log(){
-        String entities = String.format("%4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s\n", 
-        "PT", "HT", "P00", "P01", "P02", "P03", "P04", "P05", "P06", "P07", "P08", "P09", "P10", "P11", "P12", "P13", 
-        "P14", "P15", "P16", "P17", "P18", "P19", "InQ", "InF", "PTAL");
+        String entities = String.format("%4s %4s", "PT", "HT");
+        for(int i = 0; i < passenger_list.length; i++)
+            entities += String.format(" %4s", ("P"+i));
+        entities += String.format(" %4s %4s %4s\n", "InQ", "InF", "PTAL");
 
-        String states = String.format("%4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4s %4d %4d %4d \n\n", 
-        pilot.getStateString(), hostess.getStateString(), passenger_list[0].getStateString(), passenger_list[1].getStateString(), 
-        passenger_list[2].getStateString(), passenger_list[3].getStateString(), passenger_list[4].getStateString(),
-        passenger_list[5].getStateString(), passenger_list[6].getStateString(), passenger_list[7].getStateString(),
-        passenger_list[8].getStateString(), passenger_list[9].getStateString(), passenger_list[10].getStateString(),
-        passenger_list[11].getStateString(), passenger_list[12].getStateString(), passenger_list[13].getStateString(),
-        passenger_list[14].getStateString(), passenger_list[15].getStateString(), passenger_list[16].getStateString(),
-        passenger_list[17].getStateString(), passenger_list[18].getStateString(), passenger_list[19].getStateString(),
-        number_in_queue, number_in_plane, number_at_destination);
+        String states = String.format("%4s %4s", pilot.getStateString(), hostess.getStateString());
+        for(int i = 0; i < passenger_list.length; i++)
+            states += String.format(" %4s", passenger_list[i].getStateString());
+        states += String.format(" %4s %4s %4s\n\n", number_in_queue, number_in_plane, number_at_destination);
 
         System.out.printf(entities);
         System.out.printf(states);

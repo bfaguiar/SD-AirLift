@@ -7,13 +7,11 @@ import states.EPassenger;
 
 public class Passenger extends Thread{
     private EPassenger.State state;
-    private Plane plane;
     private DepartureAirport dp;
     private ArrivalAirport aa;
 
     public Passenger(Plane plane, DepartureAirport dp, ArrivalAirport aa){
         this.state = EPassenger.State.GOING_TO_AIRPORT;
-        this.plane = plane;
         this.dp = dp;
         this.aa = aa;
     }

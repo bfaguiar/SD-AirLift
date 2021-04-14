@@ -1,6 +1,5 @@
 package monitor;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -21,11 +20,13 @@ public class ArrivalAirport {
         this.repo = repo;
         canExit = false;
         lastPassenger = false;
-        this.nPassengers = nPassengers; //;; =newValue     
+        this.nPassengers = nPassengers;    
     } 
 
+    // --------------------------- PILOT ---------------------------
     public EPilot.deboarding deboarding() {
-        rt.lock();
+        rt.lock();                 
+        repo.log();                         //#time, unit  //#import thread.Passenger;
         try {
             canExit = true;
             condPassenger.signalAll();
@@ -34,21 +35,34 @@ public class ArrivalAirport {
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
-        } finally { //#time, unit  //#import thread.Passenger;
-            repo.log(); //
-            rt.unlock();
         }
+        rt.unlock();
         return EPilot.deboarding.flyToDeparturePoint;
     } 
 
+    public EPilot.flyingBack flyingBack() { 
+        rt.lock();
+        repo.log();
+        /*try {
+            Thread.sleep((long) ((Math.random()*1000)+1));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }*/
+        rt.unlock();
+        return EPilot.flyingBack.parkAtTransferGate;
+    }
 
+    // --------------------------- PASSENGER ---------------------------
     public EPassenger.inFlight inFlight() {
         rt.lock();
+        repo.log();
         try {
             while(!canExit)
                 condPassenger.await();
             nPassengers--;
-            System.out.println(nPassengers);
+            repo.number_in_plane--;
+            repo.number_at_destination++;
             if (nPassengers == 0 || nPassengers < 0) {
                 lastPassenger = true;
                 condPilot.signal(); 
@@ -56,24 +70,8 @@ public class ArrivalAirport {
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
-        } finally {
-            repo.log();
-            rt.unlock();
-        } 
-        return EPassenger.inFlight.leaveThePlane ; //#????????? 
-    }  
-
-    public EPilot.flyingBack flyingBack() { 
-        rt.lock();
-        try {
-            Thread.sleep((long) ((Math.random()*1000)+1));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        } finally {
-            repo.log(); //
-            rt.unlock();
         }
-        return EPilot.flyingBack.parkAtTransferGate;
-    }
+        rt.unlock();
+        return EPassenger.inFlight.leaveThePlane ;              //#????????? 
+    }  
 }
