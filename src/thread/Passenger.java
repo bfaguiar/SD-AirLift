@@ -9,11 +9,13 @@ public class Passenger extends Thread{
     private EPassenger.State state;
     private DepartureAirport dp;
     private ArrivalAirport aa;
+    private int id;
 
-    public Passenger(Plane plane, DepartureAirport dp, ArrivalAirport aa){
+    public Passenger(Plane plane, DepartureAirport dp, ArrivalAirport aa, int i){
         this.state = EPassenger.State.GOING_TO_AIRPORT;
         this.dp = dp;
         this.aa = aa;
+        this.id = i;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class Passenger extends Thread{
                     break;
 
                 case IN_QUEUE:
-                    EPassenger.inQueue s2 = this.dp.inQueue();
+                    EPassenger.inQueue s2 = this.dp.inQueue(id);
                     if (s2 == EPassenger.inQueue.boardThePlane)
                         this.state = EPassenger.State.IN_FLIGHT;
                     else if (s2 == EPassenger.inQueue.showDocuments)

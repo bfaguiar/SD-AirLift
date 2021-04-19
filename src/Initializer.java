@@ -9,9 +9,9 @@ import thread.Pilot;
 public class Initializer {
     public static void main(String[] args) throws Exception {
         // Constants
-        final int N_PASSENGERS = 5;
-        final int N_CAPACITY_MIN = 5;
-        final int N_CAPACITY_MAX = 5;
+        final int N_PASSENGERS = 1;
+        final int N_CAPACITY_MIN = 1;
+        final int N_CAPACITY_MAX = 10;
 
         // Instantiate Monitors
         Repository repository = new Repository();
@@ -24,7 +24,7 @@ public class Initializer {
         Pilot pilot = new Pilot(plane, dp, aa);
         Passenger[] passenger_list = new Passenger[N_PASSENGERS];
         for(int i = 0; i < N_PASSENGERS; i++)
-            passenger_list[i] = new Passenger(plane, dp, aa);
+            passenger_list[i] = new Passenger(plane, dp, aa, i);
 
         repository.pilot = pilot;
         repository.hostess = hostess;
@@ -35,6 +35,13 @@ public class Initializer {
         pilot.start();
         for(int i = 0; i < N_PASSENGERS; i++)
             passenger_list[i].start();
-
+        
+        // Wait for threads to end
+        hostess.join();
+        pilot.join();
+        for(int i = 0; i < N_PASSENGERS; i++)
+            passenger_list[i].join();
+        
+        repository.closelog();
     }
 }

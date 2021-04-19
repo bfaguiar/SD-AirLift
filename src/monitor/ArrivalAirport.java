@@ -26,7 +26,7 @@ public class ArrivalAirport {
     // --------------------------- PILOT ---------------------------
     public EPilot.deboarding deboarding() {
         rt.lock();                 
-        repo.log();                         //#time, unit  //#import thread.Passenger;
+        repo.log();
         try {
             canExit = true;
             condPassenger.signalAll();
@@ -36,6 +36,7 @@ public class ArrivalAirport {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
+        repo.logReturning();
         rt.unlock();
         return EPilot.deboarding.flyToDeparturePoint;
     } 

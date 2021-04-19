@@ -49,6 +49,7 @@ public class DepartureAirport {
         repo.log();
         this.condition_pilot.signal();
         plane_ready_boarding = true;
+        repo.logFlightBoardingStarted();
         mutex.unlock();
         return EPilot.readyForBoarding.waitForAllInBoard;
     }
@@ -123,7 +124,7 @@ public class DepartureAirport {
         }
     }
 
-    public EPassenger.inQueue inQueue() {
+    public EPassenger.inQueue inQueue(int id) {
         mutex.lock();
         repo.log();
         if (num_documents_checked > num_passengers_in_plane){
@@ -133,6 +134,7 @@ public class DepartureAirport {
             } catch(InterruptedException e) {
                 System.out.print(e);
             }
+            repo.logPassengerCheck(id);
             passenger_showed_documents = false;
             repo.number_in_queue--;
             num_passengers_in_queue--;
