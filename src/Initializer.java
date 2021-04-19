@@ -31,6 +31,7 @@ public class Initializer {
         repository.passenger_list = passenger_list;
 
         // Start Threads
+        repository.logEntities();
         hostess.start();
         pilot.start();
         for(int i = 0; i < N_PASSENGERS; i++)

@@ -43,25 +43,31 @@ public class Repository{
         }
     }
 
-    public synchronized void log(){
+    public void logEntities(){
         String entities = String.format("%4s %4s", "PT", "HT");
         for(int i = 0; i < passenger_list.length; i++)
             entities += String.format(" %4s", ("P"+i));
         entities += String.format(" %4s %4s %4s\n", "InQ", "InF", "PTAL");
+        System.out.printf(entities);
+        try {
+            this.repo_writer.write(entities);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public synchronized void log(){
         String states = String.format("%4s %4s", pilot.getStateString(), hostess.getStateString());
         for(int i = 0; i < passenger_list.length; i++)
             states += String.format(" %4s", passenger_list[i].getStateString());
         states += String.format(" %4s %4s %4s\n", number_in_queue, number_in_plane, number_at_destination);
 
         if(!states.equals(this.last_state_string)){
-            System.out.printf(entities);
             System.out.printf(states);
         }
 
         try {
             if(!states.equals(this.last_state_string)){
-                repo_writer.write(entities);
                 repo_writer.write(states);
             }
         } catch (IOException e) {
