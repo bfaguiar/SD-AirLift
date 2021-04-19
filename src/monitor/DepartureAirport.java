@@ -100,7 +100,8 @@ public class DepartureAirport {
         } catch(InterruptedException e) {
             System.out.print(e);
         }
-        condition_hostess_next.signal();
+        condition_hostess_next.signalAll();
+        num_documents_checked++;
         hostess_next_passenger = true;
         hostess_ask_documents = false;
         mutex.unlock();
@@ -151,7 +152,6 @@ public class DepartureAirport {
                 System.out.print(e);
             }
             condition_passenger_documents.signal();
-            num_documents_checked++;
             passenger_showed_documents = true;
             mutex.unlock();
             return EPassenger.inQueue.showDocuments;
