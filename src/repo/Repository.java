@@ -20,6 +20,8 @@ public class Repository{
     private File repo_txt = new File("repo.txt");
     private FileWriter repo_writer;
 
+    private String last_state_string;
+
     public Repository(){
         number_in_queue = 0;
         number_in_plane = 0;
@@ -52,18 +54,23 @@ public class Repository{
             states += String.format(" %4s", passenger_list[i].getStateString());
         states += String.format(" %4s %4s %4s\n", number_in_queue, number_in_plane, number_at_destination);
 
-        System.out.printf(entities);
-        System.out.printf(states);
+        if(!states.equals(this.last_state_string)){
+            System.out.printf(entities);
+            System.out.printf(states);
+        }
 
         try {
-            repo_writer.write(entities);
-            repo_writer.write(states);
+            if(!states.equals(this.last_state_string)){
+                repo_writer.write(entities);
+                repo_writer.write(states);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        last_state_string = states;
     }
 
-    public synchronized void logFlightBoardingStarted(){
+    public synchronized void logFlightBoardingStarting(){
         String flightString = String.format("\nFlight %d: boarding started.\n", flight_num);
         System.out.printf(flightString);
         try {
@@ -83,8 +90,8 @@ public class Repository{
         }
     }
 
-    public synchronized void logDeparture(int num){
-        String flightString = String.format("\nFlight %d: departed with 5 passengers.\n", flight_num, num);
+    public synchronized void logDeparture(){
+        String flightString = String.format("\nFlight %d: departed with %d passengers.\n", flight_num, number_in_plane);
         System.out.printf(flightString);
         try {
             repo_writer.write(flightString);

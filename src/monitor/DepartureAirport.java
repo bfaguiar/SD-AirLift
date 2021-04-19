@@ -40,6 +40,7 @@ public class DepartureAirport {
         repo.log();
         num_passengers_in_plane = 0;
         plane_ready_boarding = false;
+        repo.logFlightBoardingStarting();
         mutex.unlock();
         return EPilot.atTransferGate.informPlaneReadyForBoarding;
     }
@@ -49,7 +50,6 @@ public class DepartureAirport {
         repo.log();
         this.condition_pilot.signal();
         plane_ready_boarding = true;
-        repo.logFlightBoardingStarted();
         mutex.unlock();
         return EPilot.readyForBoarding.waitForAllInBoard;
     }

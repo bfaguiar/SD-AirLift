@@ -39,7 +39,7 @@ public class Plane {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
-        repo.logDeparture(0);                                   // Needs to know how many passengers are in the plane
+        repo.logDeparture();    
         rt.unlock();
         return EPilot.waitingForBoarding.flyToDestinationPoint;
     }
