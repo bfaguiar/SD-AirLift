@@ -94,7 +94,8 @@ public class DepartureAirport {
         mutex.lock();
         repo.log();
         if((passenger_queue.size() == 0 && passengers_in_plane.size() >= plane_min_capacity) || 
-           (passenger_queue.size() != 0 && passengers_in_plane.size() == plane_max_capacity)){
+           (passenger_queue.size() != 0 && passengers_in_plane.size() == plane_max_capacity) ||
+           (passenger_queue.size() == 0 && passengers_transported == total_passengers)){
             plane_ready_boarding = false;
             mutex.unlock();
             return EHostess.waitForPassenger.informPlaneReadyToTakeOff;
