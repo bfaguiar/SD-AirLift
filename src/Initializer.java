@@ -9,13 +9,13 @@ import thread.Pilot;
 public class Initializer {
     public static void main(String[] args) throws Exception {
         // Constants
-        final int N_PASSENGERS = 10;
+        final int N_PASSENGERS = 20;
         final int N_CAPACITY_MIN = 10;
-        final int N_CAPACITY_MAX = 20;
+        final int N_CAPACITY_MAX = 10;
 
         // Instantiate Monitors
         Repository repository = new Repository();
-        ArrivalAirport aa = new ArrivalAirport(repository, N_PASSENGERS);
+        ArrivalAirport aa = new ArrivalAirport(repository);
         DepartureAirport dp = new DepartureAirport(repository, N_CAPACITY_MIN, N_CAPACITY_MAX, N_PASSENGERS);
         Plane plane = new Plane(repository);
 

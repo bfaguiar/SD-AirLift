@@ -9,40 +9,43 @@ import states.EPilot;
 
 public class ArrivalAirport { 
     private Repository repo;
-    private ReentrantLock rt = new ReentrantLock();
-    private boolean canExit;
-    private boolean lastPassenger;
-    private Condition condPassenger = rt.newCondition();
-    private int nPassengers;
-    private Condition condPilot = rt.newCondition();
+    private ReentrantLock mutex = new ReentrantLock();
 
-    public ArrivalAirport(Repository repo, int nPassengers){
+    private Condition cond_passenger = mutex.newCondition();
+    private Condition cond_pilot = mutex.newCondition();
+
+    private boolean can_exit;
+    private boolean last_passenger;
+
+    private int passengers_deboarded;
+
+    public ArrivalAirport(Repository repo){
         this.repo = repo;
-        canExit = false;
-        lastPassenger = false;
-        this.nPassengers = nPassengers;    
     } 
 
     // --------------------------- PILOT ---------------------------
     public EPilot.deboarding deboarding() {
-        rt.lock();                 
+        mutex.lock();                 
         repo.log();
+        passengers_deboarded = 0;
         try {
-            canExit = true;
-            condPassenger.signalAll();
-            while(!lastPassenger)
-                condPilot.await();
+            can_exit = true;
+            cond_passenger.signalAll();
+            while(!last_passenger)
+                cond_pilot.await();
+            last_passenger = false;
+            can_exit = false;
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
         repo.logReturning();
-        rt.unlock();
+        mutex.unlock();
         return EPilot.deboarding.flyToDeparturePoint;
     } 
 
     public EPilot.flyingBack flyingBack() { 
-        rt.lock();
+        mutex.lock();
         repo.log();
         /*try {
             Thread.sleep((long) ((Math.random()*1000)+1));
@@ -50,29 +53,30 @@ public class ArrivalAirport {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }*/
-        rt.unlock();
+        mutex.unlock();
         return EPilot.flyingBack.parkAtTransferGate;
     }
 
     // --------------------------- PASSENGER ---------------------------
     public EPassenger.inFlight inFlight() {
-        rt.lock();
+        mutex.lock();
         try {
-            while(!canExit)
-                condPassenger.await();
-            nPassengers--;
+            while(!can_exit){
+                cond_passenger.await();
+            }
+            passengers_deboarded++;
             repo.number_in_plane--;
             repo.number_at_destination++;
-            if (nPassengers == 0 || nPassengers < 0) {
-                lastPassenger = true;
-                condPilot.signal(); 
+            if (passengers_deboarded == repo.number_in_plane) {
+                last_passenger = true;
+                cond_pilot.signal(); 
             }  
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
         repo.log();
-        rt.unlock();
+        mutex.unlock();
         return EPassenger.inFlight.leaveThePlane;
     }  
 }

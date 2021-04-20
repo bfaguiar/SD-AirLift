@@ -9,43 +9,43 @@ import repo.Repository;
 
 public class Plane {
     private Repository repo;
-    private ReentrantLock rt = new ReentrantLock();
-    private Condition condPilot = rt.newCondition();
-    private boolean boardingComplete;
+    private ReentrantLock mutex = new ReentrantLock();
+    private Condition cond_pilot = mutex.newCondition();
+    private boolean boarding_complete;
 
     public Plane(Repository repo){
         this.repo = repo;
-        boardingComplete = false;
     }
 
     // --------------------------- HOSTESS ---------------------------
     public EHostess.readyToFly readyToFly() {
-        rt.lock();
+        mutex.lock();
         repo.log();
-        boardingComplete = true;
-        condPilot.signal();
-        rt.unlock();
+        boarding_complete = true;
+        cond_pilot.signal();
+        mutex.unlock();
         return EHostess.readyToFly.waitForNextFlight;
     }
 
     // --------------------------- PILOT ---------------------------
     public EPilot.waitingForBoarding waitingForBoarding() {
-        rt.lock();
+        mutex.lock();
         repo.log();
         try{
-            while(!boardingComplete)
-                condPilot.await();
+            while(!boarding_complete)
+            cond_pilot.await();
         } catch(InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
+        boarding_complete = false;
         repo.logDeparture();    
-        rt.unlock();
+        mutex.unlock();
         return EPilot.waitingForBoarding.flyToDestinationPoint;
     }
 
     public EPilot.flyingForward flyingForward() {
-        rt.lock();
+        mutex.lock();
         repo.log();
         /*try {
             Thread.sleep((long) ((Math.random() * 1000)+1));
@@ -54,7 +54,7 @@ public class Plane {
             Thread.currentThread().interrupt();
         }*/
         repo.logArriving();
-        rt.unlock();
+        mutex.unlock();
         return EPilot.flyingForward.announceArrival;
     }
 

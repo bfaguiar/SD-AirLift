@@ -20,9 +20,9 @@ public class DepartureAirport {
     private Condition condition_passenger_documents = mutex.newCondition();
     private Condition condition_passenger_left = mutex.newCondition();
 
-    private boolean plane_ready_boarding = false;
-    private boolean hostess_ask_documents = false;
-    private boolean hostess_next_passenger = false;
+    private boolean plane_ready_boarding;
+    private boolean hostess_ask_documents;
+    private boolean hostess_next_passenger;
 
     private int passengers_transported = 0;
     private int total_passengers;
