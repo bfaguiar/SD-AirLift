@@ -4,6 +4,8 @@ import states.EHostess;
 import states.EPassenger;
 import states.EPilot;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.locks.Condition;
 import repo.Repository;
 
@@ -17,7 +19,6 @@ public class DepartureAirport {
     private Condition condition_passenger_documents = mutex.newCondition();
 
     private boolean plane_ready_boarding = false;
-    private boolean passenger_showed_documents = false;
     private boolean hostess_ask_documents = false;
     private boolean hostess_next_passenger = false;
 
@@ -27,6 +28,8 @@ public class DepartureAirport {
 
     private int plane_max_capacity;
     private int plane_min_capacity;
+
+    private Queue<Integer> passenger_queue = new LinkedList<Integer>();
 
     public DepartureAirport(Repository repo, int capacity_min, int capacity_max){
         this.repo = repo;
@@ -95,15 +98,16 @@ public class DepartureAirport {
         mutex.lock();
         repo.log();
         try {
-            while(!this.passenger_showed_documents)
+            while(passenger_queue.size() == 0)
                 this.condition_passenger_documents.await();
         } catch(InterruptedException e) {
             System.out.print(e);
         }
-        condition_hostess_next.signalAll();
+        condition_hostess_next.signal();
         num_documents_checked++;
-        hostess_next_passenger = true;
         hostess_ask_documents = false;
+        hostess_next_passenger = true;
+        repo.logPassengerCheck(passenger_queue.peek());
         mutex.unlock();
         return EHostess.checkPassenger.waitForNextPassenger;
     }
@@ -129,14 +133,6 @@ public class DepartureAirport {
         mutex.lock();
         repo.log();
         if (num_documents_checked > num_passengers_in_plane){
-            try {
-                while(!this.hostess_next_passenger)
-                    this.condition_hostess_next.await();
-            } catch(InterruptedException e) {
-                System.out.print(e);
-            }
-            repo.logPassengerCheck(id);
-            passenger_showed_documents = false;
             repo.number_in_queue--;
             num_passengers_in_queue--;
             repo.number_in_plane++;
@@ -152,7 +148,14 @@ public class DepartureAirport {
                 System.out.print(e);
             }
             condition_passenger_documents.signal();
-            passenger_showed_documents = true;
+            passenger_queue.add(id);
+            try {
+                while(!this.hostess_next_passenger)
+                    this.condition_hostess_next.await();
+            } catch(InterruptedException e) {
+                System.out.print(e);
+            }
+            passenger_queue.remove();
             mutex.unlock();
             return EPassenger.inQueue.showDocuments;
         }
