@@ -93,7 +93,8 @@ public class DepartureAirport {
     public EHostess.waitForPassenger waitForPassenger() {
         mutex.lock();
         repo.log();
-        if(passengers_in_plane.size() >= plane_min_capacity){
+        if((passenger_queue.size() == 0 && passengers_in_plane.size() >= plane_min_capacity) || 
+           (passenger_queue.size() != 0 && passengers_in_plane.size() == plane_max_capacity)){
             plane_ready_boarding = false;
             mutex.unlock();
             return EHostess.waitForPassenger.informPlaneReadyToTakeOff;
@@ -163,6 +164,8 @@ public class DepartureAirport {
             passengers_in_plane.add(id);
             repo.number_in_plane++;
             passengers_transported++;
+            passenger_queue.remove(id);
+            repo.number_in_queue--;
             mutex.unlock();
             return EPassenger.inQueue.boardThePlane;
         }
@@ -181,8 +184,6 @@ public class DepartureAirport {
             } catch(InterruptedException e) {
                 System.out.print(e);
             }
-            passenger_queue.remove(id);
-            repo.number_in_queue--;
             mutex.unlock();
             return EPassenger.inQueue.showDocuments;
         }

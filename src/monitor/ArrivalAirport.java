@@ -18,6 +18,7 @@ public class ArrivalAirport {
     private boolean last_passenger;
 
     private int passengers_deboarded;
+    private int passengers_in_plane;
 
     public ArrivalAirport(Repository repo){
         this.repo = repo;
@@ -27,6 +28,7 @@ public class ArrivalAirport {
     public EPilot.deboarding deboarding() {
         mutex.lock();                 
         repo.log();
+        passengers_in_plane = repo.number_in_plane;
         passengers_deboarded = 0;
         try {
             can_exit = true;
@@ -67,7 +69,7 @@ public class ArrivalAirport {
             passengers_deboarded++;
             repo.number_in_plane--;
             repo.number_at_destination++;
-            if (passengers_deboarded == repo.number_in_plane) {
+            if (passengers_deboarded == passengers_in_plane) {
                 last_passenger = true;
                 cond_pilot.signal(); 
             }  
