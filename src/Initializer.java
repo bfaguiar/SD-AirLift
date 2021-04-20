@@ -9,9 +9,9 @@ import thread.Pilot;
 public class Initializer {
     public static void main(String[] args) throws Exception {
         // Constants
-        final int N_PASSENGERS = 30;
-        final int N_CAPACITY_MIN = 30;
-        final int N_CAPACITY_MAX = 30;
+        final int N_PASSENGERS = 50;
+        final int N_CAPACITY_MIN = 50;
+        final int N_CAPACITY_MAX = 50;
 
         // Instantiate Monitors
         Repository repository = new Repository();

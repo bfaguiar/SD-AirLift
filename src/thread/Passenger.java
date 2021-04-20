@@ -24,7 +24,7 @@ public class Passenger extends Thread{
         while(!end){
             switch(this.state) {
                 case GOING_TO_AIRPORT:
-                    EPassenger.goingToAirport s1 = this.dp.goingToAirport();
+                    EPassenger.goingToAirport s1 = this.dp.goingToAirport(id);
                     if (s1 == EPassenger.goingToAirport.waitInQueue)
                         this.state = EPassenger.State.IN_QUEUE;
                     else if (s1 == EPassenger.goingToAirport.travelToAirport)

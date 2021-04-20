@@ -12,24 +12,24 @@ import repo.Repository;
 public class DepartureAirport {
     private Repository repo;
     private ReentrantLock mutex = new ReentrantLock();
+
     private Condition condition_pilot = mutex.newCondition();
     private Condition condition_hostess_documents = mutex.newCondition();
     private Condition condition_hostess_next = mutex.newCondition();
     private Condition condition_passenger_queue = mutex.newCondition();
     private Condition condition_passenger_documents = mutex.newCondition();
+    private Condition condition_passenger_left = mutex.newCondition();
 
     private boolean plane_ready_boarding = false;
     private boolean hostess_ask_documents = false;
     private boolean hostess_next_passenger = false;
 
-    private int num_documents_checked = 0;
-    private int num_passengers_in_queue = 0;
-    private int num_passengers_in_plane = 0;
-
     private int plane_max_capacity;
     private int plane_min_capacity;
 
     private Queue<Integer> passenger_queue = new LinkedList<Integer>();
+    private Queue<Integer> passengers_in_plane = new LinkedList<Integer>();
+    private Queue<Integer> passenger_documents_queue = new LinkedList<Integer>();
 
     public DepartureAirport(Repository repo, int capacity_min, int capacity_max){
         this.repo = repo;
@@ -41,7 +41,6 @@ public class DepartureAirport {
     public EPilot.atTransferGate atTransferGate() {
         mutex.lock();
         repo.log();
-        num_passengers_in_plane = 0;
         plane_ready_boarding = false;
         repo.logFlightBoardingStarting();
         mutex.unlock();
@@ -67,7 +66,6 @@ public class DepartureAirport {
         } catch(InterruptedException e) {
             System.out.print(e);
         }
-        num_documents_checked = 0;
         mutex.unlock();
         return EHostess.waitForFlight.prepareForPassBoarding;
     }
@@ -75,13 +73,13 @@ public class DepartureAirport {
     public EHostess.waitForPassenger waitForPassenger() {
         mutex.lock();
         repo.log();
-        if(num_passengers_in_plane >= plane_min_capacity){
+        if(passengers_in_plane.size() >= plane_min_capacity){
             mutex.unlock();
             return EHostess.waitForPassenger.informPlaneReadyToTakeOff;
         }
         else{
             try {
-                while(num_passengers_in_queue == 0)
+                while(passenger_queue.size() == 0)
                     this.condition_passenger_queue.await();
             } catch(InterruptedException e) {
                 System.out.print(e);
@@ -98,27 +96,32 @@ public class DepartureAirport {
         mutex.lock();
         repo.log();
         try {
-            while(passenger_queue.size() == 0)
+            while(passenger_documents_queue.size() == 0)
                 this.condition_passenger_documents.await();
         } catch(InterruptedException e) {
             System.out.print(e);
         }
         condition_hostess_next.signal();
-        num_documents_checked++;
         hostess_ask_documents = false;
         hostess_next_passenger = true;
-        repo.logPassengerCheck(passenger_queue.peek());
+        int checked_id = passenger_documents_queue.peek();
+        try {
+            while(!passengers_in_plane.contains(checked_id))
+                this.condition_passenger_left.await();
+        } catch(InterruptedException e) {
+            System.out.print(e);
+        }
         mutex.unlock();
         return EHostess.checkPassenger.waitForNextPassenger;
     }
 
     // --------------------------- PASSENGER ---------------------------
-    public EPassenger.goingToAirport goingToAirport() {
+    public EPassenger.goingToAirport goingToAirport(int id) {
         mutex.lock();
         repo.log();
-        if (num_passengers_in_queue + num_passengers_in_plane < plane_max_capacity && plane_ready_boarding){
+        if (passenger_queue.size() + passengers_in_plane.size() < plane_max_capacity && plane_ready_boarding){
             condition_passenger_queue.signal();
-            num_passengers_in_queue++;
+            passenger_queue.add(id);
             repo.number_in_queue++;
             mutex.unlock();
             return EPassenger.goingToAirport.waitInQueue;
@@ -132,11 +135,12 @@ public class DepartureAirport {
     public EPassenger.inQueue inQueue(int id) {
         mutex.lock();
         repo.log();
-        if (num_documents_checked > num_passengers_in_plane){
-            repo.number_in_queue--;
-            num_passengers_in_queue--;
+        if (passenger_documents_queue.contains(id)){
+            condition_passenger_left.signal();
+            repo.logPassengerCheck(id);
+            passenger_documents_queue.remove(id);
+            passengers_in_plane.add(id);
             repo.number_in_plane++;
-            num_passengers_in_plane++;
             mutex.unlock();
             return EPassenger.inQueue.boardThePlane;
         }
@@ -148,14 +152,15 @@ public class DepartureAirport {
                 System.out.print(e);
             }
             condition_passenger_documents.signal();
-            passenger_queue.add(id);
+            passenger_documents_queue.add(id);
             try {
                 while(!this.hostess_next_passenger)
                     this.condition_hostess_next.await();
             } catch(InterruptedException e) {
                 System.out.print(e);
             }
-            passenger_queue.remove();
+            passenger_queue.remove(id);
+            repo.number_in_queue--;
             mutex.unlock();
             return EPassenger.inQueue.showDocuments;
         }
