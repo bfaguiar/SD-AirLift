@@ -57,7 +57,6 @@ public class ArrivalAirport {
     // --------------------------- PASSENGER ---------------------------
     public EPassenger.inFlight inFlight() {
         rt.lock();
-        repo.log();
         try {
             while(!canExit)
                 condPassenger.await();
@@ -72,7 +71,8 @@ public class ArrivalAirport {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
+        repo.log();
         rt.unlock();
-        return EPassenger.inFlight.leaveThePlane ;              //#????????? 
+        return EPassenger.inFlight.leaveThePlane;
     }  
 }
