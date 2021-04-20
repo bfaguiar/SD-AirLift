@@ -9,7 +9,8 @@ public class EHostess{
 	}
 
 	public enum waitForFlight{
-		prepareForPassBoarding
+		prepareForPassBoarding,
+		endLife
 	}
 
 	public enum waitForPassenger{

@@ -11,7 +11,8 @@ public class EPilot{
 	}
 
 	public enum atTransferGate{
-		informPlaneReadyForBoarding
+		informPlaneReadyForBoarding,
+		endLife
 	}
 
 	public enum readyForBoarding{

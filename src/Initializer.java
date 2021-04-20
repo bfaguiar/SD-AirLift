@@ -11,12 +11,12 @@ public class Initializer {
         // Constants
         final int N_PASSENGERS = 10;
         final int N_CAPACITY_MIN = 10;
-        final int N_CAPACITY_MAX = 10;
+        final int N_CAPACITY_MAX = 20;
 
         // Instantiate Monitors
         Repository repository = new Repository();
         ArrivalAirport aa = new ArrivalAirport(repository, N_PASSENGERS);
-        DepartureAirport dp = new DepartureAirport(repository, N_CAPACITY_MIN, N_CAPACITY_MAX);
+        DepartureAirport dp = new DepartureAirport(repository, N_CAPACITY_MIN, N_CAPACITY_MAX, N_PASSENGERS);
         Plane plane = new Plane(repository);
 
         // Instantiate Threads

@@ -15,7 +15,7 @@ public class Repository{
     public int number_in_queue;
     public int number_in_plane;
     public int number_at_destination;
-    public int flight_num = 1;
+    public int flight_num = 0;
 
     private File repo_txt = new File("repo.txt");
     private FileWriter repo_writer;

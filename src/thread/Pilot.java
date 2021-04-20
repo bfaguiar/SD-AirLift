@@ -25,8 +25,10 @@ public class Pilot extends Thread{
             switch(this.state) {
                 case AT_TRANSFER_GATE:
                     EPilot.atTransferGate s1 = this.dp.atTransferGate();
-                    assert s1 == EPilot.atTransferGate.informPlaneReadyForBoarding;
-                    this.state = EPilot.State.READY_FOR_BOARDING;
+                    if (s1 == EPilot.atTransferGate.informPlaneReadyForBoarding)
+                        this.state = EPilot.State.READY_FOR_BOARDING;
+                    else if (s1 == EPilot.atTransferGate.endLife)
+                        end = true;
                     break;
 
                 case READY_FOR_BOARDING:
@@ -56,7 +58,7 @@ public class Pilot extends Thread{
                 case FLYING_BACK:
                     EPilot.flyingBack s6 = this.ap.flyingBack();
                     assert s6 == EPilot.flyingBack.parkAtTransferGate;
-                    end = true;
+                    this.state = EPilot.State.AT_TRANSFER_GATE;
                     break;
             }
         }

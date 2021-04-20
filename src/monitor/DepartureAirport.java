@@ -24,6 +24,8 @@ public class DepartureAirport {
     private boolean hostess_ask_documents = false;
     private boolean hostess_next_passenger = false;
 
+    private int passengers_transported = 0;
+    private int total_passengers;
     private int plane_max_capacity;
     private int plane_min_capacity;
 
@@ -31,20 +33,30 @@ public class DepartureAirport {
     private Queue<Integer> passengers_in_plane = new LinkedList<Integer>();
     private Queue<Integer> passenger_documents_queue = new LinkedList<Integer>();
 
-    public DepartureAirport(Repository repo, int capacity_min, int capacity_max){
+    public DepartureAirport(Repository repo, int capacity_min, int capacity_max, int total_passengers){
         this.repo = repo;
         this.plane_max_capacity = capacity_max;
         this.plane_min_capacity = capacity_min;
+        this.total_passengers = total_passengers;
     }
 
     // --------------------------- PILOT ---------------------------
     public EPilot.atTransferGate atTransferGate() {
-        mutex.lock();
-        repo.log();
-        plane_ready_boarding = false;
-        repo.logFlightBoardingStarting();
-        mutex.unlock();
-        return EPilot.atTransferGate.informPlaneReadyForBoarding;
+        if (passengers_transported == total_passengers){
+            mutex.lock();
+            repo.log();
+            mutex.unlock();
+            return EPilot.atTransferGate.endLife;
+        }
+        else{
+            mutex.lock();
+            repo.flight_num += 1;
+            passengers_in_plane.clear();
+            repo.log();
+            repo.logFlightBoardingStarting();
+            mutex.unlock();
+            return EPilot.atTransferGate.informPlaneReadyForBoarding;
+        }
     }
 
     public EPilot.readyForBoarding readyForBoarding() {
@@ -58,22 +70,31 @@ public class DepartureAirport {
 
     // --------------------------- HOSTESS ---------------------------
     public EHostess.waitForFlight waitForFlight() {
-        mutex.lock();
-        repo.log();
-        try {
-            while(!this.plane_ready_boarding)
-                this.condition_pilot.await();
-        } catch(InterruptedException e) {
-            System.out.print(e);
+        if (passengers_transported == total_passengers){
+            mutex.lock();
+            repo.log();
+            mutex.unlock();
+            return EHostess.waitForFlight.endLife;
         }
-        mutex.unlock();
-        return EHostess.waitForFlight.prepareForPassBoarding;
+        else{
+            mutex.lock();
+            repo.log();
+            try {
+                while(!this.plane_ready_boarding)
+                    this.condition_pilot.await();
+            } catch(InterruptedException e) {
+                System.out.print(e);
+            }
+            mutex.unlock();
+            return EHostess.waitForFlight.prepareForPassBoarding;
+        }
     }
 
     public EHostess.waitForPassenger waitForPassenger() {
         mutex.lock();
         repo.log();
         if(passengers_in_plane.size() >= plane_min_capacity){
+            plane_ready_boarding = false;
             mutex.unlock();
             return EHostess.waitForPassenger.informPlaneReadyToTakeOff;
         }
@@ -141,6 +162,7 @@ public class DepartureAirport {
             passenger_documents_queue.remove(id);
             passengers_in_plane.add(id);
             repo.number_in_plane++;
+            passengers_transported++;
             mutex.unlock();
             return EPassenger.inQueue.boardThePlane;
         }
