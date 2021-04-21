@@ -157,7 +157,7 @@ public class DepartureAirport {
             mutex.unlock();
             return EPassenger.goingToAirport.travelToAirport;
         }
-    }
+    } 
 
     public EPassenger.inQueue inQueue(int id) {
         mutex.lock();
