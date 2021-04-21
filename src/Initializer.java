@@ -10,8 +10,8 @@ public class Initializer {
     public static void main(String[] args) throws Exception {
         // Constants
         final int N_PASSENGERS = 10;
-        final int N_CAPACITY_MIN = 10;
-        final int N_CAPACITY_MAX = 15;
+        final int N_CAPACITY_MIN = 15;
+        final int N_CAPACITY_MAX = 20;
 
         // Instantiate Monitors
         Repository repository = new Repository();

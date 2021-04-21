@@ -124,10 +124,10 @@ public class DepartureAirport {
         } catch(InterruptedException e) {
             System.out.print(e);
         }
-        condition_hostess_next.signal();
+        int checked_id = passenger_documents_queue.peek();
+        condition_hostess_next.signalAll();
         hostess_ask_documents = false;
         hostess_next_passenger = true;
-        int checked_id = passenger_documents_queue.peek();
         try {
             while(!passengers_in_plane.contains(checked_id))
                 this.condition_passenger_left.await();
@@ -158,7 +158,7 @@ public class DepartureAirport {
     public EPassenger.inQueue inQueue(int id) {
         mutex.lock();
         repo.log();
-        if (passenger_documents_queue.contains(id) && passenger_queue.size() != 0 && passenger_queue.peek() == id){
+        if ((passenger_queue.size() != 0 && passenger_queue.peek() == id && passenger_documents_queue.contains(id))){
             condition_passenger_left.signal();
             repo.logPassengerCheck(id);
             passenger_documents_queue.remove(id);

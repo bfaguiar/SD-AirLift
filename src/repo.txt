@@ -1,0 +1,79 @@
+  PT   HT   P0   P1   P2   P3   P4   P5   P6   P7   P8   P9  InQ  InF PTAL
+ ATF WFNF  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA    0    0    0
+
+Flight 1: boarding started.
+ RBB WFNF  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA    0    0    0
+ RBB WFNF   IQ  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA    1    0    0
+ RBB WFNF   IQ  GTA  GTA  GTA  GTA  GTA   IQ  GTA  GTA  GTA    2    0    0
+ WFB WFNF   IQ  GTA  GTA  GTA  GTA  GTA   IQ  GTA  GTA  GTA    2    0    0
+ WFB WFNF   IQ   IQ  GTA  GTA  GTA  GTA   IQ  GTA  GTA  GTA    3    0    0
+ WFB WFNF   IQ   IQ  GTA   IQ  GTA  GTA   IQ  GTA  GTA  GTA    4    0    0
+ WFB WFNF   IQ   IQ  GTA   IQ  GTA  GTA   IQ  GTA  GTA   IQ    5    0    0
+ WFB WFNF   IQ   IQ  GTA   IQ  GTA  GTA   IQ  GTA   IQ   IQ    6    0    0
+ WFB WFNF   IQ   IQ  GTA   IQ  GTA   IQ   IQ  GTA   IQ   IQ    7    0    0
+ WFB WFNF   IQ   IQ   IQ   IQ  GTA   IQ   IQ  GTA   IQ   IQ    8    0    0
+ WFB WFNF   IQ   IQ   IQ   IQ  GTA   IQ   IQ   IQ   IQ   IQ    9    0    0
+ WFB WFNF   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   10    0    0
+ WFB  WFP   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   10    0    0
+ WFB   CP   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   10    0    0
+
+Flight 1: passenger 0 checked.
+ WFB  WFP   IF   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ    9    1    0
+ WFB   CP   IF   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ   IQ    9    1    0
+
+Flight 1: passenger 6 checked.
+ WFB  WFP   IF   IQ   IQ   IQ   IQ   IQ   IF   IQ   IQ   IQ    8    2    0
+ WFB   CP   IF   IQ   IQ   IQ   IQ   IQ   IF   IQ   IQ   IQ    8    2    0
+
+Flight 1: passenger 1 checked.
+ WFB  WFP   IF   IF   IQ   IQ   IQ   IQ   IF   IQ   IQ   IQ    7    3    0
+ WFB   CP   IF   IF   IQ   IQ   IQ   IQ   IF   IQ   IQ   IQ    7    3    0
+
+Flight 1: passenger 3 checked.
+ WFB  WFP   IF   IF   IQ   IF   IQ   IQ   IF   IQ   IQ   IQ    6    4    0
+ WFB   CP   IF   IF   IQ   IF   IQ   IQ   IF   IQ   IQ   IQ    6    4    0
+
+Flight 1: passenger 9 checked.
+ WFB  WFP   IF   IF   IQ   IF   IQ   IQ   IF   IQ   IQ   IF    5    5    0
+ WFB   CP   IF   IF   IQ   IF   IQ   IQ   IF   IQ   IQ   IF    5    5    0
+
+Flight 1: passenger 8 checked.
+ WFB  WFP   IF   IF   IQ   IF   IQ   IQ   IF   IQ   IF   IF    4    6    0
+ WFB   CP   IF   IF   IQ   IF   IQ   IQ   IF   IQ   IF   IF    4    6    0
+
+Flight 1: passenger 5 checked.
+ WFB  WFP   IF   IF   IQ   IF   IQ   IF   IF   IQ   IF   IF    3    7    0
+ WFB   CP   IF   IF   IQ   IF   IQ   IF   IF   IQ   IF   IF    3    7    0
+
+Flight 1: passenger 2 checked.
+ WFB  WFP   IF   IF   IF   IF   IQ   IF   IF   IQ   IF   IF    2    8    0
+ WFB   CP   IF   IF   IF   IF   IQ   IF   IF   IQ   IF   IF    2    8    0
+
+Flight 1: passenger 7 checked.
+ WFB  WFP   IF   IF   IF   IF   IQ   IF   IF   IF   IF   IF    1    9    0
+ WFB   CP   IF   IF   IF   IF   IQ   IF   IF   IF   IF   IF    1    9    0
+
+Flight 1: passenger 4 checked.
+ WFB  WFP   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0   10    0
+ WFB   RF   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0   10    0
+
+Flight 1: departed with 10 passengers.
+ WFB WFNF   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0   10    0
+  FF WFNF   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0   10    0
+
+Flight 1: arrived.
+   D WFNF   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0   10    0
+   D WFNF   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0    9    1
+   D WFNF   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0    8    2
+   D WFNF   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0    7    3
+   D WFNF   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0    6    4
+   D WFNF   IF   IF   IF   IF   IF   IF   IF   IF   IF   IF    0    5    5
+   D WFNF   AD   AD   IF   AD   IF   IF   IF   IF   IF   AD    0    4    6
+   D WFNF   AD   AD   IF   AD   IF   IF   AD   IF   AD   AD    0    3    7
+   D WFNF   AD   AD   IF   AD   IF   AD   AD   IF   AD   AD    0    2    8
+   D WFNF   AD   AD   AD   AD   IF   AD   AD   IF   AD   AD    0    1    9
+   D WFNF   AD   AD   AD   AD   IF   AD   AD   AD   AD   AD    0    0   10
+
+Flight 1: returning.
+  FB WFNF   AD   AD   AD   AD   AD   AD   AD   AD   AD   AD    0    0   10
+ ATF WFNF   AD   AD   AD   AD   AD   AD   AD   AD   AD   AD    0    0   10
