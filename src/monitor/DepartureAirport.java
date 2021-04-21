@@ -158,7 +158,7 @@ public class DepartureAirport {
     public EPassenger.inQueue inQueue(int id) {
         mutex.lock();
         repo.log();
-        if (passenger_documents_queue.contains(id)){
+        if (passenger_documents_queue.contains(id) && passenger_queue.size() != 0 && passenger_queue.peek() == id){
             condition_passenger_left.signal();
             repo.logPassengerCheck(id);
             passenger_documents_queue.remove(id);
