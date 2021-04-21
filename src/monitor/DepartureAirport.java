@@ -107,7 +107,7 @@ public class DepartureAirport {
             } catch(InterruptedException e) {
                 System.out.print(e);
             }
-            this.condition_hostess_documents.signal();
+            this.condition_hostess_documents.signalAll();
             hostess_ask_documents = true;
             hostess_next_passenger = false;
             mutex.unlock();
@@ -125,7 +125,7 @@ public class DepartureAirport {
             System.out.print(e);
         }
         int checked_id = passenger_documents_queue.peek();
-        condition_hostess_next.signalAll();
+        condition_hostess_next.signal();
         hostess_ask_documents = false;
         hostess_next_passenger = true;
         try {
@@ -172,15 +172,15 @@ public class DepartureAirport {
         }
         else{
             try {
-                while(!this.hostess_ask_documents)
+                while(!(this.hostess_ask_documents && passenger_queue.peek() == id))
                     this.condition_hostess_documents.await();
             } catch(InterruptedException e) {
                 System.out.print(e);
             }
-            condition_passenger_documents.signal();
             passenger_documents_queue.add(id);
+            condition_passenger_documents.signal();
             try {
-                while(!this.hostess_next_passenger)
+                while(!(this.hostess_next_passenger && passenger_queue.peek() == id))
                     this.condition_hostess_next.await();
             } catch(InterruptedException e) {
                 System.out.print(e);
