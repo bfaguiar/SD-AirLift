@@ -22,26 +22,26 @@ public class Initializer {
         // Instantiate Threads
         Hostess hostess = new Hostess(plane, dp);
         Pilot pilot = new Pilot(plane, dp, aa);
-        Passenger[] passenger_list = new Passenger[N_PASSENGERS];
+        Passenger[] passengerList = new Passenger[N_PASSENGERS];
         for(int i = 0; i < N_PASSENGERS; i++)
-            passenger_list[i] = new Passenger(plane, dp, aa, i);
+            passengerList[i] = new Passenger(plane, dp, aa, i);
 
-        repository.pilot = pilot;
-        repository.hostess = hostess;
-        repository.passenger_list = passenger_list;
+        repository.setPilot(pilot);
+        repository.setHostess(hostess);
+        repository.setPassengerList(passengerList);
 
         // Start Threads
         repository.logEntities();
         hostess.start();
         pilot.start();
         for(int i = 0; i < N_PASSENGERS; i++)
-            passenger_list[i].start();
+            passengerList[i].start();
         
         // Wait for threads to end
         hostess.join();
         pilot.join();
         for(int i = 0; i < N_PASSENGERS; i++)
-            passenger_list[i].join();
+            passengerList[i].join();
         
         repository.closelog();
     }

@@ -7,37 +7,89 @@ import java.io.IOException;
 import thread.Hostess;
 import thread.Passenger;
 import thread.Pilot;
+import java.util.logging.Logger;
 
 public class Repository{
-    public Hostess hostess;
-    public Pilot pilot;
-    public Passenger[] passenger_list;
-    public int number_in_queue;
-    public int number_in_plane;
-    public int number_at_destination;
-    public int flight_num = 0;
+    private Hostess hostess;
+    private Pilot pilot;
+    private Passenger[] passengerList;
+    private int numberInQueue;
+    private int numberInPlane;
+    private int numberAtDestination;
+    private int flightNum = 0;
 
-    private File repo_txt = new File("repo.txt");
-    private FileWriter repo_writer;
+    private FileWriter repoWriter;
 
-    private String last_state_string;
+    private String lastStateString;
+
+    private final Logger logger = Logger.getLogger(Repository.class.getName());
 
     public Repository(){
-        number_in_queue = 0;
-        number_in_plane = 0;
-        number_at_destination = 0;
+        numberInQueue = 0;
+        numberInPlane = 0;
+        numberAtDestination = 0;
         try {
-            repo_txt.createNewFile();
-            repo_writer = new FileWriter(repo_txt);
+            
+            repoWriter = new FileWriter(new File("repo.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public void setHostess(Hostess hostess) {
+        this.hostess = hostess;
+    }
+
+    public void setPilot(Pilot pilot) {
+        this.pilot = pilot;
+    }
+
+    public void setPassengerList(Passenger[] passengerList) {
+        this.passengerList = passengerList;
+    }
+
+    public void incrementNumberInQueue() {
+        numberInQueue++;
+    }
+
+    public void decrementNumberInQueue() {
+        numberInQueue--;
+    }
+
+    public int getNumberInPlane() {
+        return this.numberInPlane;
+    }
+
+    public void decrementNumberInPlane() {
+        numberInPlane--;
+    }
+
+    public void incrementNumberInPlane() {
+        numberInPlane++;
+    } 
+
+    public void incrementNumberAtDestination() {
+        numberAtDestination++;
+    }  
+
+    public int getFlightNum() {
+        return this.flightNum;
+    }
+
+    public void setFlightNum(int flightNum) {
+        this.flightNum = flightNum;
+    }
+
+    public void incrementFlightNum() {
+        this.flightNum++;
+    }
+ 
+
+
     public void closelog(){
         try {
-            this.repo_writer.close();
-            this.repo_writer.close();
+            this.repoWriter.close();
+            this.repoWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,12 +97,12 @@ public class Repository{
 
     public void logEntities(){
         String entities = String.format("%4s %4s", "PT", "HT");
-        for(int i = 0; i < passenger_list.length; i++)
+        for(int i = 0; i < passengerList.length; i++)
             entities += String.format(" %4s", ("P"+i));
-        entities += String.format(" %4s %4s %4s\n", "InQ", "InF", "PTAL");
-        System.out.printf(entities);
+        entities += String.format(" %4s %4s %4s%n", "InQ", "InF", "PTAL");
+        logger.info(entities);
         try {
-            this.repo_writer.write(entities);
+            this.repoWriter.write(entities);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,69 +110,69 @@ public class Repository{
 
     public synchronized void log(){
         String states = String.format("%4s %4s", pilot.getStateString(), hostess.getStateString());
-        for(int i = 0; i < passenger_list.length; i++)
-            states += String.format(" %4s", passenger_list[i].getStateString());
-        states += String.format(" %4s %4s %4s\n", number_in_queue, number_in_plane, number_at_destination);
+        for(int i = 0; i < passengerList.length; i++)
+            states += String.format(" %4s", passengerList[i].getStateString());
+        states += String.format(" %4s %4s %4s%n", numberInQueue, numberInPlane, numberAtDestination);
 
-        if(!states.equals(this.last_state_string)){
-            System.out.printf(states);
+        if(!states.equals(this.lastStateString)){ 
+            logger.info(states);
         }
 
         try {
-            if(!states.equals(this.last_state_string)){
-                repo_writer.write(states);
+            if(!states.equals(this.lastStateString)){
+                repoWriter.write(states);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        last_state_string = states;
+        lastStateString = states;
     }
 
     public synchronized void logFlightBoardingStarting(){
-        String flightString = String.format("\nFlight %d: boarding started.\n", flight_num);
-        System.out.printf(flightString);
+        String flightString = String.format("%nFlight %d: boarding started.%n", flightNum);
+        logger.info(flightString);
         try {
-            repo_writer.write(flightString);
+            repoWriter.write(flightString);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public synchronized void logPassengerCheck(int id){
-        String flightString = String.format("\nFlight %d: passenger %d checked.\n", flight_num, id);
-        System.out.printf(flightString);
+        String flightString = String.format("%nFlight %d: passenger %d checked.%n", flightNum, id);
+        logger.info(flightString);
         try {
-            repo_writer.write(flightString);
+            repoWriter.write(flightString);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public synchronized void logDeparture(){
-        String flightString = String.format("\nFlight %d: departed with %d passengers.\n", flight_num, number_in_plane);
-        System.out.printf(flightString);
+        String flightString = String.format("%nFlight %d: departed with %d passengers.%n", flightNum, numberInPlane);
+        logger.info(flightString);
         try {
-            repo_writer.write(flightString);
+            repoWriter.write(flightString);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public synchronized void logArriving(){
-        String flightString = String.format("\nFlight %d: arrived.\n", flight_num);
-        System.out.printf(flightString);
+        String flightString = String.format("%nFlight %d: arrived.%n", flightNum);
+        logger.info(flightString);
         try {
-            repo_writer.write(flightString);
+            repoWriter.write(flightString);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public synchronized void logReturning(){
-        String flightString = String.format("\nFlight %d: returning.\n", flight_num);
-        System.out.printf(flightString);
+        String flightString = String.format("%nFlight %d: returning.%n", flightNum);
+        logger.info(flightString);
         try {
-            repo_writer.write(flightString);
+            repoWriter.write(flightString);
         } catch (IOException e) {
             e.printStackTrace();
         }

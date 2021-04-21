@@ -11,14 +11,14 @@ public class ArrivalAirport {
     private Repository repo;
     private ReentrantLock mutex = new ReentrantLock();
 
-    private Condition cond_passenger = mutex.newCondition();
-    private Condition cond_pilot = mutex.newCondition();
+    private Condition conditionPassenger = mutex.newCondition();
+    private Condition conditionPilot = mutex.newCondition();
 
-    private boolean can_exit;
-    private boolean last_passenger;
+    private boolean canExit;
+    private boolean lastPassenger;
 
-    private int passengers_deboarded;
-    private int passengers_in_plane;
+    private int passengersDeboarded;
+    private int passengersInPlane;
 
     public ArrivalAirport(Repository repo){
         this.repo = repo;
@@ -28,15 +28,15 @@ public class ArrivalAirport {
     public EPilot.deboarding deboarding() {
         mutex.lock();                 
         repo.log();
-        passengers_in_plane = repo.number_in_plane;
-        passengers_deboarded = 0;
+        passengersInPlane = repo.getNumberInPlane();
+        passengersDeboarded = 0;
         try {
-            can_exit = true;
-            cond_passenger.signalAll();
-            while(!last_passenger)
-                cond_pilot.await();
-            last_passenger = false;
-            can_exit = false;
+            canExit = true;
+            conditionPassenger.signalAll();
+            while(!lastPassenger)
+                conditionPilot.await();
+            lastPassenger = false;
+            canExit = false;
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
@@ -63,15 +63,15 @@ public class ArrivalAirport {
     public EPassenger.inFlight inFlight() {
         mutex.lock();
         try {
-            while(!can_exit){
-                cond_passenger.await();
+            while(!canExit){
+                conditionPassenger.await();
             }
-            passengers_deboarded++;
-            repo.number_in_plane--;
-            repo.number_at_destination++;
-            if (passengers_deboarded == passengers_in_plane) {
-                last_passenger = true;
-                cond_pilot.signal(); 
+            passengersDeboarded++;
+            repo.decrementNumberInPlane();
+            repo.incrementNumberAtDestination();
+            if (passengersDeboarded == passengersInPlane) {
+                lastPassenger = true;
+                conditionPilot.signal(); 
             }  
         } catch (InterruptedException e) {
             e.printStackTrace();

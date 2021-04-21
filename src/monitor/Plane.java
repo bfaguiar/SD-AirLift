@@ -10,8 +10,8 @@ import repo.Repository;
 public class Plane {
     private Repository repo;
     private ReentrantLock mutex = new ReentrantLock();
-    private Condition cond_pilot = mutex.newCondition();
-    private boolean boarding_complete;
+    private Condition conditionPilot = mutex.newCondition();
+    private boolean boardingComplete;
 
     public Plane(Repository repo){
         this.repo = repo;
@@ -21,8 +21,8 @@ public class Plane {
     public EHostess.readyToFly readyToFly() {
         mutex.lock();
         repo.log();
-        boarding_complete = true;
-        cond_pilot.signal();
+        boardingComplete = true;
+        conditionPilot.signal();
         mutex.unlock();
         return EHostess.readyToFly.waitForNextFlight;
     }
@@ -32,13 +32,13 @@ public class Plane {
         mutex.lock();
         repo.log();
         try{
-            while(!boarding_complete)
-            cond_pilot.await();
+            while(!boardingComplete)
+                conditionPilot.await();
         } catch(InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
-        boarding_complete = false;
+        boardingComplete = false;
         repo.logDeparture();    
         mutex.unlock();
         return EPilot.waitingForBoarding.flyToDestinationPoint;
@@ -53,8 +53,8 @@ public class Plane {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }*/
-        repo.logArriving();
-        mutex.unlock();
+        repo.logArriving(); 
+        mutex.unlock(); 
         return EPilot.flyingForward.announceArrival;
     }
 
