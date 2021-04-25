@@ -7,10 +7,15 @@ import java.io.IOException;
 import thread.Hostess;
 import thread.Passenger;
 import thread.Pilot;
+
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
+
 
 /**
  * General Repository of Information
+* @author Bruno Aguiar, 80177
+* @author David Rocha, 84807
  */
 public class Repository {
 
@@ -63,6 +68,12 @@ public class Repository {
      * Logger to provide command-line information of the simulation state
      */
     private final Logger logger = Logger.getLogger(Repository.class.getName());
+
+    /**
+     * Instantiation of a thread syncronization mechanism 
+     * @see ReentrantLock  
+     */
+    private ReentrantLock mutex = new ReentrantLock();
 
     /**
      * Constructor
@@ -124,21 +135,21 @@ public class Repository {
     }
 
     /**
-     * Decrement the number of passengers in the plane
+     * Decrements the number of passengers in the plane
      */
     public void decrementNumberInPlane() {
         numberInPlane--;
     }
 
     /**
-     * Increment the number of passengers in the plane
+     * Increments the number of passengers in the plane
      */
     public void incrementNumberInPlane() {
         numberInPlane++;
     } 
 
     /**
-     * Increment the number of passengers arrived at Destination
+     * Increments the number of passengers arrived at Destination
      */
     public void incrementNumberAtDestination() {
         numberAtDestination++;
@@ -178,7 +189,8 @@ public class Repository {
     }
 
     /**
-     * Writes 
+     * Writes the header format in the simulation report
+     * <p> Example: {@code PT   HT   P0   P1   P2   P3   P4   P5   P6   P7   P8   P9  P10  P11  P12  P13  P14  P15  P16  P17  P18  P19  P20  InQ  InF PTAL} </p>
      */
     public void logEntities(){
         String entities = String.format("%4s %4s", "PT", "HT");
@@ -193,7 +205,12 @@ public class Repository {
         }
     }
 
-    public synchronized void log(){
+    /**
+     * Writes thread's state in the simulation report
+     * <p> Example: {@code WFB   CP   IF   IF   IF   IF   IF   IQ   IQ   IQ   IQ   IQ  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA    5    5    0} </p>
+     */
+    public void log(){
+        mutex.lock();
         String states = String.format("%4s %4s", pilot.getStateString(), hostess.getStateString());
         for(int i = 0; i < passengerList.length; i++)
             states += String.format(" %4s", passengerList[i].getStateString());
@@ -211,9 +228,15 @@ public class Repository {
             e.printStackTrace();
         }
         lastStateString = states;
+        mutex.unlock();
     }
 
-    public synchronized void logFlightBoardingStarting(){
+    /**
+     * Writes the state "Boarding Started" in the simulation report and informs the current flight number
+     * <p> Example: {@code Flight 1: boarding started.} </p>
+     */
+    public void logFlightBoardingStarting(){
+        mutex.lock();
         String flightString = String.format("%nFlight %d: boarding started.%n", flightNum);
         logger.info(flightString);
         try {
@@ -221,9 +244,16 @@ public class Repository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mutex.unlock();
     }
 
-    public synchronized void logPassengerCheck(int id){
+    /**
+     * Writes the state "Passenger Checked" in the simulation report and informs the current flight number 
+     * <p> Example: {@code Flight 1: passenger 0 checked.} </p>
+     * @param id id of the passenger
+     */
+    public void logPassengerCheck(int id){
+        mutex.lock();
         String flightString = String.format("%nFlight %d: passenger %d checked.%n", flightNum, id);
         logger.info(flightString);
         try {
@@ -231,9 +261,15 @@ public class Repository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mutex.unlock();
     }
 
-    public synchronized void logDeparture(){
+    /**
+     * Writes the state "Departed with N Passengers" in the simulation report and informs the current flight number 
+     * <p> Example: {@code Flight 1: departed with 10 passengers.} </p>
+     */
+    public void logDeparture(){
+        mutex.lock();
         String flightString = String.format("%nFlight %d: departed with %d passengers.%n", flightNum, numberInPlane);
         logger.info(flightString);
         try {
@@ -241,9 +277,15 @@ public class Repository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mutex.unlock();
     }
 
-    public synchronized void logArriving(){
+    /**
+     * Writes the state "Flight Arrived" in the simulation report and informs the current flight number
+     * <p> Example: {@code Flight 1: arrived.} </p>
+     */
+    public void logArriving(){
+        mutex.lock();
         String flightString = String.format("%nFlight %d: arrived.%n", flightNum);
         logger.info(flightString);
         try {
@@ -251,9 +293,15 @@ public class Repository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mutex.unlock();
     }
 
-    public synchronized void logReturning(){
+    /**
+     * Writes the state "Flight Returning" in the simulation report and informs the current flight number
+     * <p> Example: {@code Flight 1: returning.} </p>
+     */
+    public void logReturning(){
+        mutex.lock();
         String flightString = String.format("%nFlight %d: returning.%n", flightNum);
         logger.info(flightString);
         try {
@@ -261,5 +309,6 @@ public class Repository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mutex.unlock();
     }
 }

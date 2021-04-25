@@ -11,7 +11,6 @@ import thread.Pilot;
 * The Air lift Program is implements a concurrent application that simulates activities of the passengers during an air lift from an origin town and a destination town.
 * @author Bruno Aguiar, 80177
 * @author David Rocha, 84807
-* @version 1.0 : 21/04/2021
 */
 
 public class Initializer {
@@ -21,31 +20,26 @@ public class Initializer {
      * @throws Exception
      * @see Exception 
      */
-
     public static void main(String[] args) throws Exception {
         
         /**
          *  Number of passengers in the simulation
          */
-
         final int N_PASSENGERS = 21;
 
         /**
          *  Minimum capacity of the plane
          */
-
         final int N_CAPACITY_MIN = 5;
 
         /**
          * Maximum capacity of the plane
          */
-
         final int N_CAPACITY_MAX = 10;
         
         /**
          * Instantiation of the shared regions
          */
-
         Repository repository = new Repository();
         ArrivalAirport aa = new ArrivalAirport(repository);
         DepartureAirport dp = new DepartureAirport(repository, N_CAPACITY_MIN, N_CAPACITY_MAX, N_PASSENGERS);
@@ -54,7 +48,6 @@ public class Initializer {
         /**
          * Instantiation of Threads 
          */
-
         Hostess hostess = new Hostess(plane, dp);
         Pilot pilot = new Pilot(plane, dp, aa);
         Passenger[] passengerList = new Passenger[N_PASSENGERS];
@@ -64,7 +57,6 @@ public class Initializer {
         /**
          * General Repository of Information start up
          */
-
         repository.setPilot(pilot);
         repository.setHostess(hostess);
         repository.setPassengerList(passengerList);
@@ -73,7 +65,6 @@ public class Initializer {
         /**
          * Inicialization of Threads
          */
-
         hostess.start();
         pilot.start();
         for(int i = 0; i < N_PASSENGERS; i++)
@@ -82,7 +73,6 @@ public class Initializer {
         /**
          *  Wait for threads to end 
          */
-
         hostess.join();
         pilot.join();
         for(int i = 0; i < N_PASSENGERS; i++)
@@ -91,7 +81,6 @@ public class Initializer {
         /**
          *  Close the writing session
          */
-
         repository.closelog();
     }
 }

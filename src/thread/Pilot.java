@@ -5,12 +5,41 @@ import monitor.DepartureAirport;
 import monitor.Plane;
 import states.EPilot;
 
-public class Pilot extends Thread{
+/**
+ * Thread Pilot
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
+ */
+public class Pilot extends Thread {
+
+    /**
+     * Pilot's current state in the simulation
+     */
     private EPilot.State state;
+
+    /**
+     * Plane's shared region
+     * @see Plane
+     */
     private Plane plane;
+
+    /**
+     * Departure Airport's shared region
+     * @see DepartureAirport
+     */
     private DepartureAirport dp;
+
+    /**
+     * Arrival Airport's shared region
+     */
     private ArrivalAirport ap;
 
+    /**
+     * Constructior
+     * @param plane instance of Plane's shared region
+     * @param dp instance of Departure Airport's shared region
+     * @param ap instance of Arrival Airport's shared region
+     */
     public Pilot(Plane plane, DepartureAirport dp, ArrivalAirport ap){
         this.plane = plane;
         this.dp = dp;
@@ -18,6 +47,9 @@ public class Pilot extends Thread{
         this.state = EPilot.State.AT_TRANSFER_GATE;
     }
 
+    /**
+     * Thread's life cycle
+     */
     @Override
     public void run(){
         boolean end = false;
@@ -64,6 +96,10 @@ public class Pilot extends Thread{
         }
     }
 
+    /**
+     * Given the thread's current state, it returns the state in {@code String} format.
+     * @return current state in {@code String} type
+     */
     public String getStateString(){
         switch(this.state) {
             case AT_TRANSFER_GATE:

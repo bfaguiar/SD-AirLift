@@ -5,12 +5,42 @@ import monitor.DepartureAirport;
 import monitor.Plane;
 import states.EPassenger;
 
-public class Passenger extends Thread{
+/**
+ *  Thread Passenger
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
+ */
+public class Passenger extends Thread {
+
+    /**
+     * Passenger's current state in the simulation
+     */
     private EPassenger.State state;
+
+     /**
+     * Departure Airport's shared region
+     * @see DepartureAirport
+     */
     private DepartureAirport dp;
+
+    /**
+     * Arrival Airport's shared region
+     * @see ArrivalAirport
+     */
     private ArrivalAirport aa;
+
+    /**
+     * Passenger's ID
+     */
     private int id;
 
+    /**
+     * Constructor
+     * @param plane instance of Plane's shared region
+     * @param dp instance of Departure Airport's shared region
+     * @param ap instance of Arrival Airport's shared region
+     * @param id Passenger's ID
+     */
     public Passenger(Plane plane, DepartureAirport dp, ArrivalAirport aa, int i){
         this.state = EPassenger.State.GOING_TO_AIRPORT;
         this.dp = dp;
@@ -18,6 +48,9 @@ public class Passenger extends Thread{
         this.id = i;
     }
 
+    /**
+     * Thread's life cycle
+     */
     @Override
     public void run(){
         boolean end = false;
@@ -54,6 +87,10 @@ public class Passenger extends Thread{
         }
     }
 
+    /**
+     * Given the state's current state, it returns the state in {@code String} format 
+     * @return current state in {@code String} type
+     */
     public String getStateString(){
         switch(this.state) {
             case GOING_TO_AIRPORT:

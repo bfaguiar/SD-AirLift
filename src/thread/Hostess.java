@@ -4,17 +4,42 @@ import monitor.DepartureAirport;
 import monitor.Plane;
 import states.EHostess;
 
-public class Hostess extends Thread{
+/**
+ * Thread Hostess
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
+ */
+public class Hostess extends Thread {
+
+    /**
+     * Hostess' current state in the simulation
+     */
     private EHostess.State state;
+    /**
+     * Departure Airport's shared region
+     * @see DepartureAirport
+     */
     private DepartureAirport dp;
+
+    /**
+     * Plane's shared region
+     */
     private Plane plane;
 
+    /**
+     * Constructor 
+     * @param plane Plane's shared region
+     * @param dp Departure Airport's shared region
+     */
     public Hostess(Plane plane, DepartureAirport dp){
         this.state = EHostess.State.WAIT_FOR_NEXT_FLIGHT;
         this.dp = dp;
         this.plane = plane;
     }
 
+    /**
+     * Thread's life cycle.
+     */
     @Override
     public void run(){
         boolean end = false;
@@ -51,6 +76,10 @@ public class Hostess extends Thread{
         }
     }
 
+    /**
+     * Given the thread's current state, it returns the state in {@code String} format.
+     * @return current state in {@code String} type
+     */
     public String getStateString(){
         switch(this.state) {
             case WAIT_FOR_NEXT_FLIGHT:

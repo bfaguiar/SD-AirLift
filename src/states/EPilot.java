@@ -1,6 +1,15 @@
 package states;
 
-public class EPilot{
+/**
+ * List of Enumerates for Pilot's state and its transitions
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
+ */
+public class EPilot {
+
+	/**
+	 * State Enumerate
+	 */
 	public enum State {
 		AT_TRANSFER_GATE,
 		READY_FOR_BOARDING,
@@ -10,28 +19,46 @@ public class EPilot{
     	FLYING_BACK
 	}
 
-	public enum atTransferGate{
+	/**
+	 * Transition enumerates for {@code EPilot.State.AT_TRANSFER_GATE}
+	 */
+	public enum atTransferGate {
 		informPlaneReadyForBoarding,
 		endLife
 	}
 
-	public enum readyForBoarding{
+	/**
+	 * Transition enumerates for {@code EPilot.State.READY_FOR_BOARDING}
+	 */
+	public enum readyForBoarding {
 		waitForAllInBoard
 	}
 
-	public enum waitingForBoarding{
+	/**
+	 * Transition enumerates for {@code EPilot.State.WAIT_FOR_BOARDING}
+	 */
+	public enum waitingForBoarding {
 		flyToDestinationPoint
 	}
 
-	public enum flyingForward{
+	/**
+	 * Transition enumerates for {@code EPilot.State.FLYING_FORWARD}
+	 */
+	public enum flyingForward {
 		announceArrival
 	}
 
-	public enum deboarding{
+	/**
+	 * Transition enumerates for {@code EPilot.State.DEBOARDING}
+	 */
+	public enum deboarding {
 		flyToDeparturePoint
 	}
 
-	public enum flyingBack{
+	/**
+	 * Transition enumerates for {@code EPilot.State.FLYING_BACK}
+	 */
+	public enum flyingBack {
 		parkAtTransferGate
 	}
 }
