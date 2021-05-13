@@ -24,21 +24,11 @@ public class ArrivalAirport {
     private ReentrantLock mutex = new ReentrantLock();
 
     /**
-     * Instantiation of a Condition variable for the Passenger
-     * @see Condtition
-     */
-    private Condition conditionPassenger = mutex.newCondition();
-
-    /**
      * Instantiation of a Condition variable for the Pilot
      * @see Condition
      */
-    private Condition conditionPilot = mutex.newCondition();
+    private Condition conditionLastPassenger = mutex.newCondition();
 
-    /**
-     * Declaration of a boolean variable to inform the passenger that he can exit the plane
-     */
-    private boolean canExit;
 
     /**
      * Declaration of a boolean variable to inform the pilot that he's the last passenger exiting the plane
@@ -63,18 +53,16 @@ public class ArrivalAirport {
         this.repo = repo;
     } 
 
-    public void pilotFlyToDeparturePoint() {
-        mutex.lock();                 
+    public void pilotFlyToDeparturePoint(int numberInPlane, String state) {
+        mutex.lock();   
+        repo.setPilotState(state);              
         repo.log();
-        passengersInPlane = repo.getNumberInPlane();
+        passengersInPlane = numberInPlane;
         passengersDeboarded = 0;
         try {
-            canExit = true;
-            conditionPassenger.signalAll();
             while(!lastPassenger)
-                conditionPilot.await();
+                conditionLastPassenger.await();
             lastPassenger = false;
-            canExit = false;
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
@@ -83,24 +71,16 @@ public class ArrivalAirport {
         mutex.unlock();
     } 
 
-    public void passengerLeaveThePlane() {
+    public void passengerLeaveThePlane(int id, String state) {
         mutex.lock();
-        System.out.println("Passenger exited");
-        try {
-            while(!canExit){
-                conditionPassenger.await();
-            }
-            passengersDeboarded++;
-            repo.decrementNumberInPlane();
-            repo.incrementNumberAtDestination();
-            if (passengersDeboarded == passengersInPlane) {
-                lastPassenger = true;
-                conditionPilot.signal(); 
-            }  
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        }
+        passengersDeboarded++;
+        repo.incrementNumberAtDestination();
+        if (passengersDeboarded == passengersInPlane) {
+            lastPassenger = true;
+            conditionLastPassenger.signal(); 
+        }  
+        repo.decrementNumberInPlane();
+        repo.setPassengerListState(id, state);
         repo.log();
         mutex.unlock();
     }  

@@ -123,7 +123,7 @@ public class DepartureAirport {
         this.totalPassengers = totalPassengers;
     }
 
-    public void pilotParkAtTransferGate() {
+    public void pilotParkAtTransferGate(String state) {
         mutex.lock();
         try {
             Thread.sleep((long) ((Math.random() * 1000)+1));
@@ -133,12 +133,14 @@ public class DepartureAirport {
         }
         repo.incrementFlightNum();
         passengersInPlane.clear();
+        repo.setPilotState(state); 
         repo.log();
         mutex.unlock();
     }
 
-    public void pilotInformPlaneReadyForBoarding() {
+    public void pilotInformPlaneReadyForBoarding(String state) {
         mutex.lock();
+        repo.setPilotState(state); 
         repo.log();
         this.conditionPilotBoarding.signal();
         repo.logFlightBoardingStarting();
@@ -146,8 +148,9 @@ public class DepartureAirport {
         mutex.unlock();
     }
 
-    public void hostessPrepareForPassBoarding() {
+    public void hostessPrepareForPassBoarding(String state) {
         mutex.lock();
+        repo.setHostessState(state);
         repo.log();
         try {
             while(!this.planeReadyBoarding)
@@ -159,8 +162,9 @@ public class DepartureAirport {
         mutex.unlock();
     }
 
-     public void hostessCheckDocuments() {
+     public void hostessCheckDocuments(String state) {
         mutex.lock();
+        repo.setHostessState(state);
         repo.log();
         try {
             while(passengerQueue.isEmpty())
@@ -175,8 +179,9 @@ public class DepartureAirport {
         mutex.unlock();
      }
 
-    public void hostessWaitForNextPassenger() {
+    public void hostessWaitForNextPassenger(String state) {
         mutex.lock();
+        repo.setHostessState(state);
         repo.log();
         try {
             while(passengerDocumentsQueue.isEmpty())
@@ -199,15 +204,16 @@ public class DepartureAirport {
         mutex.unlock();
     }
 
-    public void hostessWaitForNextFlight() {
+    public void hostessWaitForNextFlight(String state) {
         mutex.lock();
+        repo.setHostessState(state);
         repo.log();
         planeReadyBoarding = false;
         mutex.unlock();
      }
     
-    public void passengerTravelToAirport() {
-        mutex.lock();
+    public void passengerTravelToAirport(int id, String state) {
+        repo.setPassengerListState(id, state);
         repo.log();
         try {
             Thread.sleep((long) ((Math.random()*1000)+1));
@@ -215,11 +221,11 @@ public class DepartureAirport {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
-        mutex.unlock();
     } 
 
-    public void passengerWaitInQueue(int id) {
+    public void passengerWaitInQueue(int id, String state) {
         mutex.lock();
+        repo.setPassengerListState(id, state);
         repo.log();
         conditionPassengerQueue.signal();
         passengerQueue.add(id);
@@ -227,22 +233,9 @@ public class DepartureAirport {
         mutex.unlock();
     } 
 
-    public void passengerBoardThePlane(int id) {
+    public void passengerShowDocuments(int id, String state) {
         mutex.lock();
-        repo.log();
-        conditionPassengerLeft.signal();
-        repo.logPassengerCheck(id);
-        passengerDocumentsQueue.remove(id);
-        passengersInPlane.add(id);
-        repo.incrementNumberInPlane();
-        passengersTransported++;
-        passengerQueue.remove(id);
-        repo.decrementNumberInQueue();
-        mutex.unlock();
-    }
-
-    public void passengerShowDocuments(int id) {
-        mutex.lock();
+        repo.setPassengerListState(id, state);
         repo.log();
         try {
             while(!(this.hostessAskDocuments && passengerQueue.peek() == id))
@@ -260,6 +253,13 @@ public class DepartureAirport {
             e.printStackTrace();
             Thread.currentThread().interrupt(); 
         }
+        conditionPassengerLeft.signal();
+        repo.logPassengerCheck(id);
+        passengerDocumentsQueue.remove(id);
+        passengersInPlane.add(id);
+        passengersTransported++;
+        passengerQueue.remove(id);
+        repo.decrementNumberInQueue();
         mutex.unlock();
     }
 

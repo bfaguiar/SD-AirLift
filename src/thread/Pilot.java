@@ -60,32 +60,32 @@ public class Pilot extends Thread {
                         end = true;
                         break;
                     }
-                    this.dp.pilotInformPlaneReadyForBoarding();
+                    this.dp.pilotInformPlaneReadyForBoarding(this.getStateString());
                     this.state = PilotState.READY_FOR_BOARDING;
                     break;
 
                 case READY_FOR_BOARDING:
-                    this.plane.pilotWaitForAllInBoard();
+                    this.plane.pilotWaitForAllInBoard(this.getStateString());
                     this.state = PilotState.WAIT_FOR_BOARDING;
                     break;
 
                 case WAIT_FOR_BOARDING:
-                    this.plane.pilotFlyToDestinationPoint();
+                    this.plane.pilotFlyToDestinationPoint(this.getStateString());
                     this.state = PilotState.FLYING_FORWARD;
                     break;
 
                 case FLYING_FORWARD:
-                    this.plane.pilotAnnounceArrival();
+                    this.plane.pilotAnnounceArrival(this.getStateString());
                     this.state = PilotState.DEBOARDING;
                     break;
                     
                 case DEBOARDING:
-                    this.ap.pilotFlyToDeparturePoint();
+                    this.ap.pilotFlyToDeparturePoint(this.plane.getNumberInPlane(), this.getStateString());
                     this.state = PilotState.FLYING_BACK;
                     break;
                     
                 case FLYING_BACK:
-                    this.dp.pilotParkAtTransferGate();
+                    this.dp.pilotParkAtTransferGate(this.getStateString());
                     this.state = PilotState.AT_TRANSFER_GATE;
                     break;
             }

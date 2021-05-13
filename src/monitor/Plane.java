@@ -1,5 +1,7 @@
 package monitor;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import repo.Repository;
@@ -26,12 +28,18 @@ public class Plane {
      * Instantiation of a Condition Variable for the Pilot
      * @see Condition
      */
-    private Condition conditionPilot = mutex.newCondition();  
+    private Condition conditionHostessBoardingComplete = mutex.newCondition();  
+
+    private Condition conditionPilotFlightComplete= mutex.newCondition();  
 
     /**
      * Declaration of a boolean variable to inform the pilot that the boarding is complete
      */
     private boolean boardingComplete;
+
+    private boolean flightComplete;
+
+    private List<Integer> passengers = new LinkedList<Integer>();
 
     /**
      * Constructor
@@ -41,20 +49,23 @@ public class Plane {
         this.repo = repo;
     } 
 
-    public void hostessInformPlaneReadyToTakeOff() {
+    public void hostessInformPlaneReadyToTakeOff(String state) {
         mutex.lock();
+        repo.setHostessState(state);
         repo.log();
         boardingComplete = true;
-        conditionPilot.signal();
+        conditionHostessBoardingComplete.signal();
         mutex.unlock();
     }
 
-    public void pilotWaitForAllInBoard() {
+    public void pilotWaitForAllInBoard(String state) {
         mutex.lock();
+        repo.setPilotState(state); 
         repo.log();
+        flightComplete = false;
         try{
             while(!boardingComplete)
-                conditionPilot.await();
+                conditionHostessBoardingComplete.await();
         } catch(InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
@@ -64,8 +75,9 @@ public class Plane {
         mutex.unlock();
     }
 
-    public void pilotFlyToDestinationPoint() {
+    public void pilotFlyToDestinationPoint(String state) {
         mutex.lock();
+        repo.setPilotState(state); 
         repo.log();
         try {
             Thread.sleep((long) ((Math.random()*1000)+1));
@@ -76,16 +88,46 @@ public class Plane {
         mutex.unlock();
     }
 
-    public void pilotAnnounceArrival() {
+    public void pilotAnnounceArrival(String state) {
         mutex.lock();
+        repo.setPilotState(state); 
         repo.log();
+        conditionPilotFlightComplete.signalAll();
+        flightComplete = true;
         repo.logArriving(); 
         mutex.unlock(); 
     }
 
-    public void passengerWaitForEndOfFlight(int id) {
+    public void passengerWaitForEndOfFlight(int id, String state) {
         mutex.lock();
+        try {
+            while(!flightComplete)
+                conditionPilotFlightComplete.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
+        repo.setPassengerListState(id, state);
         repo.log();
         mutex.unlock();
     } 
+
+    public void passengerBoardThePlane(int id, String state) {
+        mutex.lock();
+        repo.setPassengerListState(id, state);
+        repo.log();
+        this.passengers.add(id);
+        repo.incrementNumberInPlane();
+        mutex.unlock();
+    }
+
+    public void passengerExit(int id){
+        mutex.lock();
+        this.passengers.remove(passengers.indexOf(id));
+        mutex.unlock();
+    }
+
+    public int getNumberInPlane(){
+        return this.passengers.size();
+    }
 }  

@@ -40,7 +40,7 @@ public class Initializer {
         /**
          * Instantiation of the shared regions
          */
-        Repository repository = new Repository();
+        Repository repository = new Repository(N_PASSENGERS);
         ArrivalAirport aa = new ArrivalAirport(repository);
         DepartureAirport dp = new DepartureAirport(repository, N_CAPACITY_MIN, N_CAPACITY_MAX, N_PASSENGERS);
         Plane plane = new Plane(repository);
@@ -57,9 +57,6 @@ public class Initializer {
         /**
          * General Repository of Information start up
          */
-        repository.setPilot(pilot);
-        repository.setHostess(hostess);
-        repository.setPassengerList(passengerList);
         repository.logEntities();
 
         /**

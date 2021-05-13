@@ -50,27 +50,27 @@ public class Hostess extends Thread {
                         end = true;
                         break;
                     }
-                    this.dp.hostessPrepareForPassBoarding();
+                    this.dp.hostessPrepareForPassBoarding(this.getStateString());
                     this.state = HostessState.WAIT_FOR_PASSENGER;
                     break;
 
                 case WAIT_FOR_PASSENGER:
                     if(this.dp.isPlaneBoarded()){
-                        this.plane.hostessInformPlaneReadyToTakeOff();
+                        this.plane.hostessInformPlaneReadyToTakeOff(this.getStateString());
                         this.state = HostessState.READY_TO_FLY;
                     }
                     else{
-                        this.dp.hostessCheckDocuments();
+                        this.dp.hostessCheckDocuments(this.getStateString());
                         this.state = HostessState.CHECK_PASSENGER;
                     }
                     break;
                 case CHECK_PASSENGER:
-                    this.dp.hostessWaitForNextPassenger();
+                    this.dp.hostessWaitForNextPassenger(this.getStateString());
                     this.state = HostessState.WAIT_FOR_PASSENGER;
                     break;
 
                 case READY_TO_FLY:
-                    this.dp.hostessWaitForNextFlight();
+                    this.dp.hostessWaitForNextFlight(this.getStateString());
                     this.state = HostessState.WAIT_FOR_FLIGHT;
                     break;
             }

@@ -4,10 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import thread.Hostess;
-import thread.Passenger;
-import thread.Pilot;
-
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
@@ -22,17 +18,17 @@ public class Repository {
     /**
      * Thread Hostess
      */
-    private Hostess hostess;
+    private String hostessState;
 
     /**
      * Thread Pilot
      */
-    private Pilot pilot;
+    private String pilotState;
 
     /**
      *  Array of Passenger threads
      */
-    private Passenger[] passengerList;
+    private String[] passengerListState;
 
     /**
      * Number of Passengers in Queue
@@ -78,10 +74,16 @@ public class Repository {
     /**
      * Constructor
      */
-    public Repository() {
+    public Repository(int num_passengers) {
         numberInQueue = 0;
         numberInPlane = 0;
         numberAtDestination = 0;
+        hostessState = "WFNF";
+        pilotState = "ATF";
+        passengerListState = new String[num_passengers];
+        for (int i = 0; i < passengerListState.length; i++) {
+            passengerListState[i] = "GTA";
+        }
         try {
             
             repoWriter = new FileWriter(new File("repo.txt"));
@@ -93,24 +95,24 @@ public class Repository {
     /**
     * @param hostess An Instance of Hostess Thread
     */
-    public void setHostess(Hostess hostess) {
-        this.hostess = hostess;
+    public void setHostessState(String state) {
+        this.hostessState = state;
     }
 
     /**
      * 
      * @param pilot An Instance of Pilot Thread
      */
-    public void setPilot(Pilot pilot) {
-        this.pilot = pilot;
+    public void setPilotState(String state) {
+        this.pilotState = state;
     }
 
     /**
      * 
      * @param passengerList Array of Passenger threads
      */
-    public void setPassengerList(Passenger[] passengerList) {
-        this.passengerList = passengerList;
+    public void setPassengerListState(int index, String passegerState) {
+        this.passengerListState[index] = passegerState;
     }
 
     /**
@@ -125,13 +127,6 @@ public class Repository {
      */
     public void decrementNumberInQueue() {
         numberInQueue--;
-    }
-    
-    /**
-     * @return number of passengers in the plane
-     */
-    public int getNumberInPlane() {
-        return this.numberInPlane;
     }
 
     /**
@@ -194,7 +189,7 @@ public class Repository {
      */
     public void logEntities(){
         String entities = String.format("%4s %4s", "PT", "HT");
-        for(int i = 0; i < passengerList.length; i++)
+        for(int i = 0; i < passengerListState.length; i++)
             entities += String.format(" %4s", ("P"+i));
         entities += String.format(" %4s %4s %4s%n", "InQ", "InF", "PTAL");
         logger.info(entities);
@@ -211,9 +206,9 @@ public class Repository {
      */
     public void log(){
         mutex.lock();
-        String states = String.format("%4s %4s", pilot.getStateString(), hostess.getStateString());
-        for(int i = 0; i < passengerList.length; i++)
-            states += String.format(" %4s", passengerList[i].getStateString());
+        String states = String.format("%4s %4s", pilotState, hostessState);
+        for(int i = 0; i < passengerListState.length; i++)
+            states += String.format(" %4s", passengerListState[i]);
         states += String.format(" %4s %4s %4s%n", numberInQueue, numberInPlane, numberAtDestination);
 
         if(!states.equals(this.lastStateString)){ 

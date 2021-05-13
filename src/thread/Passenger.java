@@ -64,24 +64,25 @@ public class Passenger extends Thread {
         while(!end){
             switch(this.state) {
                 case GOING_TO_AIRPORT:
-                    this.dp.passengerTravelToAirport();
-                    this.dp.passengerWaitInQueue(this.id);
+                    this.dp.passengerTravelToAirport(this.id, this.getStateString());
+                    this.dp.passengerWaitInQueue(this.id, this.getStateString());
                     this.state = PassengerState.IN_QUEUE;
                     break;
 
                 case IN_QUEUE:
-                    this.dp.passengerShowDocuments(this.id);
-                    this.dp.passengerBoardThePlane(this.id);
+                    this.dp.passengerShowDocuments(this.id, this.getStateString());
+                    this.plane.passengerBoardThePlane(this.id, this.getStateString());
                     this.state = PassengerState.IN_FLIGHT;
                     break;
 
                 case IN_FLIGHT:
-                    this.plane.passengerWaitForEndOfFlight(this.id);
-                    this.ap.passengerLeaveThePlane();
+                    this.plane.passengerWaitForEndOfFlight(this.id, this.getStateString());
                     this.state = PassengerState.AT_DESTINATION;
                     break;
 
                 case AT_DESTINATION:
+                    this.plane.passengerExit(this.id);
+                    this.ap.passengerLeaveThePlane(this.id, this.getStateString());
                     end = true;
                     break;
             }
