@@ -3,7 +3,7 @@ package thread;
 import monitor.ArrivalAirport;
 import monitor.DepartureAirport;
 import monitor.Plane;
-import states.EPilot;
+import states.PilotState;
 
 /**
  * Thread Pilot
@@ -15,7 +15,7 @@ public class Pilot extends Thread {
     /**
      * Pilot's current state in the simulation
      */
-    private EPilot.State state;
+    private PilotState state;
 
     /**
      * Plane's shared region
@@ -44,7 +44,7 @@ public class Pilot extends Thread {
         this.plane = plane;
         this.dp = dp;
         this.ap = ap;
-        this.state = EPilot.State.AT_TRANSFER_GATE;
+        this.state = PilotState.AT_TRANSFER_GATE;
     }
 
     /**
@@ -56,41 +56,37 @@ public class Pilot extends Thread {
         while(!end){
             switch(this.state) {
                 case AT_TRANSFER_GATE:
-                    EPilot.atTransferGate s1 = this.dp.atTransferGate();
-                    if (s1 == EPilot.atTransferGate.informPlaneReadyForBoarding)
-                        this.state = EPilot.State.READY_FOR_BOARDING;
-                    else if (s1 == EPilot.atTransferGate.endLife)
+                    if(this.dp.noMorePassengers()){
                         end = true;
+                        break;
+                    }
+                    this.dp.pilotInformPlaneReadyForBoarding();
+                    this.state = PilotState.READY_FOR_BOARDING;
                     break;
 
                 case READY_FOR_BOARDING:
-                    EPilot.readyForBoarding s2 = this.dp.readyForBoarding();
-                    assert s2 == EPilot.readyForBoarding.waitForAllInBoard;
-                    this.state = EPilot.State.WAIT_FOR_BOARDING;
+                    this.plane.pilotWaitForAllInBoard();
+                    this.state = PilotState.WAIT_FOR_BOARDING;
                     break;
 
                 case WAIT_FOR_BOARDING:
-                    EPilot.waitingForBoarding s3 = this.plane.waitingForBoarding();
-                    assert s3 == EPilot.waitingForBoarding.flyToDestinationPoint;
-                    this.state = EPilot.State.FLYING_FORWARD;
+                    this.plane.pilotFlyToDestinationPoint();
+                    this.state = PilotState.FLYING_FORWARD;
                     break;
 
                 case FLYING_FORWARD:
-                    EPilot.flyingForward s4 = this.plane.flyingForward();
-                    assert s4 == EPilot.flyingForward.announceArrival;
-                    this.state = EPilot.State.DEBOARDING;
+                    this.plane.pilotAnnounceArrival();
+                    this.state = PilotState.DEBOARDING;
                     break;
                     
                 case DEBOARDING:
-                    EPilot.deboarding s5 = this.ap.deboarding();
-                    assert s5 == EPilot.deboarding.flyToDeparturePoint;
-                    this.state = EPilot.State.FLYING_BACK;
+                    this.ap.pilotFlyToDeparturePoint();
+                    this.state = PilotState.FLYING_BACK;
                     break;
                     
                 case FLYING_BACK:
-                    EPilot.flyingBack s6 = this.ap.flyingBack();
-                    assert s6 == EPilot.flyingBack.parkAtTransferGate;
-                    this.state = EPilot.State.AT_TRANSFER_GATE;
+                    this.dp.pilotParkAtTransferGate();
+                    this.state = PilotState.AT_TRANSFER_GATE;
                     break;
             }
         }

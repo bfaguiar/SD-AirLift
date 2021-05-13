@@ -1,7 +1,5 @@
 package monitor;
 
-import states.EPilot;
-import states.EHostess;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import repo.Repository;
@@ -43,24 +41,15 @@ public class Plane {
         this.repo = repo;
     } 
 
-    /**
-     * <b> Transition state: </b> Informs the Pilot that the boarding was complete
-     * @return EHostess.readyToFly enumerate to inform about what should be the next state
-     */ 
-    public EHostess.readyToFly readyToFly() {
+    public void hostessInformPlaneReadyToTakeOff() {
         mutex.lock();
         repo.log();
         boardingComplete = true;
         conditionPilot.signal();
         mutex.unlock();
-        return EHostess.readyToFly.waitForNextFlight;
     }
 
-    /**
-     * <b> Blocking State: </b> Pilot is waken up by the hostess when boarding is complete
-     * @return EPilot.waitingForBoarding enumerate to inform about what should be the next state
-     */
-    public EPilot.waitingForBoarding waitingForBoarding() {
+    public void pilotWaitForAllInBoard() {
         mutex.lock();
         repo.log();
         try{
@@ -73,25 +62,30 @@ public class Plane {
         boardingComplete = false;
         repo.logDeparture();    
         mutex.unlock();
-        return EPilot.waitingForBoarding.flyToDestinationPoint;
     }
 
-    /**
-     * <b> Independent state with blocking: </b> The pilot sleeps for a random period of time in the simulation 
-     * @return EPilot.flyingForward enumerate to inform about what should be the next state 
-     */
-    public EPilot.flyingForward flyingForward() {
+    public void pilotFlyToDestinationPoint() {
         mutex.lock();
         repo.log();
         try {
-            Thread.sleep((long) ((Math.random() * 1000)+1));
+            Thread.sleep((long) ((Math.random()*1000)+1));
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
-        repo.logArriving(); 
-        mutex.unlock(); 
-        return EPilot.flyingForward.announceArrival;
+        mutex.unlock();
     }
 
+    public void pilotAnnounceArrival() {
+        mutex.lock();
+        repo.log();
+        repo.logArriving(); 
+        mutex.unlock(); 
+    }
+
+    public void passengerWaitForEndOfFlight(int id) {
+        mutex.lock();
+        repo.log();
+        mutex.unlock();
+    } 
 }  

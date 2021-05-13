@@ -4,8 +4,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import repo.Repository;
-import states.EPassenger;
-import states.EPilot;
 
 /**
  * Arrival Airport's shared region
@@ -65,11 +63,7 @@ public class ArrivalAirport {
         this.repo = repo;
     } 
 
-    /**
-     * <b> Blocking state: </b> The pilot announces that the Plane is ready for deboarding and waits until all passengers exit the plane.
-     * @return EPilot.deboarding enumerate to inform about what should be the next state
-     */
-    public EPilot.deboarding deboarding() {
+    public void pilotFlyToDeparturePoint() {
         mutex.lock();                 
         repo.log();
         passengersInPlane = repo.getNumberInPlane();
@@ -87,32 +81,11 @@ public class ArrivalAirport {
         }
         repo.logReturning();
         mutex.unlock();
-        return EPilot.deboarding.flyToDeparturePoint;
     } 
 
-    /**
-     * <b> independent state with blocking: </b> The pilot returns back to the Departure Airport.
-     * @return EPilot.flyingBack enumerate to inform about what should be the next state
-     */
-    public EPilot.flyingBack flyingBack() { 
+    public void passengerLeaveThePlane() {
         mutex.lock();
-        repo.log();
-        try {
-            Thread.sleep((long) ((Math.random()*1000)+1));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        }
-        mutex.unlock();
-        return EPilot.flyingBack.parkAtTransferGate;
-    }
-
-    /**
-     * <b> Blocking state: </b> The passenger waits for the pilot to annouce the arrival and then leaves. If he's the last passenger, he informs the pilot. 
-     * @return EPassenger.inFlight enumerate to inform about what should be the next state
-     */
-    public EPassenger.inFlight inFlight() {
-        mutex.lock();
+        System.out.println("Passenger exited");
         try {
             while(!canExit){
                 conditionPassenger.await();
@@ -130,6 +103,5 @@ public class ArrivalAirport {
         }
         repo.log();
         mutex.unlock();
-        return EPassenger.inFlight.leaveThePlane;
     }  
 } 

@@ -1,8 +1,5 @@
 package monitor;
 
-import states.EHostess;
-import states.EPassenger;
-import states.EPilot;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -30,7 +27,7 @@ public class DepartureAirport {
      * Instantiation of a Condition Variable for the Pilot
      * @see Condition
      */
-    private Condition conditionPilot = mutex.newCondition();
+    private Condition conditionPilotBoarding = mutex.newCondition();
 
      /**
      * Instantiation of a Condition Variable for the Hostess
@@ -126,102 +123,59 @@ public class DepartureAirport {
         this.totalPassengers = totalPassengers;
     }
 
-    /**
-     * <b> Transition state: </b> The pilot is at the Transfer Gate and if not all passengers were already transported, He increments the number of flights, clears the  {@code passengersInPlane} queue and now he's ready for a new boarding. 
-     * @return EPilot.atTransferGate enumerate to inform about what should be the next state
-     */
-    public EPilot.atTransferGate atTransferGate() {
-        if (passengersTransported == totalPassengers){
-            mutex.lock();
-            repo.log();
-            mutex.unlock();
-            return EPilot.atTransferGate.endLife;
+    public void pilotParkAtTransferGate() {
+        mutex.lock();
+        try {
+            Thread.sleep((long) ((Math.random() * 1000)+1));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
-        else{
-            mutex.lock();
-            repo.incrementFlightNum();
-            passengersInPlane.clear();
-            repo.log();
-            repo.logFlightBoardingStarting();
-            mutex.unlock();
-            return EPilot.atTransferGate.informPlaneReadyForBoarding;
-        }
+        repo.incrementFlightNum();
+        passengersInPlane.clear();
+        repo.log();
+        mutex.unlock();
     }
 
-    /**
-     * <b> Transition state: </b> The pilot informs the Hostess that the plane is ready for a new boarding
-     * @return  EPilot.readyForBoarding enumerate to inform what should be the next state
-     */
-    public EPilot.readyForBoarding readyForBoarding() {
+    public void pilotInformPlaneReadyForBoarding() {
         mutex.lock();
         repo.log();
-        this.conditionPilot.signal();
+        this.conditionPilotBoarding.signal();
+        repo.logFlightBoardingStarting();
         planeReadyBoarding = true;
         mutex.unlock();
-        return EPilot.readyForBoarding.waitForAllInBoard;
     }
 
-    /**
-     * <b> Blocking state: </b> If not all passengers were already transported, the Hostess waits for a signal from Pilot to start waiting for passengers
-     * @return EHostess.waitForFlight enumerate to inform what should be the next state
-     */
-    public EHostess.waitForFlight waitForFlight() {
-        if (passengersTransported == totalPassengers){
-            mutex.lock();
-            repo.log();
-            mutex.unlock();
-            return EHostess.waitForFlight.endLife;
-        }
-        else{
-            mutex.lock();
-            repo.log();
-            try {
-                while(!this.planeReadyBoarding)
-                    this.conditionPilot.await();
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
-            }
-            mutex.unlock();
-            return EHostess.waitForFlight.prepareForPassBoarding;
-        }
-    }
-
-    /**
-     * <b> Blocking state: </b> If there are no passengers left in the queue and the plane's capacity was reached or there are no more passengers  in the simulation to transport, the Hostess will inform that the plane is ready to take off, if not, the Hostess will check the Documents of the passengers in the queue if there are any.
-     * @return EHostess.waitForPassenger enumerate to inform what should be the next state
-     */
-    public EHostess.waitForPassenger waitForPassenger() {
+    public void hostessPrepareForPassBoarding() {
         mutex.lock();
         repo.log();
-        if((passengerQueue.isEmpty() && passengersInPlane.size() >= planeMinCapacity) || 
-           (!passengerQueue.isEmpty() && passengersInPlane.size() == planeMaxCapacity) ||
-           (passengerQueue.isEmpty() && passengersTransported == totalPassengers)){
-            planeReadyBoarding = false;
-            mutex.unlock();
-            return EHostess.waitForPassenger.informPlaneReadyToTakeOff;
+        try {
+            while(!this.planeReadyBoarding)
+                this.conditionPilotBoarding.await();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
-        else{
-            try {
-                while(passengerQueue.isEmpty())
-                    this.conditionPassengerQueue.await();
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
-            }
-            this.conditionHostessDocuments.signalAll();
-            hostessAskDocuments = true;
-            hostessNextPassenger = false;
-            mutex.unlock();
-            return EHostess.waitForPassenger.checkDocuments;
+        mutex.unlock();
+    }
+
+     public void hostessCheckDocuments() {
+        mutex.lock();
+        repo.log();
+        try {
+            while(passengerQueue.isEmpty())
+                this.conditionPassengerQueue.await();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
+        this.conditionHostessDocuments.signalAll();
+        hostessAskDocuments = true;
+        hostessNextPassenger = false;
+        mutex.unlock();
      }
 
-     /**
-      * <b> Blocking state: </b> The hostess will wait for the passenger in the head of the queue (if there are any) to enter the plane 
-      * @return EHostess.checkPassenger enumerate to inform what should be the next state
-      */
-    public EHostess.checkPassenger checkPassenger() {
+    public void hostessWaitForNextPassenger() {
         mutex.lock();
         repo.log();
         try {
@@ -243,69 +197,85 @@ public class DepartureAirport {
             Thread.currentThread().interrupt();
         }
         mutex.unlock();
-        return EHostess.checkPassenger.waitForNextPassenger;
     }
 
-    /**
-     * <b> independent state with blocking: </b> the passenger must wait for a place in the queue
-     * @param id Passenger's id
-     * @return EPassenger.goingToAirport enumerate to inform what should be the next state
-     */
-    public EPassenger.goingToAirport goingToAirport(int id) {
+    public void hostessWaitForNextFlight() {
         mutex.lock();
         repo.log();
-        if (passengerQueue.size() + passengersInPlane.size() < planeMaxCapacity && planeReadyBoarding){
-            conditionPassengerQueue.signal();
-            passengerQueue.add(id);
-            repo.incrementNumberInQueue();
-            mutex.unlock();
-            return EPassenger.goingToAirport.waitInQueue;
+        planeReadyBoarding = false;
+        mutex.unlock();
+     }
+    
+    public void passengerTravelToAirport() {
+        mutex.lock();
+        repo.log();
+        try {
+            Thread.sleep((long) ((Math.random()*1000)+1));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
-        else{
-            mutex.unlock();
-            return EPassenger.goingToAirport.travelToAirport;
-        }
+        mutex.unlock();
     } 
 
-    /**
-     * <b> Double blocking state </b>: The passenger waits in the queue until he's called to show the documents to board the plane. 
-     * @param id Passenger's id
-     * @return EPassenger.inQueue enumerate to inform what should be the next state
-     */
-    public EPassenger.inQueue inQueue(int id) {
+    public void passengerWaitInQueue(int id) {
         mutex.lock();
         repo.log();
-        if ((!passengerQueue.isEmpty() && passengerQueue.peek() == id && passengerDocumentsQueue.contains(id))){
-            conditionPassengerLeft.signal();
-            repo.logPassengerCheck(id);
-            passengerDocumentsQueue.remove(id);
-            passengersInPlane.add(id);
-            repo.incrementNumberInPlane();
-            passengersTransported++;
-            passengerQueue.remove(id);
-            repo.decrementNumberInQueue();
-            mutex.unlock();
-            return EPassenger.inQueue.boardThePlane;
+        conditionPassengerQueue.signal();
+        passengerQueue.add(id);
+        repo.incrementNumberInQueue();
+        mutex.unlock();
+    } 
+
+    public void passengerBoardThePlane(int id) {
+        mutex.lock();
+        repo.log();
+        conditionPassengerLeft.signal();
+        repo.logPassengerCheck(id);
+        passengerDocumentsQueue.remove(id);
+        passengersInPlane.add(id);
+        repo.incrementNumberInPlane();
+        passengersTransported++;
+        passengerQueue.remove(id);
+        repo.decrementNumberInQueue();
+        mutex.unlock();
+    }
+
+    public void passengerShowDocuments(int id) {
+        mutex.lock();
+        repo.log();
+        try {
+            while(!(this.hostessAskDocuments && passengerQueue.peek() == id))
+                this.conditionHostessDocuments.await();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt(); 
         }
-        else{
-            try {
-                while(!(this.hostessAskDocuments && passengerQueue.peek() == id))
-                    this.conditionHostessDocuments.await();
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt(); 
-            }
-            passengerDocumentsQueue.add(id);
-            conditionPassengerDocuments.signal();
-            try {
-                while(!(this.hostessNextPassenger && passengerQueue.peek() == id))
-                    this.conditionHostessNext.await();
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt(); 
-            }
-            mutex.unlock();
-            return EPassenger.inQueue.showDocuments;
+        passengerDocumentsQueue.add(id);
+        conditionPassengerDocuments.signal();
+        try {
+            while(!(this.hostessNextPassenger && passengerQueue.peek() == id))
+                this.conditionHostessNext.await();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt(); 
         }
+        mutex.unlock();
+    }
+
+    public boolean isPlaneBoarded(){
+        if((passengerQueue.isEmpty() && passengersInPlane.size() >= planeMinCapacity) || 
+           (!passengerQueue.isEmpty() && passengersInPlane.size() == planeMaxCapacity) ||
+           (passengerQueue.isEmpty() && passengersTransported == totalPassengers))
+            return true;
+        else
+            return false;
+    }
+
+    public boolean noMorePassengers(){
+        if (passengersTransported == totalPassengers)
+            return true;
+        else
+            return false;
     }
 }

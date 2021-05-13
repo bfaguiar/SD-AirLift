@@ -2,7 +2,7 @@ package thread;
 
 import monitor.DepartureAirport;
 import monitor.Plane;
-import states.EHostess;
+import states.HostessState;
 
 /**
  * Thread Hostess
@@ -14,7 +14,7 @@ public class Hostess extends Thread {
     /**
      * Hostess' current state in the simulation
      */
-    private EHostess.State state;
+    private HostessState state;
     /**
      * Departure Airport's shared region
      * @see DepartureAirport
@@ -32,7 +32,7 @@ public class Hostess extends Thread {
      * @param dp Departure Airport's shared region
      */
     public Hostess(Plane plane, DepartureAirport dp){
-        this.state = EHostess.State.WAIT_FOR_NEXT_FLIGHT;
+        this.state = HostessState.WAIT_FOR_FLIGHT;
         this.dp = dp;
         this.plane = plane;
     }
@@ -45,32 +45,33 @@ public class Hostess extends Thread {
         boolean end = false;
         while(!end){
             switch(this.state) {
-                case WAIT_FOR_NEXT_FLIGHT:
-                    EHostess.waitForFlight s1 = this.dp.waitForFlight();
-                    if(s1 == EHostess.waitForFlight.prepareForPassBoarding)
-                        this.state = EHostess.State.WAIT_FOR_PASSENGER;
-                    else if (s1 == EHostess.waitForFlight.endLife)
+                case WAIT_FOR_FLIGHT:
+                    if(this.dp.noMorePassengers()){
                         end = true;
+                        break;
+                    }
+                    this.dp.hostessPrepareForPassBoarding();
+                    this.state = HostessState.WAIT_FOR_PASSENGER;
                     break;
 
                 case WAIT_FOR_PASSENGER:
-                    EHostess.waitForPassenger s2 = this.dp.waitForPassenger();
-                    if (s2 == EHostess.waitForPassenger.informPlaneReadyToTakeOff)
-                        this.state = EHostess.State.READY_TO_FLY;
-                    else if (s2 == EHostess.waitForPassenger.checkDocuments)
-                        this.state = EHostess.State.CHECK_PASSENGER;
+                    if(this.dp.isPlaneBoarded()){
+                        this.plane.hostessInformPlaneReadyToTakeOff();
+                        this.state = HostessState.READY_TO_FLY;
+                    }
+                    else{
+                        this.dp.hostessCheckDocuments();
+                        this.state = HostessState.CHECK_PASSENGER;
+                    }
                     break;
-
                 case CHECK_PASSENGER:
-                    EHostess.checkPassenger s3 = this.dp.checkPassenger();
-                    assert s3 == EHostess.checkPassenger.waitForNextPassenger;
-                    this.state = EHostess.State.WAIT_FOR_PASSENGER;
+                    this.dp.hostessWaitForNextPassenger();
+                    this.state = HostessState.WAIT_FOR_PASSENGER;
                     break;
 
                 case READY_TO_FLY:
-                    EHostess.readyToFly s4 = this.plane.readyToFly();
-                    assert s4 == EHostess.readyToFly.waitForNextFlight;
-                    this.state = EHostess.State.WAIT_FOR_NEXT_FLIGHT;
+                    this.dp.hostessWaitForNextFlight();
+                    this.state = HostessState.WAIT_FOR_FLIGHT;
                     break;
             }
         }
@@ -82,7 +83,7 @@ public class Hostess extends Thread {
      */
     public String getStateString(){
         switch(this.state) {
-            case WAIT_FOR_NEXT_FLIGHT:
+            case WAIT_FOR_FLIGHT:
                 return "WFNF";
 
             case WAIT_FOR_PASSENGER:

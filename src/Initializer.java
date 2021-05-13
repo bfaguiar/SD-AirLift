@@ -63,7 +63,7 @@ public class Initializer {
         repository.logEntities();
 
         /**
-         * Inicialization of Threads
+         * Initialization of Threads
          */
         hostess.start();
         pilot.start();
