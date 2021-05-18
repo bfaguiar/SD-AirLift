@@ -1,37 +1,37 @@
 cd Servers/Repository
-javac Repository.java
-java Repository
+javac Initializer.java
+java Initializer
 cd ../..
 
 cd Servers/DepartureAiport
-javac DepartureAiport.java
-java DepartureAiport
+javac Initializer.java
+java Initializer
 cd ../..
 
 cd Servers/Plane
-javac Plane.java
-java Plane
+javac Initializer.java
+java Initializer
 cd ../..
 
 cd Servers/ArrivalAirport
-javac ArrivalAirport.java
-java ArrivalAirport
+javac Initializer.java
+java Initializer
 cd ../..
 
 cd Clients/Hostess
-javac Hostess.java
-java Hostess
+javac Initializer.java
+java Initializer
 cd ../..
 
 cd Clients/Pilot
-javac Pilot.java
-java Pilot
+javac Initializer.java
+java Initializer
 cd ../..
 
 cd Clients/Passenger
-javac Passenger.java
+javac Initializer.java
 FOR /L %%A IN (1, 1, 21) DO (
-    java Passenger
+    java Initializer
 )
 cd ../..
 

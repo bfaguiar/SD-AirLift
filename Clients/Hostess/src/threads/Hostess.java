@@ -1,5 +1,7 @@
-import monitor.DepartureAirport;
-import monitor.Plane;
+package threads;
+
+import stubs.DepartureAirport;
+import stubs.Plane;
 import states.HostessState;
 
 /**
@@ -8,7 +10,6 @@ import states.HostessState;
  * @author David Rocha, 84807
  */
 public class Hostess extends Thread {
-
     /**
      * Hostess' current state in the simulation
      */

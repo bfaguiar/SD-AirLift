@@ -1,6 +1,8 @@
-import monitor.ArrivalAirport;
-import monitor.DepartureAirport;
-import monitor.Plane;
+package threads;
+
+import stubs.ArrivalAirport;
+import stubs.DepartureAirport;
+import stubs.Plane;
 import states.PilotState;
 
 /**
