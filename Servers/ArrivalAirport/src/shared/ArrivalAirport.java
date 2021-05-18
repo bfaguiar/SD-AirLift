@@ -1,7 +1,9 @@
+package shared;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import repo.Repository;
+import stubs.Repository;
 
 /**
  * Arrival Airport's shared region

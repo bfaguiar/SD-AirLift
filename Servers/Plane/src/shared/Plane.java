@@ -1,8 +1,10 @@
+package shared;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import repo.Repository;
+import stubs.Repository;
 
 /**
  * Plane's shared region

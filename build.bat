@@ -1,39 +1,25 @@
-cd Servers/Repository
-javac Initializer.java
-java Initializer
-cd ../..
+javac Servers/Repository/Initializer.java
+java Servers/Repository/Initializer
 
-cd Servers/DepartureAiport
-javac Initializer.java
-java Initializer
-cd ../..
+javac Servers/DepartureAirport/Initializer.java
+java Servers/DepartureAirport/Initializer
 
-cd Servers/Plane
-javac Initializer.java
-java Initializer
-cd ../..
+javac Servers/Plane/Initializer.java
+java Servers/Plane/Initializer
 
-cd Servers/ArrivalAirport
-javac Initializer.java
-java Initializer
-cd ../..
+javac Servers/ArrivalAirport/Initializer.java
+java Servers/ArrivalAirport/Initializer
 
-cd Clients/Hostess
-javac Initializer.java
-java Initializer
-cd ../..
+javac Clients/Hostess/Initializer.java
+java Clients/Hostess/Initializer
 
-cd Clients/Pilot
-javac Initializer.java
-java Initializer
-cd ../..
+javac Clients/Pilot/Initializer.java
+java Clients/Pilot/Initializer
 
-cd Clients/Passenger
-javac Initializer.java
+javac Clients/Passenger/Initializer.java
 FOR /L %%A IN (1, 1, 21) DO (
-    java Initializer
+    java Clients/Passenger/Initializer
 )
-cd ../..
 
 pause
 del /s *.class

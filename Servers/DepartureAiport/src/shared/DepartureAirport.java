@@ -1,8 +1,10 @@
+package shared;
+
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;
-import repo.Repository;
+import stubs.Repository;
 
 /** Departure Airport's shared region
  * @author Bruno Aguiar, 80177
