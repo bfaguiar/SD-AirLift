@@ -12,7 +12,7 @@ set PlaneMinCapacity=5
 set PlaneMaxCapacity=10
 
 javac Servers/Repository/Initializer.java
-java Servers/Repository/Initializer %RepositoryAddress% %RepositoryPort%
+java Servers/Repository/Initializer %RepositoryAddress% %RepositoryPort% %NumberPassengers%
 
 javac Servers/DepartureAirport/Initializer.java
 java Servers/DepartureAirport/Initializer %DepartureAirportAddress% %DepartureAirportPort% %NumberPassengers% %PlaneMinCapacity% %PlaneMaxCapacity%
