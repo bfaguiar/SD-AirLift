@@ -4,9 +4,15 @@ import stubs.Repository;
 
 public class Initializer {
     public static void main(String args[]){
-        Repository repo = new Repository();
+        String server_address = args[0];
+        int server_port = Integer.parseInt(args[1]);
 
-        DepartureAirport dp = new DepartureAirport(repo, 0, 0, 0);
+        int N_PASSENGERS = Integer.parseInt(args[1]);
+        int CAPACITY_MIN = Integer.parseInt(args[2]);
+        int CAPACITY_MAX = Integer.parseInt(args[3]);
+
+        Repository repo = new Repository();
+        DepartureAirport dp = new DepartureAirport(repo, CAPACITY_MIN, CAPACITY_MAX, N_PASSENGERS);
         DepartureAirportProxy proxy = new DepartureAirportProxy(dp);
     }
 }
