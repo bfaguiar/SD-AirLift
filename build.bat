@@ -4,35 +4,49 @@ set PlaneAddress=127.0.0.1
 set ArrivalAirportAddress=127.0.0.1
 set RepositoryPort=10001
 set DepartureAirportPort=10002
-set PlaneAirportPort=10003
+set PlanePort=10003
 set ArrivalAirportPort=10004
 
 set NumberPassengers=21
 set PlaneMinCapacity=5
 set PlaneMaxCapacity=10
 
-javac Servers/Repository/Initializer.java
-java Servers/Repository/Initializer %RepositoryAddress% %RepositoryPort% %NumberPassengers%
+cd Servers/Repository/
+javac src/Initializer.java
+java -cp lib/* src/Initializer %RepositoryPort% %NumberPassengers% 
+cd ../../
 
-javac Servers/DepartureAirport/Initializer.java
-java Servers/DepartureAirport/Initializer %DepartureAirportAddress% %DepartureAirportPort% %NumberPassengers% %PlaneMinCapacity% %PlaneMaxCapacity%
+cd Servers/DepartureAirport/
+javac src/Initializer.java
+java -cp lib/* src/Initializer %DepartureAirportPort% %NumberPassengers% %PlaneMinCapacity% %PlaneMaxCapacity% %RepositoryAddress% %RepositoryPort%
+cd ../../
 
-javac Servers/Plane/Initializer.java
-java Servers/Plane/Initializer %PlaneAddress% %PlaneAirportPort%
+cd Servers/Plane/
+javac src/Initializer.java
+java -cp lib/* src/Initializer %PlanePort% %RepositoryAddress% %RepositoryPort%
+cd ../../
 
-javac Servers/ArrivalAirport/Initializer.java
-java Servers/ArrivalAirport/Initializer %ArrivalAirportAddress% %ArrivalAirportPort%
+cd Servers/ArrivalAirport/
+javac src/Initializer.java
+java -cp lib/* src/Initializer %ArrivalAirportPort% %RepositoryAddress% %RepositoryPort%
+cd ../../
 
-javac Clients/Hostess/Initializer.java
-java Clients/Hostess/Initializer
+cd Clients/Hostess/
+javac src/Initializer.java
+java -cp lib/* src/Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort%
+cd ../../
 
-javac Clients/Pilot/Initializer.java
-java Clients/Pilot/Initializer
+cd Clients/Pilot/
+javac src/Initializer.java
+java -cp lib/* src/Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%
+cd ../../
 
-javac Clients/Passenger/Initializer.java
+cd Clients/Passenger/
+javac src/Initializer.java
 FOR /L %%A IN (1, 1, %NumberPassengers%) DO (
-    java Clients/Passenger/Initializer %A%
+    java -cp lib/* src/Initializer %A% %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%
 )
+cd ../../
 
 pause
 del /s *.class

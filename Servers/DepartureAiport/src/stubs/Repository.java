@@ -1,6 +1,9 @@
 package stubs;
 
 public class Repository{
+    public Repository(String address, int port) {
+    }
+
     public void incrementFlightNum(){
 
     }

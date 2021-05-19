@@ -1,6 +1,9 @@
 package stubs;
 
 public class DepartureAirport{
+    public DepartureAirport(String address, int port) {
+    }
+
     public void passengerTravelToAirport(int id, String state){
 
     }

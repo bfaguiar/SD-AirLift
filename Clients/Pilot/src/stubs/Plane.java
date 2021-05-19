@@ -1,6 +1,9 @@
 package stubs;
 
 public class Plane{
+    public Plane(String address, int port) {
+    }
+
     public int getNumberInPlane(){
         return 0;
     }
