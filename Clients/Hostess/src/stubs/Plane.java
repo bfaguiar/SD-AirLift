@@ -1,5 +1,9 @@
 package stubs;
 
+import communication.ClientCom;
+import communication.Message;
+import communication.MessageType;
+
 public class Plane{
 
     private String address;
@@ -14,10 +18,12 @@ public class Plane{
         
         ClientCom com = new ClientCom (address, port);           // communication channel
    
-        while(!com.open()) 
-            try { Thread.currentThread().sleep((long) (10)); } 
-            catch(InterruptExpection e) {}
-
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
         com.writeObject(new Message(MessageType.HOSTESS_INFORM_PLANE_READY, state)); 
         Message fromServer = (Message) com.readObject(); 
         assert fromServer.getMessageType() == MessageType.STATUS_OK;

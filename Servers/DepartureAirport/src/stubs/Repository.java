@@ -147,4 +147,19 @@ public class Repository{
         assert inMessage.getMessageType() == MessageType.STATUS_OK;
         com.close();
     }
+
+    public void closeLog(){
+        ClientCom com = new ClientCom (address, port);
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
+        Message msg = new Message(MessageType.REPO_CLOSE_LOG);
+        com.writeObject(msg);
+        Message inMessage = (Message) com.readObject();
+        assert inMessage.getMessageType() == MessageType.STATUS_OK;
+        com.close();
+    }
 }

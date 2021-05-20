@@ -1,5 +1,9 @@
 package stubs;
 
+import communication.ClientCom;
+import communication.Message;
+import communication.MessageType;
+
 public class Plane {
 
     private String address;
@@ -13,11 +17,13 @@ public class Plane {
     public int getNumberInPlane(){
         ClientCom com = new ClientCom (address, port);           // communication channel
 
-        while(!com.open()) 
-            try { Thread.currentThread().sleep((long) (10)); } 
-            catch(InterruptExpection e) {}
-
-        com.writeObject(new Message(MessageType.DP_NO_MORE_PASSENGERS)); 
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
+        com.writeObject(new Message(MessageType.PLANE_GET_NUMBER)); 
         Message fromServer = (Message) com.readObject(); 
         assert fromServer.getMessageType() == MessageType.STATUS_OK;
         com.close();
@@ -27,10 +33,12 @@ public class Plane {
     public void pilotWaitForAllInBoard(String state){
         ClientCom com = new ClientCom (address, port);           // communication channel
 
-        while(!com.open()) 
-            try { Thread.currentThread().sleep((long) (10)); } 
-            catch(InterruptExpection e) {}
-
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
         com.writeObject(new Message(MessageType.PILOT_WAIT_ALL_INBOARD, state)); 
         Message fromServer = (Message) com.readObject(); 
         assert fromServer.getMessageType() == MessageType.STATUS_OK;
@@ -40,10 +48,12 @@ public class Plane {
     public void pilotFlyToDestinationPoint(String state){
         ClientCom com = new ClientCom (address, port);           // communication channel
 
-        while(!com.open()) 
-            try { Thread.currentThread().sleep((long) (10)); } 
-            catch(InterruptExpection e) {}
-
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
         com.writeObject(new Message(MessageType.PILOT_FLY_DESTINATION_POINT, state)); 
         Message fromServer = (Message) com.readObject(); 
         assert fromServer.getMessageType() == MessageType.STATUS_OK;
@@ -53,14 +63,30 @@ public class Plane {
     public void pilotAnnounceArrival(String state){
         ClientCom com = new ClientCom (address, port);           // communication channel
 
-        while(!com.open()) 
-            try { Thread.currentThread().sleep((long) (10)); } 
-            catch(InterruptExpection e) {}
-
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
         com.writeObject(new Message(MessageType.PILOT_ANNOUNCE_ARRIVAL, state)); 
         Message fromServer = (Message) com.readObject(); 
         assert fromServer.getMessageType() == MessageType.STATUS_OK;
         com.close();
     }
     
+    public void serviceEnd(){
+        ClientCom com = new ClientCom (address, port);           // communication channel
+
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
+        com.writeObject(new Message(MessageType.SERVICE_END)); 
+        Message fromServer = (Message) com.readObject(); 
+        assert fromServer.getMessageType() == MessageType.STATUS_OK;
+        com.close();
+    }
 }

@@ -1,5 +1,9 @@
 package stubs;
 
+import communication.ClientCom;
+import communication.Message;
+import communication.MessageType;
+
 public class ArrivalAirport {
 
     private String address;
@@ -11,18 +15,33 @@ public class ArrivalAirport {
     }
 
     public void pilotFlyToDeparturePoint(int number, String state){
-        
         ClientCom com = new ClientCom (address, port);           // communication channel
 
-        while(!com.open()) 
-            try { Thread.currentThread().sleep((long) (10)); } 
-            catch(InterruptExpection e) {}
-
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
         com.writeObject(new Message(MessageType.PILOT_FLY_DEPARTURE_POINT, number, state)); 
         Message fromServer = (Message) com.readObject(); 
         assert fromServer.getMessageType() == MessageType.STATUS_OK;
         com.close();
-    
     } 
+    
+    public void serviceEnd(){
+        ClientCom com = new ClientCom (address, port);           // communication channel
+
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
+        com.writeObject(new Message(MessageType.SERVICE_END)); 
+        Message fromServer = (Message) com.readObject(); 
+        assert fromServer.getMessageType() == MessageType.STATUS_OK;
+        com.close();
+    }
 } 
 

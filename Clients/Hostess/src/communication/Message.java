@@ -27,7 +27,7 @@ public class Message implements Serializable{
 
     public Message(MessageType type, int arg1){
         this.type = type;
-        if (type == MessageType.PLANE_GET_NUMBER)
+        if (type == MessageType.RETURN_PLANE_NUMBER)
             this.retInt = arg1;
         else
             this.id = arg1;
@@ -43,17 +43,17 @@ public class Message implements Serializable{
         return this.type;
     }
 
-    // public String getState(){
-    //     return this.state;
-    // }
+    public String getState(){
+        return this.state;
+    }
 
-    // public int getID(){
-    //     return this.id;
-    // }
+    public int getID(){
+        return this.id;
+    }
 
-    // public int getRetInt(){
-    //     return this.retInt;
-    // } 
+    public int getRetInt(){
+        return this.retInt;
+    }
 
     public boolean getRetBool(){
         return this.retBool;

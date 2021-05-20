@@ -57,6 +57,9 @@ public class Pilot extends Thread {
             switch(this.state) {
                 case AT_TRANSFER_GATE:
                     if(this.dp.noMorePassengers()){
+                        this.dp.serviceEnd();
+                        this.plane.serviceEnd();
+                        this.ap.serviceEnd();
                         end = true;
                         break;
                     }

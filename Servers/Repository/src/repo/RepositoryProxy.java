@@ -45,7 +45,7 @@ public class RepositoryProxy {
                 break;
             }
             case REPO_DECREMENT_NUMBER_PLANE:{
-                repo.incrementNumberInPlane();
+                repo.decrementNumberInPlane();
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
             }

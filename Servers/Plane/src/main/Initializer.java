@@ -12,7 +12,7 @@ public class Initializer {
         int server_port = Integer.parseInt(args[0]);
 
         String repo_address = args[1];
-        int repo_port = Integer.parseInt(args[1]);
+        int repo_port = Integer.parseInt(args[2]);
         
         Repository repo = new Repository(repo_address, repo_port);
         Plane plane = new Plane(repo);

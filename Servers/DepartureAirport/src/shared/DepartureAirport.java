@@ -282,8 +282,7 @@ public class DepartureAirport {
     }
 
     public void serviceEnd(){
-        mutex.lock();
         Initializer.end = true;
-        mutex.unlock();
+        this.repo.closeLog();
     }
 }
