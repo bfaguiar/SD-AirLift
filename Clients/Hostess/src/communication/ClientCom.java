@@ -176,7 +176,7 @@ public class ClientCom{
         e.printStackTrace ();
         System.exit (1);
       }
-   }
+   } 
 
   /**
    *  Object read from the communication channel.

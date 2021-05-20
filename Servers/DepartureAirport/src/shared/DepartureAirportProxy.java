@@ -31,7 +31,7 @@ public class DepartureAirportProxy{
                 dp.pilotInformPlaneReadyForBoarding(inMessage.getState());
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
-            }
+            } 
             case HOSTESS_PREPARE_FOR_BOARDING:{
                 dp.hostessPrepareForPassBoarding(inMessage.getState());
                 outMessage = new Message(MessageType.STATUS_OK);
@@ -67,7 +67,7 @@ public class DepartureAirportProxy{
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
             }
-            case SERVICE_END:{
+            case SERVICE_END:{ 
                 dp.serviceEnd();
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;

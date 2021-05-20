@@ -43,17 +43,17 @@ public class Message implements Serializable{
         return this.type;
     }
 
-    public String getState(){
-        return this.state;
-    }
+    // public String getState(){
+    //     return this.state;
+    // }
 
-    public int getID(){
-        return this.id;
-    }
+    // public int getID(){
+    //     return this.id;
+    // }
 
-    public int getRetInt(){
-        return this.retInt;
-    }
+    // public int getRetInt(){
+    //     return this.retInt;
+    // } 
 
     public boolean getRetBool(){
         return this.retBool;
