@@ -12,39 +12,39 @@ set PlaneMinCapacity=5
 set PlaneMaxCapacity=10
 
 cd Servers/Repository/src
-javac -cp .;../lib/genclass.jar Initializer.java
-start cmd /c java Initializer %RepositoryPort% %NumberPassengers%
+javac -cp .;../lib/genclass.jar main/Initializer.java
+start cmd /c java main/Initializer %RepositoryPort% %NumberPassengers%
 cd ../../../
 
 cd Servers/DepartureAirport/src
-javac -cp .;../lib/genclass.jar Initializer.java
-start cmd /c java Initializer %DepartureAirportPort% %NumberPassengers% %PlaneMinCapacity% %PlaneMaxCapacity% %RepositoryAddress% %RepositoryPort%
+javac -cp .;../lib/genclass.jar main/Initializer.java
+start cmd /c java main/Initializer %DepartureAirportPort% %NumberPassengers% %PlaneMinCapacity% %PlaneMaxCapacity% %RepositoryAddress% %RepositoryPort%
 cd ../../../
 
 cd Servers/Plane/src
-javac -cp .;../lib/genclass.jar Initializer.java
-start cmd /c java Initializer %PlanePort% %RepositoryAddress% %RepositoryPort%
+javac -cp .;../lib/genclass.jar main/Initializer.java
+start cmd /c java main/Initializer %PlanePort% %RepositoryAddress% %RepositoryPort%
 cd ../../../
 
 cd Servers/ArrivalAirport/src
-javac -cp .;../lib/genclass.jar Initializer.java
-start cmd /c java Initializer %ArrivalAirportPort% %RepositoryAddress% %RepositoryPort%
+javac -cp .;../lib/genclass.jar main/Initializer.java
+start cmd /c java main/Initializer %ArrivalAirportPort% %RepositoryAddress% %RepositoryPort%
 cd ../../../
 
 cd Clients/Hostess/src/
-javac -cp .;../lib/genclass.jar Initializer.java
-start cmd /c java Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort%
+javac -cp .;../lib/genclass.jar main/Initializer.java
+start cmd /c java main/Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort%
 cd ../../../
 
 cd Clients/Pilot/src
-javac -cp .;../lib/genclass.jar Initializer.java
-start cmd /c java Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%
+javac -cp .;../lib/genclass.jar main/Initializer.java
+start cmd /c java main/Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%
 cd ../../../
 
 cd Clients/Passenger/src
-javac -cp .;../lib/genclass.jar Initializer.java
+javac -cp .;../lib/genclass.jar main/Initializer.java
 FOR /L %%A IN (1, 1, %NumberPassengers%) DO (
-    start cmd /c java Initializer %A% %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%
+    start cmd /c java main/Initializer %A% %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%
 )
 cd ../../../
 

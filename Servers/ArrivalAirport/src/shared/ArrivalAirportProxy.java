@@ -24,6 +24,11 @@ public class ArrivalAirportProxy {
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
             }
+            case SERVICE_END:{
+                ap.serviceEnd();
+                outMessage = new Message(MessageType.STATUS_OK);
+                break;
+            }
             default:
                 break;
         }

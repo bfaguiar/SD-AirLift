@@ -1,3 +1,5 @@
+package main;
+
 import communication.ServerCom;
 import shared.DepartureAirport;
 import shared.DepartureAirportProxy;

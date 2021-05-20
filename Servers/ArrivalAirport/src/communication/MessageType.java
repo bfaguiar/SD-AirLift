@@ -43,4 +43,5 @@ public enum MessageType{
     REPO_LOG_ARRIVAL,
     REPO_LOG_RETURN,
     REPO_CLOSE_LOG,
+    SERVICE_END
 }

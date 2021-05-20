@@ -1,3 +1,5 @@
+package main;
+
 import communication.ServerCom;
 import repo.Repository;
 import repo.RepositoryProxy;

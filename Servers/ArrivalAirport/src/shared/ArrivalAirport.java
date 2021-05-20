@@ -2,7 +2,7 @@ package shared;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-
+import main.Initializer;
 import stubs.Repository;
 
 /**
@@ -84,4 +84,10 @@ public class ArrivalAirport {
         repo.log();
         mutex.unlock();
     }  
+
+    public void serviceEnd(){
+        mutex.lock();
+        Initializer.end = true;
+        mutex.unlock();
+    }
 } 

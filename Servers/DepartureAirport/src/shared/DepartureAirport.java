@@ -1,6 +1,8 @@
 package shared;
 
 import java.util.concurrent.locks.ReentrantLock;
+
+import main.Initializer;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;
@@ -277,5 +279,11 @@ public class DepartureAirport {
             return true;
         else
             return false;
+    }
+
+    public void serviceEnd(){
+        mutex.lock();
+        Initializer.end = true;
+        mutex.unlock();
     }
 }

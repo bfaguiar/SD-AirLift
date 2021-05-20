@@ -1,3 +1,5 @@
+package main;
+
 import shared.ArrivalAirport;
 import shared.ArrivalAirportProxy;
 import shared.ArrivalAirportService;

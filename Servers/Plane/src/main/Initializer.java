@@ -1,3 +1,5 @@
+package main;
+
 import communication.ServerCom;
 import shared.Plane;
 import shared.PlaneProxy;

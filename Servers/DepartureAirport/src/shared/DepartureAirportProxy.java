@@ -67,6 +67,11 @@ public class DepartureAirportProxy{
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
             }
+            case SERVICE_END:{
+                dp.serviceEnd();
+                outMessage = new Message(MessageType.STATUS_OK);
+                break;
+            }
             default:
                 break;
         }

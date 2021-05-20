@@ -53,6 +53,11 @@ public class PlaneProxy {
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
             }
+            case SERVICE_END:{
+                plane.serviceEnd();
+                outMessage = new Message(MessageType.STATUS_OK);
+                break;
+            }
             default:
                 break;
         }

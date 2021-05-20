@@ -3,9 +3,9 @@ package repo;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
+import main.Initializer;
 
 
 /**
@@ -181,6 +181,7 @@ public class Repository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Initializer.end = true;
     }
 
     /**

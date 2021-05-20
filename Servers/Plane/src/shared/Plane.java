@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import main.Initializer;
 import stubs.Repository;
 
 /**
@@ -129,5 +130,11 @@ public class Plane {
 
     public int getNumberInPlane(){
         return this.passengers.size();
+    }
+    
+    public void serviceEnd(){
+        mutex.lock();
+        Initializer.end = true;
+        mutex.unlock();
     }
 }  
