@@ -63,7 +63,7 @@ public class ArrivalAirport {
         repo.log();
         passengersDeboarded = 0;
         passengersInPlane = numberInPlane;
-        pilotLeave.signal();
+        pilotLeave.signalAll();
         passengersCanLeave = true;
         try {
             while(!lastPassenger)
@@ -89,8 +89,8 @@ public class ArrivalAirport {
         passengersDeboarded++;
         repo.incrementNumberAtDestination();
         if (passengersDeboarded == passengersInPlane) {
-            lastPassenger = true;
             conditionLastPassenger.signal(); 
+            lastPassenger = true;
             passengersCanLeave = false;
         }  
         repo.decrementNumberInPlane();
