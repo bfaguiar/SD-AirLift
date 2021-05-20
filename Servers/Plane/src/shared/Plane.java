@@ -134,11 +134,9 @@ public class Plane {
         return this.passengers.size();
     }
     
-    public void serviceEnd(){
-        mutex.lock();
+    public void serverShutdown(){
         shutdown++;
         if(shutdown >= 2)
             Initializer.end = true;
-        mutex.unlock();
     }
 }  

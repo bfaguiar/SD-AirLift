@@ -22,7 +22,7 @@ public class Initializer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        dp.serviceEnd();
-        plane.serviceEnd();
+        dp.serverShutdown();
+        plane.serverShutdown();
     }
 }

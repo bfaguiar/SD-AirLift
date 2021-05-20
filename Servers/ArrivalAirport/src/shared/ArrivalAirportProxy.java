@@ -24,8 +24,8 @@ public class ArrivalAirportProxy {
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
             }
-            case SERVICE_END:{
-                ap.serviceEnd();
+            case SERVER_SHUTDOWN:{
+                ap.serverShutdown();
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
             }

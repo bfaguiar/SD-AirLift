@@ -67,8 +67,8 @@ public class DepartureAirportProxy{
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
             }
-            case SERVICE_END:{ 
-                dp.serviceEnd();
+            case SERVER_SHUTDOWN:{ 
+                dp.serverShutdown();
                 outMessage = new Message(MessageType.STATUS_OK);
                 break;
             }

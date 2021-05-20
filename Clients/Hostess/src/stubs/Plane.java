@@ -30,7 +30,7 @@ public class Plane{
         com.close();    
     }
 
-    public void serviceEnd(){
+    public void serverShutdown(){
         ClientCom com = new ClientCom (address, port);           // communication channel
    
         while(!com.open()){
@@ -39,7 +39,7 @@ public class Plane{
             } catch (InterruptedException ex) {
             }
         }
-        com.writeObject(new Message(MessageType.SERVICE_END)); 
+        com.writeObject(new Message(MessageType.SERVER_SHUTDOWN)); 
         Message fromServer = (Message) com.readObject(); 
         assert fromServer.getMessageType() == MessageType.STATUS_OK;
         com.close();

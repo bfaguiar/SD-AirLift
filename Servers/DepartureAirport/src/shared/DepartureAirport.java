@@ -277,14 +277,13 @@ public class DepartureAirport {
     }
 
     public boolean noMorePassengers(){
-        repo.log();
         if (passengersTransported == totalPassengers)
             return true;
         else
             return false;
     }
 
-    public void serviceEnd(){
+    public void serverShutdown(){
         mutex.lock();
         shutdown++;
         if (shutdown >= 2){

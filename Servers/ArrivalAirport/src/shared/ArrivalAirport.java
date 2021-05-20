@@ -85,7 +85,7 @@ public class ArrivalAirport {
         mutex.unlock();
     }  
 
-    public void serviceEnd(){
+    public void serverShutdown(){
         mutex.lock();
         Initializer.end = true;
         mutex.unlock();
