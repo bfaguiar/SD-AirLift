@@ -14,7 +14,7 @@ public class DepartureAirport {
         this.port = port;
     }
 
-    public boolean noMorePassengers(){
+    public boolean noMorePassengers(String state){
         
         ClientCom com = new ClientCom (address, port);           // communication channel
 
@@ -24,7 +24,7 @@ public class DepartureAirport {
             } catch (InterruptedException ex) {
             }
         }
-        com.writeObject(new Message(MessageType.DP_NO_MORE_PASSENGERS)); 
+        com.writeObject(new Message(MessageType.DP_NO_MORE_PASSENGERS, state)); 
         Message fromServer = (Message) com.readObject(); 
         assert fromServer.getMessageType() == MessageType.STATUS_OK;
         com.close();

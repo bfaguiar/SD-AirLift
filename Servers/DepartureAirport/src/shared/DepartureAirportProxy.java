@@ -15,7 +15,7 @@ public class DepartureAirportProxy{
         Message outMessage = null;
         switch(inMessage.getMessageType()){
             case DP_NO_MORE_PASSENGERS:{
-                outMessage = new Message(MessageType.RETURN_NO_PASSENGERS, dp.noMorePassengers());
+                outMessage = new Message(MessageType.RETURN_NO_PASSENGERS, dp.noMorePassengers(inMessage.getState()));
                 break;
             }
             case DP_IS_PLANE_BOARDED:{

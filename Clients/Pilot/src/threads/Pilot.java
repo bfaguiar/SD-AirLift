@@ -56,7 +56,7 @@ public class Pilot extends Thread {
         while(!end){
             switch(this.state) {
                 case AT_TRANSFER_GATE:
-                    if(this.dp.noMorePassengers()){
+                    if(this.dp.noMorePassengers(this.getStateString())){
                         end = true;
                         break;
                     }

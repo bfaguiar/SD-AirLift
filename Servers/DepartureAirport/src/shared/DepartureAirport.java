@@ -276,7 +276,13 @@ public class DepartureAirport {
             return false;
     }
 
-    public boolean noMorePassengers(){
+    public boolean noMorePassengers(String state){
+        mutex.lock();
+        if (state.equals("WFNF"))
+            repo.setHostessState("WFNF");
+        else
+            repo.setPilotState("ATF");
+        mutex.unlock();
         if (passengersTransported == totalPassengers)
             return true;
         else
@@ -285,6 +291,7 @@ public class DepartureAirport {
 
     public void serverShutdown(){
         mutex.lock();
+        repo.log();
         shutdown++;
         if (shutdown >= 2){
             Initializer.end = true;

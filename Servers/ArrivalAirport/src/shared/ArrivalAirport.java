@@ -29,11 +29,15 @@ public class ArrivalAirport {
      */
     private Condition conditionLastPassenger = mutex.newCondition();
 
+    private Condition pilotLeave = mutex.newCondition();
+
 
     /**
      * Declaration of a boolean variable to inform the pilot that he's the last passenger exiting the plane
      */
     private boolean lastPassenger;
+
+    private boolean passengersCanLeave;
 
     /**
      * Number of passengers deboarded
@@ -57,8 +61,10 @@ public class ArrivalAirport {
         mutex.lock();   
         repo.setPilotState(state);              
         repo.log();
-        passengersInPlane = numberInPlane;
         passengersDeboarded = 0;
+        pilotLeave.signal();
+        passengersCanLeave = true;
+        passengersInPlane = numberInPlane;
         try {
             while(!lastPassenger)
                 conditionLastPassenger.await();
@@ -73,11 +79,19 @@ public class ArrivalAirport {
 
     public void passengerLeaveThePlane(int id, String state) {
         mutex.lock();
+        try {
+            while(!passengersCanLeave)
+                pilotLeave.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
         passengersDeboarded++;
         repo.incrementNumberAtDestination();
         if (passengersDeboarded == passengersInPlane) {
             lastPassenger = true;
             conditionLastPassenger.signal(); 
+            passengersCanLeave = false;
         }  
         repo.decrementNumberInPlane();
         repo.setPassengerListState(id, state);

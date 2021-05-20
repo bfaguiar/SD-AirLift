@@ -45,7 +45,7 @@ public class Hostess extends Thread {
         while(!end){
             switch(this.state) {
                 case WAIT_FOR_FLIGHT:
-                    if(this.dp.noMorePassengers()){
+                    if(this.dp.noMorePassengers(this.getStateString())){
                         end = true;
                         break;
                     }

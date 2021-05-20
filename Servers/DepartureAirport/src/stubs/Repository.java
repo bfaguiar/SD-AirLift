@@ -96,7 +96,7 @@ public class Repository{
             } catch (InterruptedException ex) {
             }
         }
-        Message msg = new Message(MessageType.REPO_LOG_PASSENGER_CHECK);
+        Message msg = new Message(MessageType.REPO_LOG_PASSENGER_CHECK, id);
         com.writeObject(msg);
         Message inMessage = (Message) com.readObject();
         assert inMessage.getMessageType() == MessageType.STATUS_OK;
