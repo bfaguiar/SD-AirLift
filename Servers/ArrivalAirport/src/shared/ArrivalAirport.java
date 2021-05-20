@@ -62,9 +62,9 @@ public class ArrivalAirport {
         repo.setPilotState(state);              
         repo.log();
         passengersDeboarded = 0;
+        passengersInPlane = numberInPlane;
         pilotLeave.signal();
         passengersCanLeave = true;
-        passengersInPlane = numberInPlane;
         try {
             while(!lastPassenger)
                 conditionLastPassenger.await();
