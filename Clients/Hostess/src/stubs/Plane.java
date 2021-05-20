@@ -28,7 +28,21 @@ public class Plane{
         Message fromServer = (Message) com.readObject(); 
         assert fromServer.getMessageType() == MessageType.STATUS_OK;
         com.close();    
-                                             // HOSTESS_WAIT_FOR_NEXT_FLIGHT
     }
-    
+
+    public void serviceEnd(){
+        ClientCom com = new ClientCom (address, port);           // communication channel
+   
+        while(!com.open()){
+            try {
+                Thread.currentThread().sleep ((long) (10));
+            } catch (InterruptedException ex) {
+            }
+        }
+        com.writeObject(new Message(MessageType.SERVICE_END)); 
+        Message fromServer = (Message) com.readObject(); 
+        assert fromServer.getMessageType() == MessageType.STATUS_OK;
+        com.close();
+        
+    }
 }  

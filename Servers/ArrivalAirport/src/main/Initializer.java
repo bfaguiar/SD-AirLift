@@ -4,6 +4,9 @@ import shared.ArrivalAirport;
 import shared.ArrivalAirportProxy;
 import shared.ArrivalAirportService;
 import stubs.Repository;
+
+import java.net.SocketTimeoutException;
+
 import communication.ServerCom;
 
 public class Initializer {
@@ -25,9 +28,12 @@ public class Initializer {
         scon = new ServerCom(server_port);
         scon.start();
         while(!end){
-            sconi = scon.accept();
-            service = new ArrivalAirportService(sconi, proxy);
-            service.start();
+            try{
+                sconi = scon.accept();
+                service = new ArrivalAirportService(sconi, proxy);
+                service.start();
+            } catch (SocketTimeoutException ex) {
+            }
         }
     }
 }

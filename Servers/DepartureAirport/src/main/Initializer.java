@@ -1,5 +1,7 @@
 package main;
 
+import java.net.SocketTimeoutException;
+
 import communication.ServerCom;
 import shared.DepartureAirport;
 import shared.DepartureAirportProxy;
@@ -28,9 +30,12 @@ public class Initializer {
         scon = new ServerCom(server_port);
         scon.start();
         while(!end){
-            sconi = scon.accept();
-            service = new DepartureAirportService(sconi, proxy);
-            service.start();
+            try{
+                sconi = scon.accept();
+                service = new DepartureAirportService(sconi, proxy);
+                service.start();
+            } catch (SocketTimeoutException ex) {
+            }
         }
     }
 }

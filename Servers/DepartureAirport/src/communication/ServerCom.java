@@ -75,6 +75,7 @@ public class ServerCom{
    public void start (){
       try{ 
         listeningSocket = new ServerSocket (serverPortNumb);
+        listeningSocket.setSoTimeout(1000);
       }
       catch (BindException e){                              // fatal error --- port already in use
         GenericIO.writelnString (Thread.currentThread ().getName () +
@@ -120,7 +121,7 @@ public class ServerCom{
    *    @return reference to the commmunication channel
    */
 
-   public ServerCom accept (){
+   public ServerCom accept() throws SocketTimeoutException{
       ServerCom scon;                                      // communication channel
 
       scon = new ServerCom(serverPortNumb, listeningSocket);
@@ -132,6 +133,9 @@ public class ServerCom{
                                  " - the listening socket was closed during the listening process!");
         e.printStackTrace ();
         System.exit (1);
+      }
+      catch(SocketTimeoutException e) {
+        throw e;
       }
       catch (IOException e){ 
         GenericIO.writelnString (Thread.currentThread ().getName () +

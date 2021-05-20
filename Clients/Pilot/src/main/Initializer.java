@@ -26,5 +26,9 @@ public class Initializer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        ap.serviceEnd();
+        plane.serviceEnd();
+        dp.serviceEnd();
+
     }
 }

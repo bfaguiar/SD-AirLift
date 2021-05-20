@@ -14,22 +14,22 @@ set PlaneMaxCapacity=10
 
 cd Servers/Repository/src
 javac -cp .;../lib/genclass.jar main/Initializer.java
-start "Repository" cmd /c java main/Initializer %RepositoryPort% %NumberPassengers%
+start "Repository" cmd /c java main/Initializer %RepositoryPort% %NumberPassengers% ^& pause
 cd ../../../
 
 cd Servers/DepartureAirport/src
 javac -cp .;../lib/genclass.jar main/Initializer.java
-start "DepartureAirport" cmd /c java main/Initializer %DepartureAirportPort% %NumberPassengers% %PlaneMinCapacity% %PlaneMaxCapacity% %RepositoryAddress% %RepositoryPort%
+start "DepartureAirport" cmd /c java main/Initializer %DepartureAirportPort% %NumberPassengers% %PlaneMinCapacity% %PlaneMaxCapacity% %RepositoryAddress% %RepositoryPort% ^& pause
 cd ../../../
 
 cd Servers/Plane/src
 javac -cp .;../lib/genclass.jar main/Initializer.java
-start "Plane" cmd /c java main/Initializer %PlanePort% %RepositoryAddress% %RepositoryPort%
+start "Plane" cmd /c java main/Initializer %PlanePort% %RepositoryAddress% %RepositoryPort% ^& pause
 cd ../../../
 
 cd Servers/ArrivalAirport/src
 javac -cp .;../lib/genclass.jar main/Initializer.java
-start "ArrivalAirport" cmd /c java main/Initializer %ArrivalAirportPort% %RepositoryAddress% %RepositoryPort%
+start "ArrivalAirport" cmd /c java main/Initializer %ArrivalAirportPort% %RepositoryAddress% %RepositoryPort% ^& pause
 cd ../../../
 
 cd Clients/Hostess/src/

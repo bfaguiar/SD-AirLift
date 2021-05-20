@@ -111,6 +111,8 @@ public class DepartureAirport {
      */
     private Queue<Integer> passengerDocumentsQueue = new LinkedList<>();
 
+    private int shutdown = 0;
+
     /**
      * Constructor 
      * @param repo Instance of the General Repository of Information
@@ -275,6 +277,7 @@ public class DepartureAirport {
     }
 
     public boolean noMorePassengers(){
+        repo.log();
         if (passengersTransported == totalPassengers)
             return true;
         else
@@ -282,7 +285,12 @@ public class DepartureAirport {
     }
 
     public void serviceEnd(){
-        Initializer.end = true;
-        this.repo.closeLog();
+        mutex.lock();
+        shutdown++;
+        if (shutdown >= 2){
+            Initializer.end = true;
+            this.repo.closeLog();
+        }
+        mutex.unlock();
     }
 }

@@ -42,6 +42,8 @@ public class Plane {
 
     private List<Integer> passengers = new LinkedList<Integer>();
 
+    int shutdown = 0;
+
     /**
      * Constructor
      * @param repo Instance of the General Repository of Information
@@ -134,7 +136,9 @@ public class Plane {
     
     public void serviceEnd(){
         mutex.lock();
-        Initializer.end = true;
+        shutdown++;
+        if(shutdown >= 2)
+            Initializer.end = true;
         mutex.unlock();
     }
 }  
