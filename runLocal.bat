@@ -1,11 +1,14 @@
-set RepositoryAddress=127.0.0.1
-set DepartureAirportAddress=127.0.0.1
-set PlaneAddress=127.0.0.1
-set ArrivalAirportAddress=127.0.0.1
-set RepositoryPort=10001
-set DepartureAirportPort=10002
-set PlanePort=10003
-set ArrivalAirportPort=10004
+set RepositoryAddress=localhost
+set RepositoryPort=40401
+
+set DepartureAirportAddress=localhost
+set DepartureAirportPort=40402
+
+set PlaneAddress=localhost
+set PlanePort=40403
+
+set ArrivalAirportAddress=localhost
+set ArrivalAirportPort=40404
 
 set NumberPassengers=21
 set MaxPassengerIndex=20

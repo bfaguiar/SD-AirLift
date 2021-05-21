@@ -43,7 +43,7 @@ start "ArrivalAirport" cmd /c plink -batch %sshlogin%@%ArrivalAirportAddress% -p
 
 timeout /t 4
 
-start "Hostess" cmd /c plink -batch %sshlogin%@%HostessAddress% -pw %sshpassword% "cd Hostess/src/ ; java -cp .:../lib/genclass.jar main/Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort%" ^& pause
+start "Hostess" cmd /c plink -batch %sshlogin%@%HostessAddress% -pw %sshpassword% "cd Hostess/src/ && java -cp .:../lib/genclass.jar main/Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort%" ^& pause
 start "Pilot" cmd /c plink -batch %sshlogin%@%PilotAddress% -pw %sshpassword% "cd Pilot/src && java -cp .:../lib/genclass.jar main/Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%" ^& pause
 FOR /L %%A IN (0, 1, 4) DO (
     start "Passenger %%A" cmd /c plink -batch %sshlogin%@%PassengerAddress1% -pw %sshpassword% "cd Passenger/src && java -cp .:../lib/genclass.jar main/Initializer %%A %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%" ^& pause
