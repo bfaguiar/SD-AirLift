@@ -90,6 +90,7 @@ public class Repository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        logEntities();
     }
 
     /**
