@@ -13,7 +13,7 @@ set ArrivalAirportPort=40404
 set sshlogin=sd404
 set sshpassword=avioesp4
 
-plink -batch %sshlogin%@%RepositoryAddress% -pw %sshpassword% "killall -9 java"
-plink -batch %sshlogin%@%DepartureAirportAddress% -pw %sshpassword% "killall -9 java"
-plink -batch %sshlogin%@%PlaneAddress% -pw %sshpassword% "killall -9 java"
-plink -batch %sshlogin%@%ArrivalAirportAddress% -pw %sshpassword% "killall -9 java"
+plink -batch %sshlogin%@%RepositoryAddress% -pw %sshpassword% "killall -9 java -u %sshlogin%"
+plink -batch %sshlogin%@%DepartureAirportAddress% -pw %sshpassword% "killall -9 java -u %sshlogin%"
+plink -batch %sshlogin%@%PlaneAddress% -pw %sshpassword% "killall -9 java -u %sshlogin%"
+plink -batch %sshlogin%@%ArrivalAirportAddress% -pw %sshpassword% "killall -9 java -u %sshlogin%"
