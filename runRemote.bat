@@ -1,14 +1,14 @@
 set RepositoryAddress=l040101-ws01.ua.pt
-set RepositoryPort=40401
+set RepositoryPort=22430
 
 set DepartureAirportAddress=l040101-ws02.ua.pt
-set DepartureAirportPort=40402
+set DepartureAirportPort=22431
 
 set PlaneAddress=l040101-ws03.ua.pt
-set PlanePort=40403
+set PlanePort=22432
 
 set ArrivalAirportAddress=l040101-ws04.ua.pt
-set ArrivalAirportPort=40404
+set ArrivalAirportPort=22433
 
 set HostessAddress=l040101-ws05.ua.pt
 set PilotAddress=l040101-ws06.ua.pt
