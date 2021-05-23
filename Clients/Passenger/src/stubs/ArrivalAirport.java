@@ -4,16 +4,37 @@ import communication.ClientCom;
 import communication.Message;
 import communication.MessageType;
 
+/**
+ * Stub ArrivalAirport
+ * @author Bruno Aguiar 80177
+ * @author David Rocha 84807
+ */
 public class ArrivalAirport {
 
+    /**
+     * Stub address
+     */
     private String address;
+
+    /**
+     * Stub port
+     */
     private int port;
 
+    /**
+     * Constructor
+     * @param address Stub address
+     * @param port Stub port
+     */
     public ArrivalAirport(String address, int port) {
         this.address = address;
         this.port = port;    
     }
 
+    /**
+     * @param id Client's ID
+     * @param state Client's state
+     */
     public void passengerLeaveThePlane(int id, String state){
         
         ClientCom com = new ClientCom (address, port);           // communication channel

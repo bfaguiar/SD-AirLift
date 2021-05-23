@@ -42,7 +42,7 @@ public class ClientCom{
    *  Output stream of the communication channel.
    */
 
-   private ObjectOutputStream out = null;
+   private ObjectOutputStream out = null; 
 
   /**
    *  Instantiation of a communication channel.

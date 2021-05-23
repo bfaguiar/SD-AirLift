@@ -1,5 +1,10 @@
 package communication;
 
+/**
+ * Enumerates to indicate to the receiver about the type of messages
+ * @author Bruno Aguiar 80177
+ * @author David Rocha 84807
+ */
 public enum MessageType{
     STATUS_OK,
     DP_NO_MORE_PASSENGERS,

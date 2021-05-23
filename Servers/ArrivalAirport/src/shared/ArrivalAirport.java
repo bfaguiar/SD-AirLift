@@ -57,6 +57,11 @@ public class ArrivalAirport {
         this.repo = repo;
     } 
 
+    /**
+     * 
+     * @param numberInPlane number of passengers in plane
+     * @param state Client's state
+     */
     public void pilotFlyToDeparturePoint(int numberInPlane, String state) {
         mutex.lock();   
         repo.setPilotState(state);              
@@ -77,6 +82,10 @@ public class ArrivalAirport {
         mutex.unlock();
     } 
 
+    /**
+     * @param id Client's ID
+     * @param state Client's state
+     */
     public void passengerLeaveThePlane(int id, String state) {
         mutex.lock();
         try {
@@ -99,6 +108,9 @@ public class ArrivalAirport {
         mutex.unlock();
     }  
 
+    /**
+     * Server shutdown
+     */
     public void serverShutdown(){
         mutex.lock();
         Initializer.end = true;

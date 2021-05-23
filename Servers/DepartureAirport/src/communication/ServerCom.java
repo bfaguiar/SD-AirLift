@@ -119,6 +119,7 @@ public class ServerCom{
    *  The socket input and output streams are opened.
    *
    *    @return reference to the commmunication channel
+   *    @throws SocketTimeoutException Socket Timeout Exception
    */
 
    public ServerCom accept() throws SocketTimeoutException{

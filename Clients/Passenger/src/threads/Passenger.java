@@ -45,7 +45,7 @@ public class Passenger extends Thread {
      * @param plane instance of Plane's shared region
      * @param dp instance of Departure Airport's shared region
      * @param ap instance of Arrival Airport's shared region
-     * @param id Passenger's ID
+     * @param i Passenger's ID
      */
     public Passenger(Plane plane, DepartureAirport dp, ArrivalAirport ap, int i){
         this.state = PassengerState.GOING_TO_AIRPORT;

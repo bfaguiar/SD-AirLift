@@ -38,10 +38,19 @@ public class Plane {
      */
     private boolean boardingComplete;
 
+    /**
+     * Boolean to indicate the flight completion
+     */
     private boolean flightComplete;
 
+    /**
+     * List of passengers
+     */
     private List<Integer> passengers = new LinkedList<Integer>();
 
+    /**
+     * Shutdown status 
+     */
     int shutdown = 0;
 
     /**
@@ -52,6 +61,9 @@ public class Plane {
         this.repo = repo;
     } 
 
+    /**
+     * @param state Client's State
+     */
     public void hostessInformPlaneReadyToTakeOff(String state) {
         mutex.lock();
         repo.setHostessState(state);
@@ -61,6 +73,10 @@ public class Plane {
         mutex.unlock();
     }
 
+    /**
+     * 
+     * @param state Client's state
+     */
     public void pilotWaitForAllInBoard(String state) {
         mutex.lock();
         repo.setPilotState(state); 
@@ -78,6 +94,10 @@ public class Plane {
         mutex.unlock();
     }
 
+    /**
+     * 
+     * @param state Client's state
+     */
     public void pilotFlyToDestinationPoint(String state) {
         mutex.lock();
         repo.setPilotState(state); 
@@ -91,6 +111,10 @@ public class Plane {
         mutex.unlock();
     }
 
+    /**
+     * 
+     * @param state Client's state
+     */
     public void pilotAnnounceArrival(String state) {
         mutex.lock();
         repo.setPilotState(state); 
@@ -101,6 +125,11 @@ public class Plane {
         mutex.unlock(); 
     }
 
+    /**
+     * 
+     * @param id Client's ID
+     * @param state Client's state
+     */
     public void passengerWaitForEndOfFlight(int id, String state) {
         mutex.lock();
         try {
@@ -115,6 +144,11 @@ public class Plane {
         mutex.unlock();
     } 
 
+    /**
+     * 
+     * @param id Client's ID
+     * @param state Client's state
+     */
     public void passengerBoardThePlane(int id, String state) {
         mutex.lock();
         repo.setPassengerListState(id, state);
@@ -124,16 +158,26 @@ public class Plane {
         mutex.unlock();
     }
 
+    /**
+     * 
+     * @param id Client's ID
+     */
     public void passengerExit(int id){
         mutex.lock();
         this.passengers.remove(passengers.indexOf(id));
         mutex.unlock();
     }
 
+    /**
+     * @return number of passengers in the plane
+     */
     public int getNumberInPlane(){
         return this.passengers.size();
     }
     
+    /**
+     * Server shutdown ..
+     */
     public void serverShutdown(){
         shutdown++;
         if(shutdown >= 2)

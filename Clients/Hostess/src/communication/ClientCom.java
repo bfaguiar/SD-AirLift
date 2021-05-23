@@ -13,11 +13,11 @@ import java.net.*;
  *   input streams, respectively.
  */
 
-public class ClientCom{
+public class ClientCom {
+
   /**
    *  Communication socket.
    */
-
    private Socket commSocket = null;
 
   /**

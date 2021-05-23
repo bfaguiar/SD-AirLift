@@ -4,16 +4,38 @@ import communication.ClientCom;
 import communication.Message;
 import communication.MessageType;
 
+/**
+ * Stub DepartureAirport
+ * @author Bruno Aguiar 80177
+ * @author David Rocha 84807
+ */
 public class DepartureAirport {
 
+    /**
+     * Stub address
+     */
     private String address;
+
+    /**
+     * Stub port
+     */
     private int port;
     
+    /**
+     * Constructor
+     * @param address Stub address
+     * @param port Stub port
+     */
     public DepartureAirport(String address, int port) {
         this.address = address;
         this.port = port;
-    }
-
+    } 
+ 
+    /**
+     * 
+     * @param state Client's state
+     * @return boolean to indicate if there are more passengers waiting to flight 
+     */
     public boolean noMorePassengers(String state) {
 
         ClientCom com = new ClientCom (address, port);           // communication channel
@@ -32,6 +54,9 @@ public class DepartureAirport {
          // return
     } 
 
+    /**
+     * @return boolean to indicate if the plane is boarded
+     */
     public boolean isPlaneBoarded(){ 
         
         ClientCom com = new ClientCom (address, port);           // communication channel
@@ -50,7 +75,10 @@ public class DepartureAirport {
     
     }
 
-    public void hostessPrepareForPassBoarding(String state){
+    /**
+     * @param state Client's state
+     */
+    public void hostessPrepareForPassBoarding(String state) {
 
         ClientCom com = new ClientCom (address, port);           // communication channel
    
@@ -67,7 +95,11 @@ public class DepartureAirport {
 
     }
 
-    public void hostessCheckDocuments(String state){
+    /**
+     * 
+     * @param state client's state
+     */
+    public void hostessCheckDocuments(String state) {
 
         ClientCom com = new ClientCom (address, port);           // communication channel
    
@@ -84,7 +116,11 @@ public class DepartureAirport {
 
     }
 
-    public void hostessWaitForNextPassenger(String state){
+    /**
+     * 
+     * @param state Client's state
+     */
+    public void hostessWaitForNextPassenger(String state) {
 
         ClientCom com = new ClientCom (address, port);           // communication channel
    
@@ -101,7 +137,10 @@ public class DepartureAirport {
 
     }
 
-    public void hostessWaitForNextFlight(String state){
+    /**
+     * @param state Client's state
+     */
+    public void hostessWaitForNextFlight(String state) {
 
         ClientCom com = new ClientCom (address, port);           // communication channel
    
@@ -118,7 +157,10 @@ public class DepartureAirport {
         
     }
 
-    public void serverShutdown(){
+    /**
+     * Server shutdown
+     */
+    public void serverShutdown() {
         ClientCom com = new ClientCom (address, port);           // communication channel
    
         while(!com.open()){
@@ -133,4 +175,4 @@ public class DepartureAirport {
         com.close();
         
     }
-}  
+}   

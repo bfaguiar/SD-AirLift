@@ -4,16 +4,37 @@ import communication.ClientCom;
 import communication.Message;
 import communication.MessageType;
 
+/**
+ * Stub ArrivalAirport
+ * @author Bruno Aguiar 80177
+ * @author David Rocha 84807
+ */
 public class ArrivalAirport {
 
+    /**
+     * Stub address
+     */
     private String address;
-    private int port;
 
+    /**
+     * Stub port
+     */
+    private int port;
+    
+    /**
+     * Constructor
+     * @param address Stub address
+     * @param port Stub port
+     */
     public ArrivalAirport(String address, int port) {
         this.address = address;
         this.port = port;
     }
 
+    /**
+     * @param number number of passengers in plane
+     * @param state Client's state
+     */
     public void pilotFlyToDeparturePoint(int number, String state){
         ClientCom com = new ClientCom (address, port);           // communication channel
 
@@ -29,6 +50,9 @@ public class ArrivalAirport {
         com.close();
     } 
     
+    /**
+     * Server shutdown
+     */
     public void serverShutdown(){
         ClientCom com = new ClientCom (address, port);           // communication channel
 

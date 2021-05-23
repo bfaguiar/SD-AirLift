@@ -4,13 +4,31 @@ import communication.Message;
 import communication.MessageType;
 import communication.ServerCom;
 
+/**
+ * Plane's proxy
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
+ */
 public class PlaneProxy {
+
+    /**
+     * Instantiation of Plane
+     */
     private final Plane plane;
 
+    /** 
+     * Constructor 
+     * @param plane Instance of Plane
+     */
     public PlaneProxy(Plane plane) {
         this.plane = plane;
     }
     
+    /**
+     * @param inMessage Message received
+     * @param scon Server connection
+     * @return Message to send
+     */
     public Message processAndReply(Message inMessage, ServerCom scon){
         Message outMessage = null;
         switch(inMessage.getMessageType()){

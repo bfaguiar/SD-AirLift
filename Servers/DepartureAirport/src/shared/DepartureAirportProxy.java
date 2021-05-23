@@ -4,13 +4,31 @@ import communication.Message;
 import communication.MessageType;
 import communication.ServerCom;
 
-public class DepartureAirportProxy{
+/**
+ * Departure Airport's Proxy
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
+ */
+public class DepartureAirportProxy {
+
+    /**
+     * Instantiation of Departure Airport
+     */
     private final DepartureAirport dp;
 
+    /**
+     * constructor
+     * @param dp Instance of Departure Airport
+     */
     public DepartureAirportProxy(DepartureAirport dp) {
         this.dp = dp;
     }
     
+     /**
+     * @param inMessage Message received
+     * @param scon Server connection
+     * @return Message to send
+     */
     public Message processAndReply(Message inMessage, ServerCom scon){
         Message outMessage = null;
         switch(inMessage.getMessageType()){

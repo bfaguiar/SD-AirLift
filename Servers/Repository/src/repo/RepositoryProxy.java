@@ -4,13 +4,31 @@ import communication.Message;
 import communication.MessageType;
 import communication.ServerCom;
 
+/**
+ * Repository's proxy
+ * @author Bruno Aguiar 80177
+ * @author David Rocha 84807
+ */
 public class RepositoryProxy {
+
+    /**
+     * Instantiation of Repository
+     */
     private final Repository repo;
 
+    /**
+     * Constructor
+     * @param repo Instance of Repository
+     */
     public RepositoryProxy(Repository repo) {
         this.repo = repo;
     }
     
+    /**
+     * @param inMessage Message received
+     * @param scon Server connection
+     * @return Message to send
+     */
     public Message processAndReply(Message inMessage, ServerCom scon){
         Message outMessage = null;
         switch(inMessage.getMessageType()){

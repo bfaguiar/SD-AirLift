@@ -1,0 +1,5 @@
+/**
+ * Client' stubs 
+ *
+ */
+package stubs;

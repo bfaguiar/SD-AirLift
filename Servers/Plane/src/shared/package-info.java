@@ -1,0 +1,4 @@
+/**
+ * Server' shared 
+ */
+package shared;

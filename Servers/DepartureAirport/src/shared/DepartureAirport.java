@@ -127,6 +127,10 @@ public class DepartureAirport {
         this.totalPassengers = totalPassengers;
     }
 
+    /**
+     * 
+     * @param state Client's state
+     */
     public void pilotParkAtTransferGate(String state) {
         mutex.lock();
         try {
@@ -142,6 +146,9 @@ public class DepartureAirport {
         mutex.unlock();
     }
 
+    /**
+     * @param state Client's state
+     */
     public void pilotInformPlaneReadyForBoarding(String state) {
         mutex.lock();
         repo.setPilotState(state); 
@@ -152,6 +159,10 @@ public class DepartureAirport {
         mutex.unlock();
     }
 
+    /**
+     * 
+     * @param state Client's state
+     */
     public void hostessPrepareForPassBoarding(String state) {
         mutex.lock();
         repo.setHostessState(state);
@@ -166,6 +177,10 @@ public class DepartureAirport {
         mutex.unlock();
     }
 
+    /**
+     * 
+     * @param state Client's state
+     */
      public void hostessCheckDocuments(String state) {
         mutex.lock();
         repo.setHostessState(state);
@@ -183,6 +198,10 @@ public class DepartureAirport {
         mutex.unlock();
      }
 
+     /**
+      * 
+      * @param state Client's state
+      */
     public void hostessWaitForNextPassenger(String state) {
         mutex.lock();
         repo.setHostessState(state);
@@ -208,6 +227,10 @@ public class DepartureAirport {
         mutex.unlock();
     }
 
+    /**
+     * 
+     * @param state Client's state
+     */
     public void hostessWaitForNextFlight(String state) {
         mutex.lock();
         repo.setHostessState(state);
@@ -216,6 +239,11 @@ public class DepartureAirport {
         mutex.unlock();
      }
     
+     /**
+      * 
+      * @param id Client's ID
+      * @param state Client's State
+      */
     public void passengerTravelToAirport(int id, String state) {
         repo.setPassengerListState(id, state);
         repo.log();
@@ -227,6 +255,11 @@ public class DepartureAirport {
         }
     } 
 
+    /**
+     * 
+     * @param id Client's ID
+     * @param state Client's state
+     */
     public void passengerWaitInQueue(int id, String state) {
         mutex.lock();
         repo.setPassengerListState(id, state);
@@ -237,6 +270,11 @@ public class DepartureAirport {
         mutex.unlock();
     } 
 
+    /**
+     * 
+     * @param id Client's ID
+     * @param state Client's state
+     */
     public void passengerShowDocuments(int id, String state) {
         mutex.lock();
         repo.setPassengerListState(id, state);
@@ -267,6 +305,10 @@ public class DepartureAirport {
         mutex.unlock();
     }
 
+    /**
+     * 
+     * @return boolean to check if the plane is ready to go or not
+     */
     public boolean isPlaneBoarded(){
         if((passengerQueue.isEmpty() && passengersInPlane.size() >= planeMinCapacity) || 
            (!passengerQueue.isEmpty() && passengersInPlane.size() == planeMaxCapacity) ||
@@ -276,6 +318,11 @@ public class DepartureAirport {
             return false;
     }
 
+    /**
+     * 
+     * @param state Client's state
+     * @return boolean to check if there are more passengers left to flight or not.
+     */
     public boolean noMorePassengers(String state){
         mutex.lock();
         if (state.equals("WFNF"))
@@ -289,6 +336,9 @@ public class DepartureAirport {
             return false;
     }
 
+    /**
+     * Server shutdown
+     */
     public void serverShutdown(){
         mutex.lock();
         repo.log();

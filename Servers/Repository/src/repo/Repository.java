@@ -73,6 +73,7 @@ public class Repository {
 
     /**
      * Constructor
+     * @param num_passengers number of passengers
      */
     public Repository(int num_passengers) {
         numberInQueue = 0;
@@ -94,7 +95,7 @@ public class Repository {
     }
 
     /**
-    * @param hostess An Instance of Hostess Thread
+    * @param state Hostess state
     */
     public void setHostessState(String state) {
         this.hostessState = state;
@@ -102,15 +103,15 @@ public class Repository {
 
     /**
      * 
-     * @param pilot An Instance of Pilot Thread
+     * @param state Pilot state
      */
     public void setPilotState(String state) {
         this.pilotState = state;
     }
 
     /**
-     * 
-     * @param passengerList Array of Passenger threads
+     * @param index Passenger Index
+     * @param  passegerState Passenger State
      */
     public void setPassengerListState(int index, String passegerState) {
         this.passengerListState[index] = passegerState;
