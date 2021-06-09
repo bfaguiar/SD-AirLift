@@ -1,0 +1,4 @@
+/**
+ * Client' state
+ */
+package states;
