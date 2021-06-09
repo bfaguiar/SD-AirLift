@@ -1,0 +1,4 @@
+/**
+ * Server' stubs 
+ */
+package stubs;
