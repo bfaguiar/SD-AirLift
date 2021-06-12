@@ -95,7 +95,7 @@ public class RegisterRemoteObject implements RegisterInterface{
         registry.unbind (name);
         
         posssibleUnbinds--;
-        if(posssibleUnbinds<=0){
+        if(!(posssibleUnbinds > 0)){
             Initializer.serviceEnd = true;
             notifyAll();
         }

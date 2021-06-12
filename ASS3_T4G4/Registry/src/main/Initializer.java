@@ -30,6 +30,7 @@ public class Initializer{
     int reg_port = Integer.parseInt(args[1]);
     String reg_name = args[2];
     int reg_listening_port = Integer.parseInt(args[3]);
+    int unbinds = Integer.parseInt(args[4]);
 
     /* create and install the security manager */
 
@@ -37,7 +38,7 @@ public class Initializer{
         System.setSecurityManager (new SecurityManager ());
 
     /* instantiate a registration remote object and generate a stub for it */
-     RegisterRemoteObject regEngine = new RegisterRemoteObject (reg_address, reg_port, 6);
+     RegisterRemoteObject regEngine = new RegisterRemoteObject (reg_address, reg_port, unbinds);
      RegisterInterface registerInt = null;
 
      try{ 

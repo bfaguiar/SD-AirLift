@@ -129,7 +129,7 @@ public class Initializer {
           }
       }
 
-      GenericIO.writelnString("ArrivalAirport finished execution.");
+      GenericIO.writelnString("Plane finished execution.");
 
           
       /* Unregister shared region */
@@ -158,7 +158,7 @@ public class Initializer {
       System.exit (1);
     }
 
-    GenericIO.writelnString ("Plane object was unexported )successfully!");
+    GenericIO.writelnString ("Plane object was unexported successfully!");
 
   }
 

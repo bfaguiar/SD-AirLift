@@ -35,7 +35,6 @@ public class Initializer {
         }
 
         DepartureAirportInterface dp = null;
-
         try {
             dp = (DepartureAirportInterface) registry.lookup(dp_name);
         }

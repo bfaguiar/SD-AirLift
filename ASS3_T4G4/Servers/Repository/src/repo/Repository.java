@@ -194,14 +194,14 @@ public class Repository implements RepositoryInterface {
      * Close the writing session
      */
     @Override
-    public void closelog() throws RemoteException {
+    public synchronized void closelog() throws RemoteException {
         try {
-            this.repoWriter.close();
             this.repoWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         Initializer.end = true;
+        notifyAll();
     }
 
     /**

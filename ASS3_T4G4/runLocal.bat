@@ -2,6 +2,7 @@ set RegistryAddress=localhost
 set RegistryName=registryp404
 set RegistryEnginePort=40401
 set RegistryListeningPort=40402
+set RegistryUnbinds=4
 
 set RepositoryAddress=localhost
 set RepositoryName=repositoryp404
@@ -82,13 +83,13 @@ start "Registry" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\De
                              -Djava.rmi.server.useCodebaseOnly=false\ ^
                              -Djava.security.policy=java.policy ^
                              -cp Registry.jar;lib/* main.Initializer ^
-                             %RegistryAddress% %RegistryEnginePort% %RegistryName% %RegistryListeningPort% ^& pause
+                             %RegistryAddress% %RegistryEnginePort% %RegistryName% %RegistryListeningPort% %RegistryUnbinds% ^& pause
 cd ../../../
 
 timeout /t 1
 
 cd Servers/Repository/src/bin
-start "Repository" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Registry\src\bin\Repository.jar" ^
+start "Repository" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Repository\src\bin\Repository.jar" ^
                                -Djava.rmi.server.useCodebaseOnly=false\ ^
                                -Djava.security.policy=java.policy ^
                                -cp Repository.jar;lib/* main.Initializer ^
@@ -136,7 +137,7 @@ cd Clients/Hostess/src/bin
 start "Hostess" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Clients\Hostess\src\bin\Hostess.jar" ^
                             -Djava.rmi.server.useCodebaseOnly=false\ ^
                             -cp Hostess.jar;lib/* main.Initializer ^
-                            %RegistryAddress% %RegistryListeningPort% ^
+                            %RegistryAddress% %RegistryEnginePort% ^
                             %DepartureAirportName% %PlaneName% ^& pause
 cd ../../../../
 
@@ -144,7 +145,7 @@ cd Clients/Pilot/src/bin
 start "Pilot" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Clients\Pilot\src\bin\Pilot.jar" ^
                           -Djava.rmi.server.useCodebaseOnly=false\ ^
                           -cp Pilot.jar;lib/* main.Initializer ^
-                          %RegistryAddress% %RegistryListeningPort% ^
+                          %RegistryAddress% %RegistryEnginePort% ^
                           %DepartureAirportName% %PlaneName% %ArrivalAirportName% ^& pause
 cd ../../../../
 
@@ -153,7 +154,7 @@ FOR /L %%A IN (0, 1, %MaxPassengerIndex%) DO (
     start "Passenger %%A" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Clients\Passenger\src\bin\Passenger.jar" ^
                                       -Djava.rmi.server.useCodebaseOnly=false\ ^
                                       -cp Passenger.jar;lib/* main.Initializer ^
-                                      %%A %RegistryAddress% %RegistryListeningPort% ^
+                                      %%A %RegistryAddress% %RegistryEnginePort% ^
                                       %DepartureAirportName% %PlaneName% %ArrivalAirportName% ^& pause
 )
 cd ../../../../

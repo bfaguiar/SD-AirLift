@@ -93,10 +93,9 @@ public class ArrivalAirport implements ArrivalAirportInterface {
      * Server shutdown
      */
     @Override
-    public void serverShutdown() throws RemoteException {
-        mutex.lock();
+    public synchronized void serverShutdown() throws RemoteException {
         Initializer.end = true;
-        mutex.unlock();
+        notifyAll();
     }
 } 
 

@@ -189,9 +189,11 @@ public class Plane implements PlaneInterface {
      * Server shutdown ..
      */
     @Override
-    public void serverShutdown() throws RemoteException {
+    public synchronized void serverShutdown() throws RemoteException {
         shutdown++;
-        if(shutdown >= 2)
+        if(shutdown >= 2){
             Initializer.end = true;
+            notifyAll();
+        }
     }
 }  

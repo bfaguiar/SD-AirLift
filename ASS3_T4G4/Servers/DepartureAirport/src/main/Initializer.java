@@ -159,7 +159,7 @@ public class Initializer {
       System.exit (1);
     }
 
-    GenericIO.writelnString (" DepartureAirport object was unexported )successfully!");
+    GenericIO.writelnString ("DepartureAirport object was unexported successfully!");
 
   }
  

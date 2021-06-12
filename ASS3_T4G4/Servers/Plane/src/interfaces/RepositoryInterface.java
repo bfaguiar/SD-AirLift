@@ -43,9 +43,5 @@ public interface RepositoryInterface extends Remote{
     public void logArriving() throws RemoteException;
 
     public void logReturning() throws RemoteException;
-
-    //#public void serverShutdown() throws RemoteException;
-
-    
 }
 

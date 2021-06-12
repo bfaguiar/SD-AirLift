@@ -354,14 +354,13 @@ public class DepartureAirport implements DepartureAirportInterface {
      * Server shutdown
      */
     @Override
-    public void serverShutdown()throws RemoteException {
-        mutex.lock();
+    public synchronized void serverShutdown()throws RemoteException {
         repo.log();
         shutdown++;
         if (shutdown >= 2){
             Initializer.end = true;
             this.repo.closelog();
+            notifyAll();
         }
-        mutex.unlock(); 
     }
 }
