@@ -138,7 +138,7 @@ start "Hostess" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Des
                             -Djava.rmi.server.useCodebaseOnly=false\ ^
                             -cp Hostess.jar;lib/* main.Initializer ^
                             %RegistryAddress% %RegistryEnginePort% ^
-                            %DepartureAirportName% %PlaneName% ^& pause
+                            %DepartureAirportName% %PlaneName% 
 cd ../../../../
 
 cd Clients/Pilot/src/bin
@@ -146,7 +146,7 @@ start "Pilot" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Deskt
                           -Djava.rmi.server.useCodebaseOnly=false\ ^
                           -cp Pilot.jar;lib/* main.Initializer ^
                           %RegistryAddress% %RegistryEnginePort% ^
-                          %DepartureAirportName% %PlaneName% %ArrivalAirportName% ^& pause
+                          %DepartureAirportName% %PlaneName% %ArrivalAirportName% 
 cd ../../../../
 
 cd Clients/Passenger/src/bin
@@ -155,9 +155,10 @@ FOR /L %%A IN (0, 1, %MaxPassengerIndex%) DO (
                                       -Djava.rmi.server.useCodebaseOnly=false\ ^
                                       -cp Passenger.jar;lib/* main.Initializer ^
                                       %%A %RegistryAddress% %RegistryEnginePort% ^
-                                      %DepartureAirportName% %PlaneName% %ArrivalAirportName% ^& pause
+                                      %DepartureAirportName% %PlaneName% %ArrivalAirportName%
 )
 cd ../../../../
 
 pause
 del /s *.class
+taskkill /FI "WindowTitle eq Registry Startup*" /T /F
