@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import main.Initializer;
-import Interface.RepositoryInterface;
-import Interface.PlaneInterface;
+import interfaces.RepositoryInterface;
+import interfaces.PlaneInterface;
 
 /**
  * Plane's shared region

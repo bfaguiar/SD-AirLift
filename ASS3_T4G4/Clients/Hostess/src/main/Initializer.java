@@ -6,8 +6,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import genclass.GenericIO;
-import interfaces.DepartureAirport;
-import interfaces.Plane;
+import interfaces.DepartureAirportInterface;
+import interfaces.PlaneInterface;
 import threads.Hostess;
 
 
@@ -34,10 +34,10 @@ public class Initializer {
             System.exit (1);
         }
 
-        DepartureAirport dp = null;
+        DepartureAirportInterface dp = null;
 
         try {
-            dp = (DepartureAirport) registry.lookup(dp_name);
+            dp = (DepartureAirportInterface) registry.lookup(dp_name);
         }
         catch (NotBoundException ex) {
             System.out.println("DepartureAirport is not registered: " + ex.getMessage () );
@@ -49,10 +49,10 @@ public class Initializer {
             System.exit (1);
         }
 
-        Plane plane = null;
+        PlaneInterface plane = null;
 
         try {
-            plane = (Plane) registry.lookup(plane_name);
+            plane = (PlaneInterface) registry.lookup(plane_name);
         }
         catch (NotBoundException ex) {
             System.out.println("Plane is not registered: " + ex.getMessage () );

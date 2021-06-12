@@ -4,8 +4,8 @@ import java.rmi.RemoteException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import Interface.ArrivalAirportInterface;
-import Interface.RepositoryInterface;
+import interfaces.ArrivalAirportInterface;
+import interfaces.RepositoryInterface;
 import main.Initializer;
 /**
  * Arrival Airport's shared region

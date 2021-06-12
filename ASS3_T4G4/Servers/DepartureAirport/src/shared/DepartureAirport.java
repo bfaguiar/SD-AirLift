@@ -2,8 +2,8 @@ package shared;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import Interface.DepartureAirportInterface;
-import Interface.RepositoryInterface;
+import interfaces.DepartureAirportInterface;
+import interfaces.RepositoryInterface;
 import main.Initializer;
 
 import java.rmi.RemoteException;

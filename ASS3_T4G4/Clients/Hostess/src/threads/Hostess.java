@@ -1,7 +1,7 @@
 package threads;
 
-import interfaces.DepartureAirport;
-import interfaces.Plane;
+import interfaces.DepartureAirportInterface;
+import interfaces.PlaneInterface;
 import states.HostessState;
 
 /**
@@ -18,19 +18,19 @@ public class Hostess extends Thread {
      * Departure Airport's shared region
      * @see DepartureAirport
      */
-    private DepartureAirport dp;
+    private DepartureAirportInterface dp;
 
     /**
      * Plane's shared region
      */
-    private Plane plane;
+    private PlaneInterface plane;
 
     /**
      * Constructor 
      * @param plane Plane's shared region
      * @param dp Departure Airport's shared region
      */
-    public Hostess(Plane plane, DepartureAirport dp){
+    public Hostess(PlaneInterface plane, DepartureAirportInterface dp){
         this.state = HostessState.WAIT_FOR_FLIGHT;
         this.dp = dp;
         this.plane = plane;

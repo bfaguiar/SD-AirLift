@@ -1,11 +1,9 @@
-package Interface;
+package interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface RepositoryInterface extends Remote{
-
-
     public void setHostessState(String state) throws RemoteException; 
 
     public void setPilotState(String state) throws RemoteException; 
@@ -43,9 +41,6 @@ public interface RepositoryInterface extends Remote{
     public void logArriving() throws RemoteException;
 
     public void logReturning() throws RemoteException;
-
-    //#public void serverShutdown() throws RemoteException;
-
-    
 }
+
 

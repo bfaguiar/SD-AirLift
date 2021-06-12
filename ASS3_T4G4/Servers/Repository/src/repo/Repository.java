@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
-import Interface.RepositoryInterface;
+import interfaces.RepositoryInterface;
 import main.Initializer;
 
 

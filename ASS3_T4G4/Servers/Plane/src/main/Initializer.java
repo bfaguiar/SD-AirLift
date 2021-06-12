@@ -1,7 +1,6 @@
 package main;
 
-
-import Interface.*;
+import interfaces.*;
 import genclass.GenericIO;
 import shared.Plane;
 

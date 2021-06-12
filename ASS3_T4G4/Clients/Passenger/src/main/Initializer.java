@@ -1,7 +1,8 @@
 package main;
 
-import interfaces.DepartureAirport;
-import interfaces.Plane;
+import interfaces.DepartureAirportInterface;
+import interfaces.PlaneInterface;
+import interfaces.ArrivalAirportInterface;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -9,7 +10,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import genclass.GenericIO;
-import interfaces.ArrivalAirport;
 import threads.Passenger;
 
 /**
@@ -37,10 +37,10 @@ public class Initializer {
             System.exit (1);
         }
         
-        DepartureAirport dp = null;
+        DepartureAirportInterface dp = null;
 
         try {
-            dp = (DepartureAirport) registry.lookup(dp_name);
+            dp = (DepartureAirportInterface) registry.lookup(dp_name);
         }
         catch (NotBoundException ex) {
             System.out.println("DepartureAirport is not registered: " + ex.getMessage () );
@@ -52,10 +52,10 @@ public class Initializer {
             System.exit (1);
         }
         
-        Plane plane = null;
+        PlaneInterface plane = null;
 
         try {
-            plane = (Plane) registry.lookup(plane_name);
+            plane = (PlaneInterface) registry.lookup(plane_name);
         }
         catch (NotBoundException ex) {
             System.out.println("Plane is not registered: " + ex.getMessage () );
@@ -67,10 +67,10 @@ public class Initializer {
             System.exit (1);
         }
 
-        ArrivalAirport ap = null;
+        ArrivalAirportInterface ap = null;
 
         try {
-            ap = (ArrivalAirport) registry.lookup(ap_name);
+            ap = (ArrivalAirportInterface) registry.lookup(ap_name);
         }
         catch (NotBoundException ex) {
             System.out.println("ArrivalAirport is not registered: " + ex.getMessage () );

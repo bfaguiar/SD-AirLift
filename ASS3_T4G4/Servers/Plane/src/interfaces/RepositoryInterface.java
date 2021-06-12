@@ -1,4 +1,4 @@
-package Interface;
+package interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -28,7 +28,7 @@ public interface RepositoryInterface extends Remote{
 
     public void incrementFlightNum() throws RemoteException;
 
-    public void closelog() throws RemoteException;  
+    public void closelog() throws RemoteException;
 
     public void logEntities() throws RemoteException;
 

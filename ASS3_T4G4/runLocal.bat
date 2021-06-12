@@ -26,7 +26,7 @@ set PlaneMinCapacity=5
 set PlaneMaxCapacity=10
 
 cd Registry/src
-javac -cp .;../lib/genclass.jar main/Initializer.java
+javac -cp .;../lib/genclass.jar interfaces/* main/*
 jar cf Registry.jar *
 move Registry.jar bin/
 cd ../../
@@ -99,7 +99,7 @@ cd ../../../../
 timeout /t 1
 
 cd Servers/DepartureAirport/src/bin
-start "DepartureAirport" cmd /c java -Djava.rmi.server.codebase="file:\\C:\Users\dmtar\Desktop\SD\dev\Servers\DepartureAirport\src\bin\DepartureAirport.jar" ^
+start "DepartureAirport" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Servers\DepartureAirport\src\bin\DepartureAirport.jar" ^
                                      -Djava.rmi.server.useCodebaseOnly=false\ ^
                                      -Djava.security.policy=java.policy ^
                                      -cp DepartureAirport.jar;lib/* main.Initializer ^
@@ -111,7 +111,7 @@ cd ../../../../
 timeout /t 1
 
 cd Servers/Plane/src/bin
-start "Plane" cmd /c java -Djava.rmi.server.codebase="file:\\C:\Users\dmtar\Desktop\SD\dev\Servers\Plane\src\bin\Plane.jar" ^
+start "Plane" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Servers\Plane\src\bin\Plane.jar" ^
                           -Djava.rmi.server.useCodebaseOnly=false\ ^
                           -Djava.security.policy=java.policy ^
                           -cp Plane.jar;lib/* main.Initializer ^
@@ -122,7 +122,7 @@ cd ../../../../
 timeout /t 1
 
 cd Servers/ArrivalAirport/src/bin
-start "ArrivalAirport" cmd /c java -Djava.rmi.server.codebase="file:\\C:\Users\dmtar\Desktop\SD\dev\Servers\ArrivalAirport\src\bin\ArrivalAirport.jar" ^
+start "ArrivalAirport" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Servers\ArrivalAirport\src\bin\ArrivalAirport.jar" ^
                                    -Djava.rmi.server.useCodebaseOnly=false\ ^
                                    -Djava.security.policy=java.policy ^
                                    -cp ArrivalAirport.jar;lib/* main.Initializer ^
@@ -133,7 +133,7 @@ cd ../../../../
 timeout /t 1
 
 cd Clients/Hostess/src/bin
-start "Hostess" cmd /c java -Djava.rmi.server.codebase="file:\\C:\Users\dmtar\Desktop\SD\dev\Clients\Hostess\src\bin\Hostess.jar" ^
+start "Hostess" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Clients\Hostess\src\bin\Hostess.jar" ^
                             -Djava.rmi.server.useCodebaseOnly=false\ ^
                             -cp Hostess.jar;lib/* main.Initializer ^
                             %RegistryAddress% %RegistryListeningPort% ^
@@ -141,7 +141,7 @@ start "Hostess" cmd /c java -Djava.rmi.server.codebase="file:\\C:\Users\dmtar\De
 cd ../../../../
 
 cd Clients/Pilot/src/bin
-start "Pilot" cmd /c java -Djava.rmi.server.codebase="file:\\C:\Users\dmtar\Desktop\SD\dev\Clients\Pilot\src\bin\Pilot.jar" ^
+start "Pilot" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Clients\Pilot\src\bin\Pilot.jar" ^
                           -Djava.rmi.server.useCodebaseOnly=false\ ^
                           -cp Pilot.jar;lib/* main.Initializer ^
                           %RegistryAddress% %RegistryListeningPort% ^
@@ -150,7 +150,7 @@ cd ../../../../
 
 cd Clients/Passenger/src/bin
 FOR /L %%A IN (0, 1, %MaxPassengerIndex%) DO (
-    start "Passenger %%A" cmd /c java -Djava.rmi.server.codebase="file:\\C:\Users\dmtar\Desktop\SD\dev\Clients\Passenger\src\bin\Passenger.jar" ^
+    start "Passenger %%A" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Clients\Passenger\src\bin\Passenger.jar" ^
                                       -Djava.rmi.server.useCodebaseOnly=false\ ^
                                       -cp Passenger.jar;lib/* main.Initializer ^
                                       %%A %RegistryAddress% %RegistryListeningPort% ^

@@ -1,4 +1,4 @@
-package Interface;
+package interfaces;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
@@ -14,6 +14,5 @@ public interface RegisterInterface extends Remote {
     public void rebind(String name, Remote ref) throws RemoteException;
     
 }
-
 
 

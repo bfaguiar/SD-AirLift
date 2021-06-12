@@ -1,8 +1,8 @@
 package threads;
 
-import interfaces.ArrivalAirport;
-import interfaces.DepartureAirport;
-import interfaces.Plane;
+import interfaces.ArrivalAirportInterface;
+import interfaces.DepartureAirportInterface;
+import interfaces.PlaneInterface;
 import states.PassengerState;
 
 /**
@@ -21,19 +21,19 @@ public class Passenger extends Thread {
      * Departure Airport's shared region
      * @see DepartureAirport
      */
-    private DepartureAirport dp;
+    private DepartureAirportInterface dp;
 
     /**
      * Arrival Airport's shared region
      * @see ArrivalAirport
      */
-    private ArrivalAirport ap;
+    private ArrivalAirportInterface ap;
 
     /**
      * Plane shared region
      * @see Plane
      */
-    private Plane plane;
+    private PlaneInterface plane;
 
     /**
      * Passenger's ID
@@ -47,7 +47,7 @@ public class Passenger extends Thread {
      * @param ap instance of Arrival Airport's shared region
      * @param i Passenger's ID
      */
-    public Passenger(Plane plane, DepartureAirport dp, ArrivalAirport ap, int i){
+    public Passenger(PlaneInterface plane, DepartureAirportInterface dp, ArrivalAirportInterface ap, int i){
         this.state = PassengerState.GOING_TO_AIRPORT;
         this.dp = dp;
         this.plane = plane;
