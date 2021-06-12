@@ -1,6 +1,9 @@
 package interfaces;
 
-public interface Plane extends remote{
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Plane extends Remote{
 
     public void hostessInformPlaneReadyToTakeOff(String state) throws RemoteException;
     

@@ -1,21 +1,23 @@
 package shared;
 
+import java.rmi.RemoteException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import main.Initializer;
-import stubs.Repository;
 
+import Interface.ArrivalAirportInterface;
+import Interface.RepositoryInterface;
+import main.Initializer;
 /**
  * Arrival Airport's shared region
  * @author Bruno Aguiar, 80177
  * @author David Rocha, 84807
  */
-public class ArrivalAirport { 
+public class ArrivalAirport implements ArrivalAirportInterface { 
 
      /**
      * Declaration of the General Repository of Information
      */
-    private Repository repo;
+    private RepositoryInterface repo; 
 
     /**
      * Instantiation of a thread syncrhonization mechanism 
@@ -29,15 +31,11 @@ public class ArrivalAirport {
      */
     private Condition conditionLastPassenger = mutex.newCondition();
 
-    private Condition pilotLeave = mutex.newCondition();
-
 
     /**
      * Declaration of a boolean variable to inform the pilot that he's the last passenger exiting the plane
      */
     private boolean lastPassenger;
-
-    private boolean passengersCanLeave;
 
     /**
      * Number of passengers deboarded
@@ -53,23 +51,17 @@ public class ArrivalAirport {
      * Constructor
      * @param repo Instance of the General Repository of Information
      */
-    public ArrivalAirport(Repository repo){
+    public ArrivalAirport(RepositoryInterface repo) {
         this.repo = repo;
     } 
 
-    /**
-     * 
-     * @param numberInPlane number of passengers in plane
-     * @param state Client's state
-     */
-    public void pilotFlyToDeparturePoint(int numberInPlane, String state) {
+    @Override
+    public void pilotFlyToDeparturePoint(int numberInPlane, String state)throws RemoteException {
         mutex.lock();   
         repo.setPilotState(state);              
         repo.log();
-        passengersDeboarded = 0;
         passengersInPlane = numberInPlane;
-        pilotLeave.signalAll();
-        passengersCanLeave = true;
+        passengersDeboarded = 0;
         try {
             while(!lastPassenger)
                 conditionLastPassenger.await();
@@ -82,25 +74,14 @@ public class ArrivalAirport {
         mutex.unlock();
     } 
 
-    /**
-     * @param id Client's ID
-     * @param state Client's state
-     */
-    public void passengerLeaveThePlane(int id, String state) {
+    @Override
+    public void passengerLeaveThePlane(int id, String state) throws RemoteException {
         mutex.lock();
-        try {
-            while(!passengersCanLeave)
-                pilotLeave.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        }
         passengersDeboarded++;
         repo.incrementNumberAtDestination();
         if (passengersDeboarded == passengersInPlane) {
-            conditionLastPassenger.signal(); 
             lastPassenger = true;
-            passengersCanLeave = false;
+            conditionLastPassenger.signal(); 
         }  
         repo.decrementNumberInPlane();
         repo.setPassengerListState(id, state);
@@ -108,12 +89,14 @@ public class ArrivalAirport {
         mutex.unlock();
     }  
 
-    /**
+     /**
      * Server shutdown
      */
-    public void serverShutdown(){
+    @Override
+    public void serverShutdown() throws RemoteException {
         mutex.lock();
         Initializer.end = true;
         mutex.unlock();
     }
 } 
+

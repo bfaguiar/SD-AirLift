@@ -1,5 +1,0 @@
-/**
- * Server' stubs
- */
-
-package stubs;

@@ -1,5 +1,8 @@
 package interfaces;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
 public interface Plane extends Remote{
 
     public int getNumberInPlane() throws RemoteException;

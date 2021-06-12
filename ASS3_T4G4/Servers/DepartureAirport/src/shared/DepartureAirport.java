@@ -2,22 +2,25 @@ package shared;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import Interface.DepartureAirportInterface;
+import Interface.RepositoryInterface;
 import main.Initializer;
+
+import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;
-import stubs.Repository;
 
 /** Departure Airport's shared region
  * @author Bruno Aguiar, 80177
  * @author David Rocha, 84807
  */ 
-public class DepartureAirport {
+public class DepartureAirport implements DepartureAirportInterface {
 
     /**
      * Declaration of the General Repository of Information
      */
-    private Repository repo;
+    private RepositoryInterface repo;
 
      /**
      * Instantiation of a thread syncrhonization mechanism 
@@ -84,7 +87,7 @@ public class DepartureAirport {
     /**
      * Total number of passengers in the simulation
      */
-    private int totalPassengers;
+    private int totalPassengers; 
 
     /**
      * Plane's maximum capacity 
@@ -120,7 +123,7 @@ public class DepartureAirport {
      * @param capacityMax Maximum capacity of the plane
      * @param totalPassengers Total number of passengers in the simulation
      */
-    public DepartureAirport(Repository repo, int capacityMin, int capacityMax, int totalPassengers){
+    public DepartureAirport(RepositoryInterface repo, int capacityMin, int capacityMax, int totalPassengers){
         this.repo = repo;
         this.planeMaxCapacity = capacityMax;
         this.planeMinCapacity = capacityMin;
@@ -131,7 +134,8 @@ public class DepartureAirport {
      * 
      * @param state Client's state
      */
-    public void pilotParkAtTransferGate(String state) {
+    @Override
+    public void pilotParkAtTransferGate(String state) throws RemoteException {
         mutex.lock();
         try {
             Thread.sleep((long) ((Math.random() * 1000)+1));
@@ -149,7 +153,8 @@ public class DepartureAirport {
     /**
      * @param state Client's state
      */
-    public void pilotInformPlaneReadyForBoarding(String state) {
+    @Override
+    public void pilotInformPlaneReadyForBoarding(String state) throws RemoteException {
         mutex.lock();
         repo.setPilotState(state); 
         repo.log();
@@ -163,7 +168,8 @@ public class DepartureAirport {
      * 
      * @param state Client's state
      */
-    public void hostessPrepareForPassBoarding(String state) {
+    @Override
+    public void hostessPrepareForPassBoarding(String state) throws RemoteException {
         mutex.lock();
         repo.setHostessState(state);
         repo.log();
@@ -181,9 +187,10 @@ public class DepartureAirport {
      * 
      * @param state Client's state
      */
-     public void hostessCheckDocuments(String state) {
+    @Override
+     public void hostessCheckDocuments(String state) throws RemoteException {
         mutex.lock();
-        repo.setHostessState(state);
+        repo.setHostessState(state); //asda 
         repo.log();
         try {
             while(passengerQueue.isEmpty())
@@ -202,7 +209,8 @@ public class DepartureAirport {
       * 
       * @param state Client's state
       */
-    public void hostessWaitForNextPassenger(String state) {
+    @Override
+    public void hostessWaitForNextPassenger(String state) throws RemoteException {
         mutex.lock();
         repo.setHostessState(state);
         repo.log();
@@ -231,7 +239,8 @@ public class DepartureAirport {
      * 
      * @param state Client's state
      */
-    public void hostessWaitForNextFlight(String state) {
+    @Override
+    public void hostessWaitForNextFlight(String state) throws RemoteException {
         mutex.lock();
         repo.setHostessState(state);
         repo.log();
@@ -244,7 +253,8 @@ public class DepartureAirport {
       * @param id Client's ID
       * @param state Client's State
       */
-    public void passengerTravelToAirport(int id, String state) {
+    @Override
+    public void passengerTravelToAirport(int id, String state) throws RemoteException {
         repo.setPassengerListState(id, state);
         repo.log();
         try {
@@ -260,7 +270,8 @@ public class DepartureAirport {
      * @param id Client's ID
      * @param state Client's state
      */
-    public void passengerWaitInQueue(int id, String state) {
+     @Override
+     public void passengerWaitInQueue(int id, String state) throws RemoteException {
         mutex.lock();
         repo.setPassengerListState(id, state);
         repo.log();
@@ -275,7 +286,8 @@ public class DepartureAirport {
      * @param id Client's ID
      * @param state Client's state
      */
-    public void passengerShowDocuments(int id, String state) {
+    @Override
+    public void passengerShowDocuments(int id, String state) throws RemoteException {
         mutex.lock();
         repo.setPassengerListState(id, state);
         repo.log();
@@ -309,7 +321,8 @@ public class DepartureAirport {
      * 
      * @return boolean to check if the plane is ready to go or not
      */
-    public boolean isPlaneBoarded(){
+    @Override
+    public boolean isPlaneBoarded() throws RemoteException{
         if((passengerQueue.isEmpty() && passengersInPlane.size() >= planeMinCapacity) || 
            (!passengerQueue.isEmpty() && passengersInPlane.size() == planeMaxCapacity) ||
            (passengerQueue.isEmpty() && passengersTransported == totalPassengers))
@@ -323,7 +336,8 @@ public class DepartureAirport {
      * @param state Client's state
      * @return boolean to check if there are more passengers left to flight or not.
      */
-    public boolean noMorePassengers(String state){
+    @Override
+    public boolean noMorePassengers(String state)throws RemoteException{
         mutex.lock();
         if (state.equals("WFNF"))
             repo.setHostessState("WFNF");
@@ -339,14 +353,15 @@ public class DepartureAirport {
     /**
      * Server shutdown
      */
-    public void serverShutdown(){
+    @Override
+    public void serverShutdown()throws RemoteException {
         mutex.lock();
         repo.log();
         shutdown++;
         if (shutdown >= 2){
             Initializer.end = true;
-            this.repo.closeLog();
+            this.repo.closelog();
         }
-        mutex.unlock();
+        mutex.unlock(); 
     }
 }

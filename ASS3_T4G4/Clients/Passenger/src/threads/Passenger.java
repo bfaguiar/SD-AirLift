@@ -1,8 +1,8 @@
 package threads;
 
-import stubs.ArrivalAirport;
-import stubs.DepartureAirport;
-import stubs.Plane;
+import interfaces.ArrivalAirport;
+import interfaces.DepartureAirport;
+import interfaces.Plane;
 import states.PassengerState;
 
 /**
@@ -62,29 +62,33 @@ public class Passenger extends Thread {
     public void run(){
         boolean end = false;
         while(!end){
-            switch(this.state) {
-                case GOING_TO_AIRPORT:
-                    this.dp.passengerTravelToAirport(this.id, this.getStateString());
-                    this.dp.passengerWaitInQueue(this.id, this.getStateString());
-                    this.state = PassengerState.IN_QUEUE;
-                    break;
+            try{
+                switch(this.state) {
+                    case GOING_TO_AIRPORT:
+                        this.dp.passengerTravelToAirport(this.id, this.getStateString());
+                        this.dp.passengerWaitInQueue(this.id, this.getStateString());
+                        this.state = PassengerState.IN_QUEUE;
+                        break;
 
-                case IN_QUEUE:
-                    this.dp.passengerShowDocuments(this.id, this.getStateString());
-                    this.plane.passengerBoardThePlane(this.id, this.getStateString());
-                    this.state = PassengerState.IN_FLIGHT;
-                    break;
+                    case IN_QUEUE:
+                        this.dp.passengerShowDocuments(this.id, this.getStateString());
+                        this.plane.passengerBoardThePlane(this.id, this.getStateString());
+                        this.state = PassengerState.IN_FLIGHT;
+                        break;
 
-                case IN_FLIGHT:
-                    this.plane.passengerWaitForEndOfFlight(this.id, this.getStateString());
-                    this.state = PassengerState.AT_DESTINATION;
-                    break;
+                    case IN_FLIGHT:
+                        this.plane.passengerWaitForEndOfFlight(this.id, this.getStateString());
+                        this.state = PassengerState.AT_DESTINATION;
+                        break;
 
-                case AT_DESTINATION:
-                    this.plane.passengerExit(this.id);
-                    this.ap.passengerLeaveThePlane(this.id, this.getStateString());
-                    end = true;
-                    break;
+                    case AT_DESTINATION:
+                        this.plane.passengerExit(this.id);
+                        this.ap.passengerLeaveThePlane(this.id, this.getStateString());
+                        end = true;
+                        break;
+                }
+            } catch(Exception e){
+                e.printStackTrace();
             }
         }
     }

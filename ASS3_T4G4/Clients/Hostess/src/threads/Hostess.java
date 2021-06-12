@@ -1,7 +1,7 @@
 package threads;
 
-import stubs.DepartureAirport;
-import stubs.Plane;
+import interfaces.DepartureAirport;
+import interfaces.Plane;
 import states.HostessState;
 
 /**
@@ -43,35 +43,39 @@ public class Hostess extends Thread {
     public void run(){
         boolean end = false;
         while(!end){
-            switch(this.state) {
-                case WAIT_FOR_FLIGHT:
-                    if(this.dp.noMorePassengers(this.getStateString())){
-                        end = true;
+            try{
+                switch(this.state) {
+                    case WAIT_FOR_FLIGHT:
+                        if(this.dp.noMorePassengers(this.getStateString())){
+                            end = true;
+                            break;
+                        }
+                        this.dp.hostessPrepareForPassBoarding(this.getStateString());
+                        this.state = HostessState.WAIT_FOR_PASSENGER;
                         break;
-                    }
-                    this.dp.hostessPrepareForPassBoarding(this.getStateString());
-                    this.state = HostessState.WAIT_FOR_PASSENGER;
-                    break;
 
-                case WAIT_FOR_PASSENGER:
-                    if(this.dp.isPlaneBoarded()){
-                        this.plane.hostessInformPlaneReadyToTakeOff(this.getStateString());
-                        this.state = HostessState.READY_TO_FLY;
-                    }
-                    else{
-                        this.dp.hostessCheckDocuments(this.getStateString());
-                        this.state = HostessState.CHECK_PASSENGER;
-                    }
-                    break;
-                case CHECK_PASSENGER:
-                    this.dp.hostessWaitForNextPassenger(this.getStateString());
-                    this.state = HostessState.WAIT_FOR_PASSENGER;
-                    break;
+                    case WAIT_FOR_PASSENGER:
+                        if(this.dp.isPlaneBoarded()){
+                            this.plane.hostessInformPlaneReadyToTakeOff(this.getStateString());
+                            this.state = HostessState.READY_TO_FLY;
+                        }
+                        else{
+                            this.dp.hostessCheckDocuments(this.getStateString());
+                            this.state = HostessState.CHECK_PASSENGER;
+                        }
+                        break;
+                    case CHECK_PASSENGER:
+                        this.dp.hostessWaitForNextPassenger(this.getStateString());
+                        this.state = HostessState.WAIT_FOR_PASSENGER;
+                        break;
 
-                case READY_TO_FLY:
-                    this.dp.hostessWaitForNextFlight(this.getStateString());
-                    this.state = HostessState.WAIT_FOR_FLIGHT;
-                    break;
+                    case READY_TO_FLY:
+                        this.dp.hostessWaitForNextFlight(this.getStateString());
+                        this.state = HostessState.WAIT_FOR_FLIGHT;
+                        break;
+                }
+            } catch(Exception e){
+                e.printStackTrace();
             }
         }
     }

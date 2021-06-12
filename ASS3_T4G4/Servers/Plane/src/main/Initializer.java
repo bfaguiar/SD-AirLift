@@ -1,67 +1,171 @@
 package main;
 
-import java.net.SocketTimeoutException;
 
-import communication.ServerCom;
+import Interface.*;
+import genclass.GenericIO;
 import shared.Plane;
-import shared.PlaneProxy;
-import shared.PlaneService;
-import stubs.Repository;
+
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+
 
 /**
- * Plane's main 
- * @author Bruno Aguiar 80177
- * @author David Rocha 84807
+ * @author Bruno Aguiar
+ * @author David Rocha
  */
 public class Initializer {
 
     /**
-     * Boolean to indicate the end of the server
+     * Used to check if the service must terminate.
      */
     public static boolean end = false;
 
-     /**
-     * @param args List of arguments: ServerPort, RepositoryAddress, RepositoryPort
-     */ 
-    public static void main(String args[]){
-       
-        /**
-         * Argument Fetching
-         */
-        int server_port = Integer.parseInt(args[0]);
-        String repo_address = args[1];
-        int repo_port = Integer.parseInt(args[2]);
+    /**
+     * @param args args
+     */
+    public static void main(String [] args){
+
+        /* get location of the registry service */
+        String rmiRegHostName = args[0];
+        int rmiRegPortNumb = Integer.parseInt(args[1]);
         
-        /**
-         * Instantiation of repository
-         */
+        String nameEntryBase = args[2];
+        String nameEntryObject = args[3];
+        String nameEntryRepo = args[4];
+        int portPlane = Integer.parseInt(args[5]);
 
-        Repository repo = new Repository(repo_address, repo_port);
+        Registry registry = null;
+        RegisterInterface registerInt = null;
 
-        /**
-         * Instantiation of Shared
-         */
-        Plane plane = new Plane(repo);
-        PlaneProxy proxy = new PlaneProxy(plane);
+        /* create and install the security manager */
+        if (System.getSecurityManager () == null)
+            System.setSecurityManager (new SecurityManager ());
 
-        /**
-         * Instantation of the Server
-         */
-        ServerCom scon, sconi;
-        PlaneService service;
-        
-        /**
-         * Inicialization of the Server
-         */
-        scon = new ServerCom(server_port);
-        scon.start();
-        while(!end){
-            try{
-                sconi = scon.accept();
-                service = new PlaneService(sconi, proxy);
-                service.start();
-            } catch (SocketTimeoutException ex) {
-            }
+        try
+        { registry = LocateRegistry.getRegistry (rmiRegHostName, rmiRegPortNumb);
         }
-    }  
+        catch (RemoteException e)
+        { GenericIO.writelnString ("RMI registry locate exception: " + e.getMessage ());
+          e.printStackTrace ();
+          System.exit (1);
+        }
+
+        /* Localize the repo in the RMI server by its name */
+        RepositoryInterface repoInt = null;
+
+        try
+        {
+            repoInt = (RepositoryInterface) registry.lookup (nameEntryRepo);
+        }
+        catch (RemoteException e)
+        {
+            System.out.println("Repository lookup exception: " + e.getMessage ());
+            e.printStackTrace ();
+            System.exit (1);
+        }
+        catch (NotBoundException e)
+        {
+            System.out.println("Repository not bound exception: " + e.getMessage ());
+            e.printStackTrace ();
+            System.exit(1);
+        }
+      
+        Plane plane = new Plane(repoInt);
+        PlaneInterface planeInt = null;
+
+
+        try
+        { planeInt = (PlaneInterface) UnicastRemoteObject.exportObject (plane, portPlane);
+        }
+        catch (RemoteException e)
+        { GenericIO.writelnString ("ArrivalAirport stub generation exception: " + e.getMessage ());
+          e.printStackTrace ();
+          System.exit (1);
+        }
+
+                /* register it with the general registry service */
+      try
+      { registerInt = (RegisterInterface) registry.lookup (nameEntryBase);
+      }
+      catch (RemoteException e)
+      { GenericIO.writelnString ("Register lookup exception: " + e.getMessage ());
+        e.printStackTrace ();
+        System.exit (1);
+      }
+      catch (NotBoundException e)
+      { GenericIO.writelnString ("Register not bound exception: " + e.getMessage ());
+        e.printStackTrace ();
+        System.exit (1);
+      }
+
+      try
+      { registerInt.bind (nameEntryObject, planeInt);
+      }
+      catch (RemoteException e)
+      { GenericIO.writelnString ("Plane registration exception: " + e.getMessage ());
+        e.printStackTrace ();
+        System.exit (1);
+      }
+      catch (AlreadyBoundException e)
+      { GenericIO.writelnString ("Plane already bound exception: " + e.getMessage ());
+        e.printStackTrace ();
+        System.exit (1);
+      }
+      GenericIO.writelnString ("Plane object was registered!");
+
+                              
+      /* Wait for the service to end */
+      while(!end){
+          try {
+              synchronized(plane){
+                  plane.wait();
+              }
+          } catch (InterruptedException ex) {
+              GenericIO.writelnString("Main thread of Plane was interrupted.");
+              System.exit(1);
+          }
+      }
+
+      GenericIO.writelnString("ArrivalAirport finished execution.");
+
+          
+      /* Unregister shared region */
+      try
+      { registerInt.unbind (nameEntryObject);
+      }
+      catch (RemoteException e)
+      { GenericIO.writelnString ("Plane unregistration exception: " + e.getMessage ());
+        e.printStackTrace ();
+        System.exit (1);
+      } catch (NotBoundException ex) {
+        GenericIO.writelnString ("Plane unregistration exception: " + ex.getMessage ());
+        ex.printStackTrace ();
+        System.exit (1);
+      }
+      GenericIO.writelnString ("Plane object was unregistered!");
+
+
+    /* Unexport shared region */
+    try
+    { UnicastRemoteObject.unexportObject (plane, false);
+    }
+    catch (RemoteException e)
+    { GenericIO.writelnString ("Plane unexport exception: " + e.getMessage ());
+      e.printStackTrace ();
+      System.exit (1);
+    }
+
+    GenericIO.writelnString ("Plane object was unexported )successfully!");
+
+  }
+
 }
+
+
+
+
+

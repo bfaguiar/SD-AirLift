@@ -1,29 +1,31 @@
 package shared;
 
+import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import main.Initializer;
-import stubs.Repository;
+import Interface.RepositoryInterface;
+import Interface.PlaneInterface;
 
 /**
  * Plane's shared region
  * @author Bruno Aguiar, 80177
  * @author David Rocha, 84807
  */
-public class Plane {
+public class Plane implements PlaneInterface {
 
     /**
      * Declaration of the General Repository of Information
      */
-    private Repository repo;
+    private RepositoryInterface repo;
 
     /**
      * Instantiation of a thread syncrhonization mechanism 
      * @see ReentrantLock
      */
-    private ReentrantLock mutex = new ReentrantLock();  
+    private ReentrantLock mutex = new ReentrantLock();   
 
     /**
      * Instantiation of a Condition Variable for the Pilot
@@ -36,7 +38,7 @@ public class Plane {
     /**
      * Declaration of a boolean variable to inform the pilot that the boarding is complete
      */
-    private boolean boardingComplete;
+    private boolean boardingComplete; 
 
     /**
      * Boolean to indicate the flight completion
@@ -57,14 +59,15 @@ public class Plane {
      * Constructor
      * @param repo Instance of the General Repository of Information
      */
-    public Plane(Repository repo) {
+    public Plane(RepositoryInterface repo) {
         this.repo = repo;
     } 
 
     /**
      * @param state Client's State
      */
-    public void hostessInformPlaneReadyToTakeOff(String state) {
+    @Override
+    public void hostessInformPlaneReadyToTakeOff(String state) throws RemoteException {
         mutex.lock();
         repo.setHostessState(state);
         repo.log();
@@ -77,7 +80,8 @@ public class Plane {
      * 
      * @param state Client's state
      */
-    public void pilotWaitForAllInBoard(String state) {
+    @Override
+    public void pilotWaitForAllInBoard(String state) throws RemoteException {
         mutex.lock();
         repo.setPilotState(state); 
         repo.log();
@@ -98,7 +102,8 @@ public class Plane {
      * 
      * @param state Client's state
      */
-    public void pilotFlyToDestinationPoint(String state) {
+    @Override
+    public void pilotFlyToDestinationPoint(String state) throws RemoteException {
         mutex.lock();
         repo.setPilotState(state); 
         repo.log();
@@ -115,7 +120,8 @@ public class Plane {
      * 
      * @param state Client's state
      */
-    public void pilotAnnounceArrival(String state) {
+    @Override
+    public void pilotAnnounceArrival(String state) throws RemoteException {
         mutex.lock();
         repo.setPilotState(state); 
         repo.log();
@@ -123,14 +129,15 @@ public class Plane {
         flightComplete = true;
         repo.logArriving(); 
         mutex.unlock(); 
-    }
+    } 
 
     /**
      * 
      * @param id Client's ID
      * @param state Client's state
      */
-    public void passengerWaitForEndOfFlight(int id, String state) {
+    @Override
+    public void passengerWaitForEndOfFlight(int id, String state) throws RemoteException {
         mutex.lock();
         try {
             while(!flightComplete)
@@ -149,7 +156,8 @@ public class Plane {
      * @param id Client's ID
      * @param state Client's state
      */
-    public void passengerBoardThePlane(int id, String state) {
+    @Override
+    public void passengerBoardThePlane(int id, String state) throws RemoteException {
         mutex.lock();
         repo.setPassengerListState(id, state);
         repo.log();
@@ -162,7 +170,8 @@ public class Plane {
      * 
      * @param id Client's ID
      */
-    public void passengerExit(int id){
+    @Override
+    public void passengerExit(int id) throws RemoteException {
         mutex.lock();
         this.passengers.remove(passengers.indexOf(id));
         mutex.unlock();
@@ -171,14 +180,16 @@ public class Plane {
     /**
      * @return number of passengers in the plane
      */
-    public int getNumberInPlane(){
+    @Override
+    public int getNumberInPlane() throws RemoteException {
         return this.passengers.size();
     }
     
     /**
      * Server shutdown ..
      */
-    public void serverShutdown(){
+    @Override
+    public void serverShutdown() throws RemoteException {
         shutdown++;
         if(shutdown >= 2)
             Initializer.end = true;

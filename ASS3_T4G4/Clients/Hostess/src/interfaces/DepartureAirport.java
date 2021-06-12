@@ -1,5 +1,8 @@
 package interfaces;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
 public interface DepartureAirport extends Remote {
 
     public boolean noMorePassengers(String state) throws RemoteException;

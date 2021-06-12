@@ -1,10 +1,12 @@
 package repo;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
+
+import Interface.RepositoryInterface;
 import main.Initializer;
 
 
@@ -13,7 +15,7 @@ import main.Initializer;
 * @author Bruno Aguiar, 80177
 * @author David Rocha, 84807
  */
-public class Repository {
+public class Repository implements RepositoryInterface {
 
     /**
      * Thread Hostess
@@ -75,7 +77,7 @@ public class Repository {
      * Constructor
      * @param num_passengers number of passengers
      */
-    public Repository(int num_passengers) {
+    public Repository(int num_passengers, String logfile) {
         numberInQueue = 0;
         numberInPlane = 0;
         numberAtDestination = 0;
@@ -87,17 +89,22 @@ public class Repository {
         }
         try {
             
-            repoWriter = new FileWriter(new File("repo.txt"));
+            repoWriter = new FileWriter(new File(logfile));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logEntities();
+        try {
+            logEntities();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
     * @param state Hostess state
     */
-    public void setHostessState(String state) {
+   @Override 
+    public void setHostessState(String state) throws RemoteException {
         this.hostessState = state;
     }
 
@@ -105,7 +112,8 @@ public class Repository {
      * 
      * @param state Pilot state
      */
-    public void setPilotState(String state) {
+    @Override
+    public void setPilotState(String state)  throws RemoteException {
         this.pilotState = state;
     }
 
@@ -113,70 +121,80 @@ public class Repository {
      * @param index Passenger Index
      * @param  passegerState Passenger State
      */
-    public void setPassengerListState(int index, String passegerState) {
+    @Override
+    public void setPassengerListState(int index, String passegerState) throws RemoteException {
         this.passengerListState[index] = passegerState;
     }
 
     /**
      * Increments the number of passengers in queue
      */
-    public void incrementNumberInQueue() {
+    @Override
+    public void incrementNumberInQueue() throws RemoteException {
         numberInQueue++;
     }
 
     /**
      * Decrements the number of passengers in queue
      */
-    public void decrementNumberInQueue() {
+    @Override
+    public void decrementNumberInQueue() throws RemoteException {
         numberInQueue--;
     }
 
     /**
      * Decrements the number of passengers in the plane
      */
-    public void decrementNumberInPlane() {
+    @Override
+    public void decrementNumberInPlane() throws RemoteException {
         numberInPlane--;
     }
 
     /**
      * Increments the number of passengers in the plane
      */
-    public void incrementNumberInPlane() {
+    @Override
+    public void incrementNumberInPlane() throws RemoteException {
         numberInPlane++;
     } 
 
     /**
      * Increments the number of passengers arrived at Destination
      */
-    public void incrementNumberAtDestination() {
+    @Override
+    public void incrementNumberAtDestination() throws RemoteException {
         numberAtDestination++;
     }  
 
     /**
      * @return The number of flights taken in the simulation
      */
-    public int getFlightNum() {
+    @Override
+    public int getFlightNum() throws RemoteException {
         return this.flightNum;
     }
 
     /**
      * @param flightNum Number of flights taken in the simulation
      */
-    public void setFlightNum(int flightNum) {
+    @Override
+    public void setFlightNum(int flightNum) throws RemoteException {
         this.flightNum = flightNum;
     }
 
     /**
      * Increment the number of flights taken in the simulation
      */
-    public void incrementFlightNum() {
+    @Override
+    public void incrementFlightNum() throws RemoteException {
         this.flightNum++;
     }
 
     /**
      * Close the writing session
      */
-    public void closelog(){
+    @Override
+    public void closelog() throws RemoteException {
         try {
             this.repoWriter.close();
             this.repoWriter.close();
@@ -190,7 +208,8 @@ public class Repository {
      * Writes the header format in the simulation report
      * <p> Example: {@code PT   HT   P0   P1   P2   P3   P4   P5   P6   P7   P8   P9  P10  P11  P12  P13  P14  P15  P16  P17  P18  P19  P20  InQ  InF PTAL} </p>
      */
-    public void logEntities(){
+    @Override
+    public void logEntities() throws RemoteException {
         String entities = String.format("%4s %4s", "PT", "HT");
         for(int i = 0; i < passengerListState.length; i++)
             entities += String.format(" %4s", ("P"+i));
@@ -207,7 +226,8 @@ public class Repository {
      * Writes thread's state in the simulation report
      * <p> Example: {@code WFB   CP   IF   IF   IF   IF   IF   IQ   IQ   IQ   IQ   IQ  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA  GTA    5    5    0} </p>
      */
-    public void log(){
+    @Override
+    public void log() throws RemoteException {
         mutex.lock();
         String states = String.format("%4s %4s", pilotState, hostessState);
         for(int i = 0; i < passengerListState.length; i++)
@@ -233,7 +253,8 @@ public class Repository {
      * Writes the state "Boarding Started" in the simulation report and informs the current flight number
      * <p> Example: {@code Flight 1: boarding started.} </p>
      */
-    public void logFlightBoardingStarting(){
+    @Override
+    public void logFlightBoardingStarting() throws RemoteException {
         mutex.lock();
         String flightString = String.format("%nFlight %d: boarding started.%n", flightNum);
         logger.info(flightString);
@@ -250,7 +271,8 @@ public class Repository {
      * <p> Example: {@code Flight 1: passenger 0 checked.} </p>
      * @param id id of the passenger
      */
-    public void logPassengerCheck(int id){
+    @Override
+    public void logPassengerCheck(int id) throws RemoteException {
         mutex.lock();
         String flightString = String.format("%nFlight %d: passenger %d checked.%n", flightNum, id);
         logger.info(flightString);
@@ -266,7 +288,8 @@ public class Repository {
      * Writes the state "Departed with N Passengers" in the simulation report and informs the current flight number 
      * <p> Example: {@code Flight 1: departed with 10 passengers.} </p>
      */
-    public void logDeparture(){
+    @Override
+    public void logDeparture() throws RemoteException {
         mutex.lock();
         String flightString = String.format("%nFlight %d: departed with %d passengers.%n", flightNum, numberInPlane);
         logger.info(flightString);
@@ -282,7 +305,8 @@ public class Repository {
      * Writes the state "Flight Arrived" in the simulation report and informs the current flight number
      * <p> Example: {@code Flight 1: arrived.} </p>
      */
-    public void logArriving(){
+    @Override
+    public void logArriving() throws RemoteException {
         mutex.lock();
         String flightString = String.format("%nFlight %d: arrived.%n", flightNum);
         logger.info(flightString);
@@ -298,7 +322,8 @@ public class Repository {
      * Writes the state "Flight Returning" in the simulation report and informs the current flight number
      * <p> Example: {@code Flight 1: returning.} </p>
      */
-    public void logReturning(){
+    @Override
+    public void logReturning() throws RemoteException {
         mutex.lock();
         String flightString = String.format("%nFlight %d: returning.%n", flightNum);
         logger.info(flightString);
@@ -310,3 +335,4 @@ public class Repository {
         mutex.unlock();
     }
 }
+
