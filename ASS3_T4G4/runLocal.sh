@@ -48,59 +48,59 @@ boolAAP=$(sudo lsof -ti:$ArrivalAirportPort)
 
 echo "Compiling Registry"
 cd Registry/src
-javac -cp .:../lib/genclass.jar  interfaces/*.java main/*.java
+javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar  interfaces/*.java main/*.java
 jar cf Registry.jar *
 mv Registry.jar bin/
 cd ../../
 
 echo "Compiling Repository"
 cd Servers/Repository/src
-javac -cp .:../lib/genclass.jar main/Initializer.java
+javac -target 1.8 -source 1.8  -cp .:../lib/genclass.jar main/Initializer.java
 jar cf Repository.jar *
 mv Repository.jar bin/
 cd ../../../
 
 echo "Compiling DepartureAirport"
 cd Servers/DepartureAirport/src
-javac -cp .:../lib/genclass.jar main/Initializer.java
+javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
 jar cf DepartureAirport.jar *
 mv DepartureAirport.jar bin/
 cd ../../../
 
 echo "Compiling Plane"
 cd Servers/Plane/src
-javac -cp .:../lib/genclass.jar main/Initializer.java
+javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
 jar cf Plane.jar *
 mv Plane.jar bin/
 cd ../../../
 
 echo "Compiling ArrivalAirport"
 cd Servers/ArrivalAirport/src
-javac -cp .:../lib/genclass.jar main/Initializer.java
+javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
 jar cf ArrivalAirport.jar *
 mv ArrivalAirport.jar bin/
 cd ../../../
 
 echo "Compiling Hostess"
 cd Clients/Hostess/src/
-javac -cp .:../lib/genclass.jar main/Initializer.java
+javac -target 1.8 -source 1.8  -cp .:../lib/genclass.jar main/Initializer.java
 jar cf Hostess.jar *
 mv Hostess.jar bin/
 cd ../../../
 
 echo "COMPILING PILOT"
 cd Clients/Pilot/src
-javac -cp .:../lib/genclass.jar main/Initializer.java
+javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
 jar cf Pilot.jar *
 mv Pilot.jar bin/
 cd ../../../
 
 echo "Compiling Passenger"
 cd Clients/Passenger/src
-javac -cp .:../lib/genclass.jar main/Initializer.java
+javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
 jar cf Passenger.jar *
 mv Passenger.jar bin/
-cd ../../../
+cd ../../../ 
 
 echo "Registry 1"
 cd Registry
