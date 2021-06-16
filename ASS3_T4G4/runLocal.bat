@@ -86,7 +86,7 @@ start "Registry" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\De
                              %RegistryAddress% %RegistryEnginePort% %RegistryName% %RegistryListeningPort% %RegistryUnbinds% ^& pause
 cd ../../../
 
-timeout /t 1
+timeout /t 2
 
 cd Servers/Repository/src/bin
 start "Repository" cmd /c java -Djava.rmi.server.codebase="file:\C:\Users\dmtar\Desktop\SD\dev\Repository\src\bin\Repository.jar" ^

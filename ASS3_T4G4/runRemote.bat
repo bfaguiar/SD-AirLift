@@ -1,21 +1,30 @@
-set RepositoryAddress=l040101-ws01.ua.pt
-set RepositoryPort=22430
+set RegistryAddress=l040101-ws02.ua.pt
+set RegistryName=registryp404
+set RegistryEnginePort=22431
+set RegistryListeningPort=22432
+set RegistryUnbinds=4
 
-set DepartureAirportAddress=l040101-ws02.ua.pt
-set DepartureAirportPort=22431
+set RepositoryAddress=l040101-ws03.ua.pt
+set RepositoryName=repositoryp404
+set RepositoryPort=22433
+set Logfile=/home/sd404/repo.txt
 
-set PlaneAddress=l040101-ws03.ua.pt
-set PlanePort=22432
+set DepartureAirportAddress=l040101-ws04.ua.pt
+set DepartureAirportName=dpp404
+set DepartureAirportPort=22434
 
-set ArrivalAirportAddress=l040101-ws04.ua.pt
-set ArrivalAirportPort=22433
+set PlaneAddress=l040101-ws05.ua.pt
+set PlaneName=planep404
+set PlanePort=22435
 
-set HostessAddress=l040101-ws05.ua.pt
-set PilotAddress=l040101-ws06.ua.pt
-set PassengerAddress1=l040101-ws07.ua.pt
-set PassengerAddress2=l040101-ws08.ua.pt
-set PassengerAddress3=l040101-ws09.ua.pt
-set PassengerAddress4=l040101-ws10.ua.pt
+set ArrivalAirportAddress=l040101-ws06.ua.pt
+set ArrivalAirportName=app404
+set ArrivalAirportPort=22436
+
+set HostessAddress=l040101-ws07.ua.pt
+set PilotAddress=l040101-ws08.ua.pt
+set PassengerAddress1=l040101-ws09.ua.pt
+set PassengerAddress2=l040101-ws10.ua.pt
 
 set sshlogin=sd404
 set sshpassword=avioesp4
@@ -25,35 +34,8 @@ set MaxPassengerIndex=20
 set PlaneMinCapacity=5
 set PlaneMaxCapacity=10
 
-plink -batch %sshlogin%@%RepositoryAddress% -pw %sshpassword% "cd Repository/src && javac -cp .:../lib/genclass.jar main/Initializer.java"
-plink -batch %sshlogin%@%DepartureAirportAddress% -pw %sshpassword% "cd DepartureAirport/src && javac -cp .:../lib/genclass.jar main/Initializer.java"
-plink -batch %sshlogin%@%PlaneAddress% -pw %sshpassword% "cd Plane/src && javac -cp .:../lib/genclass.jar main/Initializer.java"
-plink -batch %sshlogin%@%ArrivalAirportAddress% -pw %sshpassword% "cd ArrivalAirport/src && javac -cp .:../lib/genclass.jar main/Initializer.java"
-plink -batch %sshlogin%@%HostessAddress% -pw %sshpassword% "cd Hostess/src/ && javac -cp .:../lib/genclass.jar main/Initializer.java"
-plink -batch %sshlogin%@%PilotAddress% -pw %sshpassword% "cd Pilot/src && javac -cp .:../lib/genclass.jar main/Initializer.java"
-plink -batch %sshlogin%@%PassengerAddress1% -pw %sshpassword% "cd Passenger/src && javac -cp .:../lib/genclass.jar main/Initializer.java"
-plink -batch %sshlogin%@%PassengerAddress2% -pw %sshpassword% "cd Passenger/src && javac -cp .:../lib/genclass.jar main/Initializer.java"
-plink -batch %sshlogin%@%PassengerAddress3% -pw %sshpassword% "cd Passenger/src && javac -cp .:../lib/genclass.jar main/Initializer.java"
-plink -batch %sshlogin%@%PassengerAddress4% -pw %sshpassword% "cd Passenger/src && javac -cp .:../lib/genclass.jar main/Initializer.java"
+start "Registry Startup" cmd /c plink -batch %sshlogin%@%RegistryAddress% -pw %sshpassword% "rmiregistry -J-Djava.rmi.server.hostname=localhost -J-Djava.rmi.server.useCodebaseOnly=false %RegistryEnginePort%" ^& pause
 
-start "Repository" cmd /c plink -batch %sshlogin%@%RepositoryAddress% -pw %sshpassword% "cd Repository/src && java -cp .:../lib/genclass.jar main/Initializer %RepositoryPort% %NumberPassengers%" ^& pause
-start "DepartureAirport" cmd /c plink -batch %sshlogin%@%DepartureAirportAddress% -pw %sshpassword% "cd DepartureAirport/src && java -cp .:../lib/genclass.jar main/Initializer %DepartureAirportPort% %NumberPassengers% %PlaneMinCapacity% %PlaneMaxCapacity% %RepositoryAddress% %RepositoryPort%" ^& pause
-start "Plane" cmd /c plink -batch %sshlogin%@%PlaneAddress% -pw %sshpassword% "cd Plane/src && java -cp .:../lib/genclass.jar main/Initializer %PlanePort% %RepositoryAddress% %RepositoryPort%" ^& pause
-start "ArrivalAirport" cmd /c plink -batch %sshlogin%@%ArrivalAirportAddress% -pw %sshpassword% "cd ArrivalAirport/src && java -cp .:../lib/genclass.jar main/Initializer %ArrivalAirportPort% %RepositoryAddress% %RepositoryPort%" ^& pause
+start "Registry" cmd /c plink -batch %sshlogin%@%RegistryAddress% -pw %sshpassword% "cd Registry/ ; java -Djava.rmi.server.codebase='http://l040101-ws02.ua.pt/sd404/Registry/Registry.jar' -Djava.rmi.server.useCodebaseOnly=false\ -Djava.security.policy=java.policy -cp 'Registry.jar:lib/*' main.Initializer %RegistryAddress% %RegistryEnginePort% %RegistryName% %RegistryListeningPort% %RegistryUnbinds%" ^& pause
 
-timeout /t 4
-
-start "Hostess" cmd /c plink -batch %sshlogin%@%HostessAddress% -pw %sshpassword% "cd Hostess/src/ && java -cp .:../lib/genclass.jar main/Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort%" ^& pause
-start "Pilot" cmd /c plink -batch %sshlogin%@%PilotAddress% -pw %sshpassword% "cd Pilot/src && java -cp .:../lib/genclass.jar main/Initializer %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%" ^& pause
-FOR /L %%A IN (0, 1, 4) DO (
-    start "Passenger %%A" cmd /c plink -batch %sshlogin%@%PassengerAddress1% -pw %sshpassword% "cd Passenger/src && java -cp .:../lib/genclass.jar main/Initializer %%A %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%" ^& pause
-)
-FOR /L %%A IN (5, 1, 9) DO (
-    start "Passenger %%A" cmd /c plink -batch %sshlogin%@%PassengerAddress2% -pw %sshpassword% "cd Passenger/src && java -cp .:../lib/genclass.jar main/Initializer %%A %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%" ^& pause
-)
-FOR /L %%A IN (10, 1, 14) DO (
-    start "Passenger %%A" cmd /c plink -batch %sshlogin%@%PassengerAddress3% -pw %sshpassword% "cd Passenger/src && java -cp .:../lib/genclass.jar main/Initializer %%A %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%" ^& pause
-)
-FOR /L %%A IN (15, 1, 20) DO (
-    start "Passenger %%A" cmd /c plink -batch %sshlogin%@%PassengerAddress4% -pw %sshpassword% "cd Passenger/src && java -cp .:../lib/genclass.jar main/Initializer %%A %DepartureAirportAddress% %DepartureAirportPort% %PlaneAddress% %PlanePort% %ArrivalAirportAddress% %ArrivalAirportPort%" ^& pause
-)
+timeout /t 2
