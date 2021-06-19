@@ -38,6 +38,70 @@ sshpassword="avioesp4"
 
 export SSHPASS=$sshpassword
 
+echo "Do you want to compile files (y/n)? "
+read answer 
+if [ "$answer" != "${answer#[Yy]}" ] ; then
+    echo "Compiling Registry"
+    cd Registry/src
+    javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar  interfaces/*.java main/*.java
+    jar cf Registry.jar *
+    mv Registry.jar bin/
+    cd ../../
+
+    echo "Compiling Repository"
+    cd Servers/Repository/src
+    javac -target 1.8 -source 1.8  -cp .:../lib/genclass.jar main/Initializer.java
+    jar cf Repository.jar *
+    mv Repository.jar bin/
+    cd ../../../
+
+    echo "Compiling DepartureAirport"
+    cd Servers/DepartureAirport/src
+    javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
+    jar cf DepartureAirport.jar *
+    mv DepartureAirport.jar bin/
+    cd ../../../
+
+    echo "Compiling Plane"
+    cd Servers/Plane/src
+    javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
+    jar cf Plane.jar *
+    mv Plane.jar bin/
+    cd ../../../
+
+    echo "Compiling ArrivalAirport"
+    cd Servers/ArrivalAirport/src
+    javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
+    jar cf ArrivalAirport.jar *
+    mv ArrivalAirport.jar bin/
+    cd ../../../
+
+    echo "Compiling Hostess"
+    cd Clients/Hostess/src/
+    javac -target 1.8 -source 1.8  -cp .:../lib/genclass.jar main/Initializer.java
+    jar cf Hostess.jar *
+    mv Hostess.jar bin/
+    cd ../../../
+
+    echo "COMPILING PILOT"
+    cd Clients/Pilot/src
+    javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
+    jar cf Pilot.jar *
+    mv Pilot.jar bin/
+    cd ../../../
+
+    echo "Compiling Passenger"
+    cd Clients/Passenger/src
+    javac -target 1.8 -source 1.8 -cp .:../lib/genclass.jar main/Initializer.java
+    jar cf Passenger.jar *
+    mv Passenger.jar bin/
+    cd ../../../
+
+
+else 
+    : #;;
+fi
+
 echo "Do you want to copy files (y/n)? "
 read answer
 if [ "$answer" != "${answer#[Yy]}" ] ; then
@@ -62,8 +126,7 @@ if [ "$answer" != "${answer#[Yy]}" ] ; then
     sshpass -e scp -r Clients/Passenger/src/bin $sshlogin@$PassengerAddress2:/home/sd404/
     #sshpass -e scp -r Clients/Passenger/src/bin $sshlogin@$PassengerAddress3:/home/sd404/ 
 else
-    #echo "passing..."
-    : #§nop 
+    : #§nop #echo "passing..."
 fi
 
 
@@ -93,12 +156,9 @@ sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$ArrivalAirportAddress " \
 
 echo "Running Program"
 
-echo "Registry"
 sshpass -e ssh  -o StrictHostKeyChecking=no  $sshlogin@$RegistryAddress "cd bin/;rmiregistry  -J-Djava.rmi.server.useCodebaseOnly=true $RegistryEnginePort " &
-echo "asdasdasd"
 sleep 5
 
-echo "Registry 2"
 sshpass -e ssh  -o StrictHostKeyChecking=no  $sshlogin@$RegistryAddress "cd bin;jar xf *.jar; \
     java -Djava.rmi.server.codebase="http://l040101-ws02.ua.pt/sd404/bin"\
                              -Djava.rmi.server.useCodebaseOnly=true\
@@ -108,7 +168,6 @@ sshpass -e ssh  -o StrictHostKeyChecking=no  $sshlogin@$RegistryAddress "cd bin;
 
 sleep 5
 
-echo "Repository"
 sshpass -e ssh  -o  StrictHostKeyChecking=no  $sshlogin@$RepositoryAddress "cd bin;jar xf *.jar; \
 java -Djava.rmi.server.codebase="http://l040101-ws03.ua.pt/sd404/bin"\
                                -Djava.rmi.server.useCodebaseOnly=true\
@@ -118,7 +177,6 @@ java -Djava.rmi.server.codebase="http://l040101-ws03.ua.pt/sd404/bin"\
 
 sleep 5
 
-echo "DepartureAirport" 
 sshpass -e ssh -o StrictHostKeyChecking=no  $sshlogin@$DepartureAirportAddress "cd bin;jar xf *.jar; \
 java -Djava.rmi.server.codebase="http://l040101-ws04.ua.pt/sd404/bin"\
                                      -Djava.rmi.server.useCodebaseOnly=true\
@@ -130,7 +188,6 @@ java -Djava.rmi.server.codebase="http://l040101-ws04.ua.pt/sd404/bin"\
 
 sleep 5
 
-echo "Plane"
 sshpass -e ssh -o StrictHostKeyChecking=no  $sshlogin@$PlaneAddress "cd bin;jar xf *.jar; \
 java -Djava.rmi.server.codebase="http://l040101-ws05.ua.pt/sd404/bin"\
                           -Djava.rmi.server.useCodebaseOnly=true\
@@ -141,7 +198,6 @@ java -Djava.rmi.server.codebase="http://l040101-ws05.ua.pt/sd404/bin"\
 
 sleep 5
 
-echo "ArrivalAirport"
 sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$ArrivalAirportAddress "cd bin;jar xf *.jar; \
 java -Djava.rmi.server.codebase="http://l040101-ws06.ua.pt/sd404/bin"\
                                    -Djava.rmi.server.useCodebaseOnly=true\
@@ -152,7 +208,6 @@ java -Djava.rmi.server.codebase="http://l040101-ws06.ua.pt/sd404/bin"\
 
 sleep 1
 
-echo "Hostess"
 sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$HostessAddress "cd bin;jar xf *.jar; \
 java -Djava.rmi.server.codebase="http://l040101-ws07.ua.pt/sd404/bin"\
                             -Djava.rmi.server.useCodebaseOnly=true\
@@ -162,7 +217,6 @@ java -Djava.rmi.server.codebase="http://l040101-ws07.ua.pt/sd404/bin"\
 
 sleep 1
 
-echo "Pilot"
 sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PilotAddress "cd bin;jar xf *.jar; \
 java -Djava.rmi.server.codebase="http://l040101-ws08.ua.pt/sd404/bin"\
                           -Djava.rmi.server.useCodebaseOnly=true\
@@ -172,7 +226,6 @@ java -Djava.rmi.server.codebase="http://l040101-ws08.ua.pt/sd404/bin"\
 
 sleep 1 
 
-echo "Passenger1"
 for i in {0..13}
 do
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PassengerAddress1 "cd bin;jar xf *.jar; \
@@ -186,7 +239,6 @@ done
 
 sleep 1
 
-echo "Passenger2" 
 for i in {13..20} #7
 do
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PassengerAddress2 "cd bin;jar xf *.jar; \
