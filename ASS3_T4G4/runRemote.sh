@@ -1,25 +1,25 @@
 RegistryAddress=l040101-ws02.ua.pt
 RegistryName=registryp404 
 RegistryEnginePort=22430
-RegistryListeningPort=40402
+RegistryListeningPort=22431
 RegistryUnbinds=4
 
 RepositoryAddress=l040101-ws03.ua.pt
 RepositoryName=repositoryp404
-RepositoryPort=22431
+RepositoryPort=22432
 Logfile=/home/sd404/repo.txt
 
 DepartureAirportAddress=l040101-ws04.ua.pt
 DepartureAirportName=dpp404
-DepartureAirportPort=22432
+DepartureAirportPort=22433
 
 PlaneAddress=l040101-ws05.ua.pt
 PlaneName=planep404
-PlanePort=22433
+PlanePort=22434
 
 ArrivalAirportAddress=l040101-ws06.ua.pt
 ArrivalAirportName=app404
-ArrivalAirportPort=22434
+ArrivalAirportPort=22435
 
 NumberPassengers=21
 MaxPassengerIndex=20
