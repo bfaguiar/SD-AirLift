@@ -1,25 +1,25 @@
 RegistryAddress=l040101-ws02.ua.pt
 RegistryName=registryp404 
-RegistryEnginePort=40401
+RegistryEnginePort=22430
 RegistryListeningPort=40402
 RegistryUnbinds=4
 
 RepositoryAddress=l040101-ws03.ua.pt
 RepositoryName=repositoryp404
-RepositoryPort=40403
+RepositoryPort=22431
 Logfile=/home/sd404/repo.txt
 
 DepartureAirportAddress=l040101-ws04.ua.pt
 DepartureAirportName=dpp404
-DepartureAirportPort=40404
+DepartureAirportPort=22432
 
 PlaneAddress=l040101-ws05.ua.pt
 PlaneName=planep404
-PlanePort=40405
+PlanePort=22433
 
 ArrivalAirportAddress=l040101-ws06.ua.pt
 ArrivalAirportName=app404
-ArrivalAirportPort=40406
+ArrivalAirportPort=22434
 
 NumberPassengers=21
 MaxPassengerIndex=20
@@ -43,23 +43,23 @@ read answer
 if [ "$answer" != "${answer#[Yy]}" ] ; then
     echo "Coping bins..."
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$RegistryAddress "rm -rf bin"
-    sshpass -e scp -r Registry/src $sshlogin@$RegistryAddress:/home/sd404/
+    sshpass -e scp -r Registry/src/bin $sshlogin@$RegistryAddress:/home/sd404/
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$RepositoryAddress "rm -rf bin"
-    sshpass -e scp -r Servers/Repository/src $sshlogin@$RepositoryAddress:/home/sd404/
+    sshpass -e scp -r Servers/Repository/src/bin $sshlogin@$RepositoryAddress:/home/sd404/
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$DepartureAirportAddress "rm -rf bin"
-    sshpass -e scp -r Servers/DepartureAirport/src $sshlogin@$DepartureAirportAddress:/home/sd404/
+    sshpass -e scp -r Servers/DepartureAirport/src/bin $sshlogin@$DepartureAirportAddress:/home/sd404/
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PlaneAddress "rm -rf bin"
     sshpass -e scp -r Servers/Plane/src/bin $sshlogin@$PlaneAddress:/home/sd404/
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$ArrivalAirportAddress "rm -rf bin"
-    sshpass -e scp -r Servers/ArrivalAirport/src $sshlogin@$ArrivalAirportAddress:/home/sd404/
+    sshpass -e scp -r Servers/ArrivalAirport/src/bin $sshlogin@$ArrivalAirportAddress:/home/sd404/
      sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$HostessAddress "rm -rf bin"
-    sshpass -e scp -r Clients/Hostess/src $sshlogin@$HostessAddress:/home/sd404/
+    sshpass -e scp -r Clients/Hostess/src/bin $sshlogin@$HostessAddress:/home/sd404/
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PilotAddress "rm -rf bin"
-    sshpass -e scp -r Clients/Pilot/src $sshlogin@$PilotAddress:/home/sd404/
+    sshpass -e scp -r Clients/Pilot/src/bin $sshlogin@$PilotAddress:/home/sd404/
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PassengerAddress1 "rm -rf bin"
-    sshpass -e scp -r Clients/Passenger/src $sshlogin@$PassengerAddress1:/home/sd404/
+    sshpass -e scp -r Clients/Passenger/src/bin $sshlogin@$PassengerAddress1:/home/sd404/
     sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PassengerAddress2 "rm -rf bin"
-    sshpass -e scp -r Clients/Passenger/src $sshlogin@$PassengerAddress2:/home/sd404/
+    sshpass -e scp -r Clients/Passenger/src/bin $sshlogin@$PassengerAddress2:/home/sd404/
     #sshpass -e scp -r Clients/Passenger/src/bin $sshlogin@$PassengerAddress3:/home/sd404/ 
 else
     #echo "passing..."
@@ -94,13 +94,13 @@ sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$ArrivalAirportAddress " \
 echo "Running Program"
 
 echo "Registry"
-sshpass -e ssh  -o StrictHostKeyChecking=no  $sshlogin@$RegistryAddress "rmiregistry  -J-Djava.rmi.server.useCodebaseOnly=true $RegistryEnginePort " &
+sshpass -e ssh  -o StrictHostKeyChecking=no  $sshlogin@$RegistryAddress "cd bin/;rmiregistry  -J-Djava.rmi.server.useCodebaseOnly=true $RegistryEnginePort " &
 echo "asdasdasd"
 sleep 5
 
 echo "Registry 2"
-sshpass -e ssh  -o StrictHostKeyChecking=no  $sshlogin@$RegistryAddress "cd src/bin; \
-java -Djava.rmi.server.codebase="http://l040101-ws02.ua.pt/sd404/src/bin/Registry.jar"\
+sshpass -e ssh  -o StrictHostKeyChecking=no  $sshlogin@$RegistryAddress "cd bin;jar xf *.jar; \
+    java -Djava.rmi.server.codebase="http://l040101-ws02.ua.pt/sd404/bin"\
                              -Djava.rmi.server.useCodebaseOnly=true\
                              -Djava.security.policy=java.policy\
                              -cp Registry.jar:lib/* main.Initializer\
@@ -109,19 +109,18 @@ java -Djava.rmi.server.codebase="http://l040101-ws02.ua.pt/sd404/src/bin/Registr
 sleep 5
 
 echo "Repository"
-sshpass -e ssh  -o  StrictHostKeyChecking=no  $sshlogin@$RepositoryAddress "cd src/bin;
-java -Djava.rmi.server.codebase="http://l040101-ws03.ua.pt/sd404/src/bin/Repository.jar"\
+sshpass -e ssh  -o  StrictHostKeyChecking=no  $sshlogin@$RepositoryAddress "cd bin;jar xf *.jar; \
+java -Djava.rmi.server.codebase="http://l040101-ws03.ua.pt/sd404/bin"\
                                -Djava.rmi.server.useCodebaseOnly=true\
                                -Djava.security.policy=java.policy\
                                -cp Repository.jar:lib/* main.Initializer\
-                               $RegistryAddress $RegistryEnginePort $RegistryName $RepositoryName\
-                               $RepositoryPort $NumberPassengers $Logfile " &  
+                               $RegistryAddress $RegistryEnginePort $RegistryName $RepositoryName $RepositoryPort $NumberPassengers $Logfile " &  
 
 sleep 5
 
 echo "DepartureAirport" 
-sshpass -e ssh -o StrictHostKeyChecking=no  $sshlogin@$DepartureAirportAddress "cd src/bin; \
-java -Djava.rmi.server.codebase="http://l040101-ws04.ua.pt/sd404/src/bin/DepartureAirport.jar"\
+sshpass -e ssh -o StrictHostKeyChecking=no  $sshlogin@$DepartureAirportAddress "cd bin;jar xf *.jar; \
+java -Djava.rmi.server.codebase="http://l040101-ws04.ua.pt/sd404/bin"\
                                      -Djava.rmi.server.useCodebaseOnly=true\
                                      -Djava.security.policy=java.policy\
                                      -cp DepartureAirport.jar:lib/* main.Initializer\
@@ -132,8 +131,8 @@ java -Djava.rmi.server.codebase="http://l040101-ws04.ua.pt/sd404/src/bin/Departu
 sleep 5
 
 echo "Plane"
-sshpass -e ssh -o StrictHostKeyChecking=no  $sshlogin@$PlaneAddress "cd src/bin; \
-java -Djava.rmi.server.codebase="http://l040101-ws05.ua.pt/sd404/src/bin/Plane.jar"\
+sshpass -e ssh -o StrictHostKeyChecking=no  $sshlogin@$PlaneAddress "cd bin;jar xf *.jar; \
+java -Djava.rmi.server.codebase="http://l040101-ws05.ua.pt/sd404/bin"\
                           -Djava.rmi.server.useCodebaseOnly=true\
                           -Djava.security.policy=java.policy\
                           -cp Plane.jar:lib/* main.Initializer\
@@ -143,8 +142,8 @@ java -Djava.rmi.server.codebase="http://l040101-ws05.ua.pt/sd404/src/bin/Plane.j
 sleep 5
 
 echo "ArrivalAirport"
-sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$ArrivalAirportAddress "cd src/bin;\
-java -Djava.rmi.server.codebase="http://l040101-ws06.ua.pt/sd404/src/bin/ArrivalAirport.jar"\
+sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$ArrivalAirportAddress "cd bin;jar xf *.jar; \
+java -Djava.rmi.server.codebase="http://l040101-ws06.ua.pt/sd404/bin"\
                                    -Djava.rmi.server.useCodebaseOnly=true\
                                    -Djava.security.policy=java.policy\
                                    -cp ArrivalAirport.jar:lib/* main.Initializer\
@@ -154,8 +153,8 @@ java -Djava.rmi.server.codebase="http://l040101-ws06.ua.pt/sd404/src/bin/Arrival
 sleep 1
 
 echo "Hostess"
-sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$HostessAddress "cd src/bin; \
-java -Djava.rmi.server.codebase="http://l040101-ws07.ua.pt/sd404/src/bin/Hostess.jar"\
+sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$HostessAddress "cd bin;jar xf *.jar; \
+java -Djava.rmi.server.codebase="http://l040101-ws07.ua.pt/sd404/bin"\
                             -Djava.rmi.server.useCodebaseOnly=true\
                             -cp Hostess.jar:lib/* main.Initializer\
                             $RegistryAddress $RegistryEnginePort\
@@ -164,8 +163,8 @@ java -Djava.rmi.server.codebase="http://l040101-ws07.ua.pt/sd404/src/bin/Hostess
 sleep 1
 
 echo "Pilot"
-sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PilotAddress "cd src/bin; \
-java -Djava.rmi.server.codebase="http://l040101-ws08.ua.pt/sd404/src/bin/Pilot.jar"\
+sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PilotAddress "cd bin;jar xf *.jar; \
+java -Djava.rmi.server.codebase="http://l040101-ws08.ua.pt/sd404/bin"\
                           -Djava.rmi.server.useCodebaseOnly=true\
                           -cp Pilot.jar:lib/* main.Initializer\
                           $RegistryAddress $RegistryEnginePort\
@@ -176,8 +175,8 @@ sleep 1
 echo "Passenger1"
 for i in {0..13}
 do
-    sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PassengerAddress1 "cd src/bin; \
-    java -Djava.rmi.server.codebase="http://l040101-ws09.ua.pt/sd404/src/bin/Passenger.jar"\
+    sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PassengerAddress1 "cd bin;jar xf *.jar; \
+    java -Djava.rmi.server.codebase="http://l040101-ws09.ua.pt/sd404/bin"\
                                       -Djava.rmi.server.useCodebaseOnly=true\
                                       -cp Passenger.jar:lib/* main.Initializer\
                                       $i $RegistryAddress $RegistryEnginePort\
@@ -190,8 +189,8 @@ sleep 1
 echo "Passenger2" 
 for i in {13..20} #7
 do
-    sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PassengerAddress2 "cd src/bin; \
-    java -Djava.rmi.server.codebase="http://l040101-ws10.ua.pt/sd404/src/bin/Passenger.jar"\
+    sshpass -e ssh -o StrictHostKeyChecking=no $sshlogin@$PassengerAddress2 "cd bin;jar xf *.jar; \
+    java -Djava.rmi.server.codebase="http://l040101-ws10.ua.pt/sd404/bin"\
                                       -Djava.rmi.server.useCodebaseOnly=true\
                                       -cp Passenger.jar:lib/* main.Initializer\
                                       $i $RegistryAddress $RegistryEnginePort\
