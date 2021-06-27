@@ -18,6 +18,10 @@ import threads.Hostess;
  */
 public class Initializer {
     public static void main(String args[]) {
+        
+        /**
+         * argument fetch
+         */        
         String reg_address = args[0];
         int reg_port = Integer.parseInt(args[1]);
         String dp_name = args[2];
@@ -88,4 +92,4 @@ public class Initializer {
             e.printStackTrace();
         }
     }
-}
+} 

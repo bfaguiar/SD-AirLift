@@ -5,11 +5,17 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+
 /**
  *  This data type defines the operational interface of a remote object of type RegisterRemoteObject.
  *  It provides the functionality to register remote objects in the local registry service.
- */
-public interface RegisterInterface extends Remote{
+ *
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
+ */  
+
+
+public interface RegisterInterface extends Remote {
   /**
    *  Binds a remote reference to the specified name in this registry.
    *

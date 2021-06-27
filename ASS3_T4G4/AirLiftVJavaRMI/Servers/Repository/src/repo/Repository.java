@@ -76,6 +76,7 @@ public class Repository implements RepositoryInterface {
     /**
      * Constructor
      * @param num_passengers number of passengers
+     * @param logfile Name of the Log File
      */
     public Repository(int num_passengers, String logfile) {
         numberInQueue = 0;
@@ -335,4 +336,6 @@ public class Repository implements RepositoryInterface {
         mutex.unlock();
     }
 }
+
+
 

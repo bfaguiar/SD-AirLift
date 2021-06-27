@@ -12,8 +12,9 @@ import interfaces.RegisterInterface;
 /**
  *  This data type defines a generic functionality to register remote objects in the local registry service.
  *  Communication is based in Java RMI.
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
  */
-
 public class RegisterRemoteObject implements RegisterInterface{
   /**
    *  Name of local host

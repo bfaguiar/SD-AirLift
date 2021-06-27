@@ -12,6 +12,9 @@ import java.rmi.NotBoundException;
  *  This data type instantiates and registers a remote object that enables the registration of other remote objects
  *  located in the same or other processing nodes in the local registry service.
  *  Communication is based in Java RMI.
+ *
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
  */
 public class Initializer{
     /**
@@ -21,7 +24,7 @@ public class Initializer{
     
    /**
     * Main task.
-    * @param args
+    * @param args runntime arguments
     */
    public static void main(String[] args){
     /* get location of the registry service */

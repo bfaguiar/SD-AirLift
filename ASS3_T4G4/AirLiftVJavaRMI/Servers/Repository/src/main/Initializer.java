@@ -12,6 +12,10 @@ import interfaces.RegisterInterface;
 import interfaces.RepositoryInterface;
 import repo.Repository;
 
+/**
+ * @author Bruno Aguiar, 80177
+ * @author David Rocha, 84807
+ */
 public class Initializer { 
 
     public static boolean end = false;
